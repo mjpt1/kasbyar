@@ -15,7 +15,7 @@
 ### ۱. Import پروژه
 
 1. [vercel.com/new](https://vercel.com/new) → Import از GitHub
-2. مخزن `kesbyar` را انتخاب کنید
+2. مخزن `kasbyar` را انتخاب کنید
 
 ### ۲. تنظیمات پروژه
 
