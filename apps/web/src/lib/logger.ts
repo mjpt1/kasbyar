@@ -1,5 +1,6 @@
 import {
   APP_LOG_EVENTS,
+  METRIC_EVENTS,
   type MetricDimensions,
   type MetricEvent,
   sanitizeLogRecord,
@@ -91,4 +92,4 @@ export function recordMetric(
   });
 }
 
-export { APP_LOG_EVENTS };
+export { APP_LOG_EVENTS, METRIC_EVENTS };

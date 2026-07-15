@@ -54,3 +54,6 @@ backups/*
 
 # docker
 docker/data
+
+.vercel
+.env*

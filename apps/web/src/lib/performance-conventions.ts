@@ -39,7 +39,8 @@ export const UI_STATE_COMPONENTS = {
 export async function parallelServerFetch<T extends readonly unknown[]>(
   tasks: readonly [...{ [K in keyof T]: () => Promise<T[K]> }],
 ): Promise<T> {
-  return Promise.all(tasks.map((task) => task())) as Promise<T>;
+  const results = await Promise.all(tasks.map((task) => task()));
+  return results as unknown as T;
 }
 
 /**
