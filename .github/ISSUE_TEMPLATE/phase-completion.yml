@@ -1,0 +1,84 @@
+name: Phase completion gate
+description: Close a MASTER_EXECUTION phase with evidence and known gaps
+title: "[Phase] "
+labels: ["phase", "quality"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use [docs/templates/phase-review-gate.md](../../docs/templates/phase-review-gate.md) as the full template.
+        Phase is **not complete** until acceptance criteria and evidence are filled.
+
+  - type: input
+    id: phase_name
+    attributes:
+      label: Phase name
+      placeholder: e.g. Phase 8 — Data safety
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Phase summary
+      description: What was implemented (2–5 sentences)
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List each criterion with Met / Partial / Not met
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence of completion
+      description: CI link, test count, PR links, screenshots
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: quality_gates
+    attributes:
+      label: Quality gates
+      options:
+        - label: npm run verify / CI green
+        - label: MASTER_EXECUTION.md updated
+        - label: ADR added or N/A
+        - label: Docs updated
+
+  - type: textarea
+    id: manual_verification
+    attributes:
+      label: Manual verification performed
+      description: Happy path, tenant isolation, RTL, states
+    validations:
+      required: true
+
+  - type: textarea
+    id: known_gaps
+    attributes:
+      label: Known gaps
+      description: Explicit list with severity; blockers if any
+    validations:
+      required: true
+
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback / mitigation
+      description: If schema, deploy, or destructive ops touched
+
+  - type: dropdown
+    id: safe_to_continue
+    attributes:
+      label: Safe to continue to next phase?
+      options:
+        - "Yes"
+        - "No — blockers listed above"
+    validations:
+      required: true

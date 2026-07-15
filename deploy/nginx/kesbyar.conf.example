@@ -1,0 +1,36 @@
+# Example reverse proxy for VPS deployment
+# Place behind TLS termination (certbot / cloud LB)
+# Adjust server_name and upstream ports
+
+upstream kesbyar_web {
+    server 127.0.0.1:3000;
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    server_name app.example.com;
+
+    client_max_body_size 12M;
+
+    location /api/health {
+        proxy_pass http://kesbyar_web;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        access_log off;
+    }
+
+    location / {
+        proxy_pass http://kesbyar_web;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# AI service — internal only; do not expose publicly without auth
+# upstream kesbyar_ai {
+#     server 127.0.0.1:8000;
+# }

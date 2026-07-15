@@ -1,0 +1,102 @@
+# Full stack for staging / smoke tests
+# Usage: docker compose -f docker/docker-compose.staging.yml --env-file deploy/env/staging.env up -d
+#        (copy staging.env.example → staging.env and fill secrets first)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kesbyar-postgres-staging
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kesbyar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required}
+      POSTGRES_DB: ${POSTGRES_DB:-kesbyar}
+    volumes:
+      - postgres_staging:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-kesbyar} -d ${POSTGRES_DB:-kesbyar}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kesbyar
+
+  ai-service:
+    build:
+      context: ../apps/ai-service
+      dockerfile: Dockerfile
+    container_name: kesbyar-ai-staging
+    restart: unless-stopped
+    environment:
+      APP_ENV: ${APP_ENV:-staging}
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?AI_SERVICE_TOKEN required}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      CORS_ORIGINS: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - kesbyar
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    container_name: kesbyar-web-staging
+    restart: unless-stopped
+    environment:
+      APP_ENV: ${APP_ENV:-staging}
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-kesbyar}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-kesbyar}?schema=public
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?NEXT_PUBLIC_APP_URL required}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET required}
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      UPLOAD_DIR: /app/uploads
+      ALLOW_SEED: 'false'
+    ports:
+      - '${WEB_PORT:-3000}:3000'
+    volumes:
+      - web_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    networks:
+      - kesbyar
+
+  migrate:
+    image: node:20-alpine
+    container_name: kesbyar-migrate-staging
+    working_dir: /app
+    volumes:
+      - ..:/app
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-kesbyar}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-kesbyar}?schema=public
+    command: sh -c "npm ci && npx prisma db push --schema=./prisma/schema.prisma"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kesbyar
+    profiles:
+      - migrate
+
+volumes:
+  postgres_staging:
+  web_uploads:
+
+networks:
+  kesbyar:
+    driver: bridge

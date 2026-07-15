@@ -1,0 +1,100 @@
+import type { LucideIcon } from 'lucide-react';
+import {
+  Activity,
+  BarChart3,
+  Boxes,
+  Calendar,
+  CheckSquare,
+  FolderOpen,
+  HeartPulse,
+  HelpCircle,
+  LayoutDashboard,
+  Luggage,
+  MessageSquare,
+  Package,
+  Plane,
+  Receipt,
+  Settings,
+  Stethoscope,
+  Store,
+  Target,
+  Users,
+  Wallet,
+  Workflow,
+} from 'lucide-react';
+
+import { getPackDefinition, getPackNavItems, type IndustryPackId } from '@kesbyar/shared';
+
+export interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  /** Pack-only items are visually grouped */
+  packOnly?: boolean;
+}
+
+const PACK_ICON_MAP: Record<string, LucideIcon> = {
+  Stethoscope,
+  Calendar,
+  HeartPulse,
+  Plane,
+  Luggage,
+  Store,
+  Package,
+  Boxes,
+};
+
+const CORE_NAV_ITEMS: NavItem[] = [
+  { href: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
+  { href: '/customers', label: 'مشتریان', icon: Users },
+  { href: '/leads', label: 'لیدها', icon: Target },
+  { href: '/invoices', label: 'فاکتورها', icon: Receipt },
+  { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
+  { href: '/tasks', label: 'وظایف', icon: CheckSquare },
+  { href: '/conversation', label: 'دستیار', icon: MessageSquare },
+  { href: '/reports', label: 'گزارش‌ها', icon: BarChart3 },
+  { href: '/activity', label: 'فعالیت‌ها', icon: Activity },
+  { href: '/automation', label: 'اتوماسیون', icon: Workflow },
+  { href: '/files', label: 'فایل‌ها', icon: FolderOpen },
+  { href: '/help', label: 'راهنما', icon: HelpCircle },
+  { href: '/settings', label: 'تنظیمات', icon: Settings },
+];
+
+/** @deprecated Use getNavItems(industryPack) */
+export const APP_NAV_ITEMS = CORE_NAV_ITEMS;
+
+export function getNavItems(industryPack: string): NavItem[] {
+  const packItems = getPackNavItems(industryPack).map((item) => ({
+    href: item.href,
+    label: item.label,
+    icon: PACK_ICON_MAP[item.icon] ?? LayoutDashboard,
+    packOnly: true,
+  }));
+
+  if (packItems.length === 0) {
+    return CORE_NAV_ITEMS;
+  }
+
+  // Insert pack section after dashboard
+  const [dashboard, ...rest] = CORE_NAV_ITEMS;
+  return [dashboard!, ...packItems, ...rest];
+}
+
+export function getCustomerNavLabel(industryPack: string): string {
+  return getPackDefinition(industryPack as IndustryPackId).labels.customers;
+}
+
+export const AUTH_NAV = {
+  login: { href: '/login', label: 'ورود' },
+  register: { href: '/register', label: 'ثبت‌نام' },
+  workspaceSelect: { href: '/workspace/select', label: 'انتخاب فضای کاری' },
+} as const;
+
+export const APP_META = {
+  name: 'کسب‌یار',
+  tagline: 'سیستم‌عامل هوشمند کسب‌وکار',
+  locale: 'fa-IR',
+  direction: 'rtl' as const,
+  timezone: 'Asia/Tehran',
+  currency: 'IRR',
+};

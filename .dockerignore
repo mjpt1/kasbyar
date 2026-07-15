@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+**/node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+**/.next
+**/dist
+**/build
+**/.turbo
+coverage
+
+# Dev / local
+.git
+.github
+.cursor
+*.md
+!README.md
+.env
+.env.*
+!.env.example
+deploy/env/*.env
+!deploy/env/*.example
+
+# Uploads & data
+uploads
+docker/data
+
+# IDE & OS
+.vscode
+.idea
+*.log
+.DS_Store
+Thumbs.db
+
+# Tests (not needed in production image)
+**/*.test.ts
+**/*.spec.ts
+vitest.config.ts
+
+# Python
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.venv
+**/venv

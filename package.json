@@ -1,0 +1,60 @@
+{
+  "name": "kesbyar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "کسب‌یار — سیستم‌عامل هوشمند کسب‌وکار برای بازار ایران",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "postinstall": "prisma generate --schema=./prisma/schema.prisma",
+    "dev": "npm run dev --workspace=@kesbyar/web",
+    "dev:ai": "npm run dev --workspace=@kesbyar/ai-service",
+    "build": "npm run build --workspace=@kesbyar/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:security": "vitest run apps/web/src/server/tenant apps/web/src/server/audit apps/web/src/lib/uploads.test.ts apps/web/src/lib/demo.test.ts packages/shared/src/ops/destructive.test.ts apps/web/src/server/billing/entitlement.policy.test.ts",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md}\"",
+    "db:generate": "prisma generate --schema=./prisma/schema.prisma",
+    "db:push": "prisma db push --schema=./prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reseed": "tsx scripts/db-reseed-guard.ts",
+    "db:backup": "tsx scripts/db-backup.ts",
+    "db:restore": "tsx scripts/db-restore.ts",
+    "db:migrate:deploy": "tsx scripts/db-migrate-deploy.ts",
+    "db:studio": "prisma studio --schema=./prisma/schema.prisma",
+    "db:reset": "tsx scripts/db-reset-guard.ts",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down",
+    "docker:logs": "docker compose -f docker/docker-compose.yml logs -f",
+    "docker:staging": "docker compose -f docker/docker-compose.staging.yml --env-file deploy/env/staging.env up -d",
+    "docker:staging:down": "docker compose -f docker/docker-compose.staging.yml down",
+    "verify": "npm run db:generate && npm run lint && npm run typecheck && npm test",
+    "ci": "npm run verify && npm run build",
+    "setup": "npm install && npm run db:push && npm run db:seed"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.1.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^3.0.5",
+    "bcryptjs": "^2.4.3",
+    "prettier": "^3.4.2",
+    "prisma": "^6.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.5"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}

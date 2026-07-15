@@ -1,0 +1,88 @@
+name: Release readiness
+description: Pre-launch or production cut checklist
+title: "[Release] "
+labels: ["release", "quality"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Full template: [docs/templates/release-readiness.md](../../docs/templates/release-readiness.md)
+        Release DoD: [docs/quality/definition-of-done.md](../../docs/quality/definition-of-done.md)
+
+  - type: dropdown
+    id: target
+    attributes:
+      label: Target environment
+      options:
+        - Pilot
+        - Staging
+        - Production
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / cut name
+      placeholder: e.g. v1.0.0-pilot
+    validations:
+      required: true
+
+  - type: input
+    id: git_ref
+    attributes:
+      label: Git ref / tag
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: npm run ci green on release branch
+        - label: QA_CHECKLIST.md executed
+        - label: SECURITY_REVIEW.md smoke completed
+        - label: KNOWN_LIMITATIONS.md current
+        - label: Database backup taken
+
+  - type: checkboxes
+    id: env_prod
+    attributes:
+      label: Production env (if applicable)
+      options:
+        - label: DATABASE_URL set
+        - label: SESSION_SECRET strong and unique
+        - label: NEXT_PUBLIC_APP_URL correct
+        - label: APP_ENV=production
+        - label: ALLOW_SEED=false
+
+  - type: textarea
+    id: deploy_verify
+    attributes:
+      label: Deploy verification results
+      description: health, login, core flow, RTL
+    validations:
+      required: true
+
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback plan
+    validations:
+      required: true
+
+  - type: dropdown
+    id: go_nogo
+    attributes:
+      label: Go / no-go
+      options:
+        - Go
+        - No-go
+    validations:
+      required: true
+
+  - type: textarea
+    id: blockers
+    attributes:
+      label: No-go blockers (if any)
