@@ -19,7 +19,7 @@ export async function seedGeneralBusiness(
   prisma: PrismaClient,
   users: SeedUsers,
 ): Promise<OrgSeedContext> {
-  const { owner, manager, staff } = users;
+  const { owner, manager, staff, superAdmin } = users;
 
   const organization = await prisma.organization.create({
     data: {
@@ -37,6 +37,7 @@ export async function seedGeneralBusiness(
       memberships: {
         create: [
           { userId: owner.id, role: 'OWNER' },
+          { userId: superAdmin.id, role: 'OWNER' },
           { userId: manager.id, role: 'MANAGER' },
           { userId: staff.id, role: 'STAFF' },
         ],

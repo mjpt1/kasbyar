@@ -157,18 +157,24 @@ enum BillingPeriod {
   YEARLY
 }
 
+enum PlatformRole {
+  USER
+  SUPER_ADMIN
+}
+
 // ─── Auth & Tenancy ──────────────────────────────────────────────────────────
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id           String       @id @default(cuid())
+  email        String       @unique
   phone        String?
   passwordHash String
   name         String
   avatarUrl    String?
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  platformRole PlatformRole @default(USER)
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   sessions     Session[]
   memberships  Membership[]
@@ -270,6 +276,14 @@ model Membership {
 
   @@unique([userId, organizationId])
   @@index([organizationId])
+}
+
+/// Singleton platform configuration (id = "platform")
+model PlatformSettings {
+  id                        String         @id @default("platform")
+  defaultSignupMembershipRole MembershipRole @default(OWNER)
+  allowSelfRegistration     Boolean        @default(true)
+  updatedAt                 DateTime       @updatedAt
 }
 
 // ─── CRM ─────────────────────────────────────────────────────────────────────

@@ -2,7 +2,30 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Presentation } from 'lucide-react';
+import {
+  Activity,
+  BarChart3,
+  Boxes,
+  Calendar,
+  CheckSquare,
+  FolderOpen,
+  HeartPulse,
+  HelpCircle,
+  LayoutDashboard,
+  Luggage,
+  MessageSquare,
+  Package,
+  Plane,
+  Presentation,
+  Receipt,
+  Settings,
+  Stethoscope,
+  Store,
+  Target,
+  Users,
+  Wallet,
+  Workflow,
+} from 'lucide-react';
 
 import { AUTH_NAV, getNavItems } from '@/config/navigation';
 import { LogoutButton } from '@/components/layout/logout-button';
@@ -12,6 +35,8 @@ interface SidebarNavProps {
   organizationName: string;
   userName: string;
   industryPack: string;
+  role: string;
+  isSuperAdmin?: boolean;
   onNavigate?: () => void;
   className?: string;
 }
@@ -20,11 +45,13 @@ export function SidebarNav({
   organizationName,
   userName,
   industryPack,
+  role,
+  isSuperAdmin = false,
   onNavigate,
   className,
 }: SidebarNavProps) {
   const pathname = usePathname();
-  const navItems = getNavItems(industryPack);
+  const navItems = getNavItems(industryPack, role);
   const showDemoNav = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 
   return (
@@ -79,6 +106,21 @@ export function SidebarNav({
           >
             <Presentation className="h-4 w-4" aria-hidden />
             مرکز نمایش
+          </Link>
+        ) : null}
+        {isSuperAdmin ? (
+          <Link
+            href="/admin"
+            onClick={onNavigate}
+            className={cn(
+              'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
+              pathname.startsWith('/admin')
+                ? 'bg-amber-500/10 font-medium text-amber-700 dark:text-amber-400'
+                : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+            )}
+          >
+            <Settings className="h-4 w-4 shrink-0" aria-hidden />
+            پنل سوپرادمین
           </Link>
         ) : null}
       </nav>

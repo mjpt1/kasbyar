@@ -27,6 +27,8 @@ export interface SessionContext {
   role: string;
   workspaceId: string;
   industryPack: string;
+  platformRole: 'USER' | 'SUPER_ADMIN';
+  isSuperAdmin: boolean;
 }
 
 export interface PaginationParams {

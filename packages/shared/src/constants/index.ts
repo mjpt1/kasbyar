@@ -79,6 +79,11 @@ export const MEMBERSHIP_ROLE_LABELS: Record<string, string> = {
   VIEWER: 'بازدیدکننده',
 };
 
+export const PLATFORM_ROLE_LABELS: Record<string, string> = {
+  USER: 'کاربر',
+  SUPER_ADMIN: 'سوپرادمین',
+};
+
 export const INDUSTRY_PACK_LABELS: Record<string, string> = {
   GENERAL: 'عمومی',
   CLINIC: 'کلینیک / مطب',

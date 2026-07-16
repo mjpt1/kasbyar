@@ -12,6 +12,8 @@ interface AppLayoutClientProps {
   organizationName: string;
   userName: string;
   industryPack: string;
+  role: string;
+  isSuperAdmin?: boolean;
   header: ReactNode;
   children: ReactNode;
 }
@@ -20,6 +22,8 @@ export function AppLayoutClient({
   organizationName,
   userName,
   industryPack,
+  role,
+  isSuperAdmin = false,
   header,
   children,
 }: AppLayoutClientProps) {
@@ -32,6 +36,8 @@ export function AppLayoutClient({
           organizationName={organizationName}
           userName={userName}
           industryPack={industryPack}
+          role={role}
+          isSuperAdmin={isSuperAdmin}
         />
       </aside>
 
@@ -60,6 +66,8 @@ export function AppLayoutClient({
               organizationName={organizationName}
               userName={userName}
               industryPack={industryPack}
+              role={role}
+              isSuperAdmin={isSuperAdmin}
               onNavigate={() => setMobileOpen(false)}
             />
           </aside>

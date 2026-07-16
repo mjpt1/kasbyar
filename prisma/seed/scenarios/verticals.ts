@@ -70,7 +70,7 @@ async function seedVertical(
   users: SeedUsers,
   config: VerticalConfig,
 ): Promise<void> {
-  const { owner } = users;
+  const { owner, superAdmin } = users;
 
   const organization = await prisma.organization.create({
     data: {
@@ -85,7 +85,10 @@ async function seedVertical(
         create: { name: 'شعبه اصلی', slug: 'main', isDefault: true },
       },
       memberships: {
-        create: { userId: owner.id, role: 'OWNER' },
+        create: [
+          { userId: owner.id, role: 'OWNER' },
+          { userId: superAdmin.id, role: 'OWNER' },
+        ],
       },
       pipelineStages: {
         create: PIPELINE_STAGES_DEFAULT.map((s) => ({ ...s })),

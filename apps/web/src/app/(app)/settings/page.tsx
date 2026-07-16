@@ -40,6 +40,11 @@ export default async function SettingsPage() {
           <div className="flex flex-wrap gap-2">
             {hasMinRole(session.role as MembershipRole, 'ADMIN') ? (
               <Button asChild variant="outline" size="sm">
+                <Link href="/settings/members">اعضا و نقش‌ها</Link>
+              </Button>
+            ) : null}
+            {hasMinRole(session.role as MembershipRole, 'ADMIN') ? (
+              <Button asChild variant="outline" size="sm">
                 <Link href="/settings/audit">گزارش ممیزی</Link>
               </Button>
             ) : null}

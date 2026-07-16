@@ -34,6 +34,15 @@ export function requireApiRole(
   return null;
 }
 
+export async function requireApiPlatformAdmin(): Promise<SessionContext | Response> {
+  const session = await requireApiSession();
+  if (isApiError(session)) return session;
+  if (!session.isSuperAdmin) {
+    return fromAppError(new ForbiddenError('فقط سوپرادمین'));
+  }
+  return session;
+}
+
 export function handleApiError(error: unknown, context?: string): Response {
   if (isAppError(error)) {
     if (error instanceof PlanUpgradeRequiredError) {

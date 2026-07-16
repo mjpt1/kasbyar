@@ -9,6 +9,7 @@ import {
 } from '@/lib/auth/crypto';
 import { prisma } from '@/lib/prisma';
 import { logAudit } from '@/server/audit/audit.service';
+import { getOrCreatePlatformSettings } from '@/server/admin/admin.service';
 
 export async function registerUser(input: {
   name: string;
@@ -17,6 +18,11 @@ export async function registerUser(input: {
   organizationName: string;
   industryPack?: IndustryPack;
 }) {
+  const platform = await getOrCreatePlatformSettings();
+  if (!platform.allowSelfRegistration) {
+    throw new Error('ثبت‌نام خودکار غیرفعال است. با مدیر سیستم تماس بگیرید.');
+  }
+
   const existing = await prisma.user.findUnique({
     where: { email: input.email.toLowerCase() },
   });
@@ -36,7 +42,7 @@ export async function registerUser(input: {
       passwordHash,
       memberships: {
         create: {
-          role: 'OWNER',
+          role: platform.defaultSignupMembershipRole,
           organization: {
             create: {
               name: input.organizationName,

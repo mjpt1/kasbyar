@@ -11,6 +11,7 @@ import type {
 } from '@prisma/client';
 
 export interface SeedUsers {
+  superAdmin: User;
   owner: User;
   manager: User;
   staff: User;

@@ -24,6 +24,9 @@ import {
 } from 'lucide-react';
 
 import { getPackDefinition, getPackNavItems, type IndustryPackId } from '@kesbyar/shared';
+import type { MembershipRole } from '@prisma/client';
+
+import { canAccessPath } from '@/lib/permissions';
 
 export interface NavItem {
   href: string;
@@ -63,7 +66,7 @@ const CORE_NAV_ITEMS: NavItem[] = [
 /** @deprecated Use getNavItems(industryPack) */
 export const APP_NAV_ITEMS = CORE_NAV_ITEMS;
 
-export function getNavItems(industryPack: string): NavItem[] {
+export function getNavItems(industryPack: string, role?: string): NavItem[] {
   const packItems = getPackNavItems(industryPack).map((item) => ({
     href: item.href,
     label: item.label,
@@ -71,13 +74,19 @@ export function getNavItems(industryPack: string): NavItem[] {
     packOnly: true,
   }));
 
+  let items: NavItem[];
   if (packItems.length === 0) {
-    return CORE_NAV_ITEMS;
+    items = CORE_NAV_ITEMS;
+  } else {
+    const [dashboard, ...rest] = CORE_NAV_ITEMS;
+    items = [dashboard!, ...packItems, ...rest];
   }
 
-  // Insert pack section after dashboard
-  const [dashboard, ...rest] = CORE_NAV_ITEMS;
-  return [dashboard!, ...packItems, ...rest];
+  if (!role) return items;
+
+  return items.filter((item) =>
+    canAccessPath(role as MembershipRole, item.href),
+  );
 }
 
 export function getCustomerNavLabel(industryPack: string): string {

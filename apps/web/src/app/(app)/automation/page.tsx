@@ -11,11 +11,11 @@ import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Card, CardContent } from '@/components/ui/card';
-import { requireSession } from '@/lib/auth/session';
+import { requireRole } from '@/lib/auth/session';
 import { listAutomationRules } from '@/server/reports/reports.service';
 
 export default async function AutomationPage() {
-  const session = await requireSession();
+  const session = await requireRole('MANAGER');
   const rules = await listAutomationRules(session.organizationId);
 
   return (

@@ -44,7 +44,7 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
 
   const summary: SeedSummary = {
     organizations: orgCount,
-    users: 3,
+    users: 4,
     customers: customerCount,
     leads: leadCount,
     invoices: invoiceCount,
@@ -68,6 +68,7 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
   console.log('────────────────────────────────────────');
   console.log('');
   console.log('ورود به سیستم (رمز همه: ' + DEMO_PASSWORD + '):');
+  console.log('  • super@kesbyar.ir     — سوپرادمین پلتفرم');
   console.log('  • demo@kesbyar.ir      — مالک (دسترسی به همه سازمان‌ها)');
   console.log('  • manager@kesbyar.ir   — مدیر (فقط demo-general)');
   console.log('  • staff@kesbyar.ir     — کارمند (فقط demo-general)');

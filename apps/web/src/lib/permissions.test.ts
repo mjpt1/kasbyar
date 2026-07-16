@@ -4,6 +4,8 @@ import {
   canManageBilling,
   canManageMembers,
   canManageSettings,
+  canAccessPath,
+  getMinRoleForPath,
   hasMinRole,
 } from './permissions';
 
@@ -35,5 +37,21 @@ describe('capability helpers', () => {
   it('ADMIN+ can manage settings', () => {
     expect(canManageSettings('OWNER')).toBe(true);
     expect(canManageSettings('STAFF')).toBe(false);
+  });
+});
+
+describe('route access', () => {
+  it('STAFF cannot access automation', () => {
+    expect(canAccessPath('STAFF', '/automation')).toBe(false);
+    expect(getMinRoleForPath('/automation')).toBe('MANAGER');
+  });
+
+  it('MANAGER can access reports', () => {
+    expect(canAccessPath('MANAGER', '/reports')).toBe(true);
+  });
+
+  it('VIEWER can access dashboard only at viewer level', () => {
+    expect(canAccessPath('VIEWER', '/dashboard')).toBe(true);
+    expect(canAccessPath('VIEWER', '/customers')).toBe(false);
   });
 });

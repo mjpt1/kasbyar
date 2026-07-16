@@ -42,6 +42,8 @@ export async function getSession(): Promise<SessionContext | null> {
     role: active.role,
     workspaceId: active.workspaceId,
     industryPack: active.industryPack,
+    platformRole: session.user.platformRole,
+    isSuperAdmin: session.user.platformRole === 'SUPER_ADMIN',
   };
 }
 
@@ -83,6 +85,14 @@ export async function requireRole(
   const session = await requireSession();
   const { hasMinRole } = await import('@/lib/permissions');
   if (!hasMinRole(session.role as MembershipRole, minRole)) {
+    redirect('/dashboard');
+  }
+  return session;
+}
+
+export async function requirePlatformAdmin(): Promise<SessionContext> {
+  const session = await requireSession();
+  if (!session.isSuperAdmin) {
     redirect('/dashboard');
   }
   return session;

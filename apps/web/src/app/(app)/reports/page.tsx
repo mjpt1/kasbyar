@@ -10,12 +10,12 @@ import { ReportsInvoiceChart } from '@/components/features/reports/reports-invoi
 import { PageHeader } from '@/components/layout/page-header';
 import { InvoiceStatusBadge } from '@/components/shared/status-badges';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { requireSession } from '@/lib/auth/session';
+import { requireRole } from '@/lib/auth/session';
 import { checkFeature } from '@/server/billing/entitlement.service';
 import { getReportsOverview } from '@/server/reports/reports.service';
 
 export default async function ReportsPage() {
-  const session = await requireSession();
+  const session = await requireRole('MANAGER');
   const access = await checkFeature(session.organizationId, 'reports');
 
   if (!access.allowed) {
