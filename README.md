@@ -14,7 +14,7 @@
   ·
   <a href="https://github.com/mjpt1/kasbyar">مخزن GitHub</a>
   ·
-  <a href="https://github.com/mjpt1/kasbyar/wiki">ویکی</a>
+  <a href="https://github.com/mjpt1/kasbyar/tree/main/wiki">ویکی</a>
 </p>
 
 ---
