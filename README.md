@@ -13,6 +13,8 @@
   <a href="https://kasbyar.vercel.app">نسخه آنلاین</a>
   ·
   <a href="https://github.com/mjpt1/kasbyar">مخزن GitHub</a>
+  ·
+  <a href="https://github.com/mjpt1/kasbyar/wiki">ویکی</a>
 </p>
 
 ---
