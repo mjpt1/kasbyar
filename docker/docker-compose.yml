@@ -24,7 +24,7 @@ services:
     container_name: kesbyar-ai
     restart: unless-stopped
     environment:
-      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-internal-dev-token-change-in-production}
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?AI_SERVICE_TOKEN required}
       DATABASE_URL: postgresql://kesbyar:kesbyar@postgres:5432/kesbyar
       DEBUG: "true"
       LOG_LEVEL: debug
@@ -51,7 +51,7 @@ services:
   #     NEXT_PUBLIC_APP_URL: http://localhost:3000
   #     SESSION_SECRET: ${SESSION_SECRET:-dev-only-session-secret-change-me}
   #     AI_SERVICE_URL: http://ai-service:8000
-  #     AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-internal-dev-token-change-in-production}
+  #     AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?AI_SERVICE_TOKEN required}
   #   ports:
   #     - "3000:3000"
   #   depends_on:

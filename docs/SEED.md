@@ -91,7 +91,7 @@ prisma/
 
 ## افزودن سناریوی جدید
 
-1. slug را به `DEMO_ORG_SLUGS` در `constants.ts` اضافه کنید
+1. سناریو را به رجیستری دمو در `packages/shared/src/demo/scenarios.ts` اضافه کنید
 2. ماژول جدید در `prisma/seed/scenarios/` بسازید
 3. در `seed/index.ts` فراخوانی کنید
 4. از `createInvoiceWithItems` و `createPayment` برای یکپارچگی مالی استفاده کنید

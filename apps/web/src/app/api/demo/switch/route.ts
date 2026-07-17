@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getScenarioById, type DemoScenarioId } from '@kesbyar/shared';
 
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
 import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
@@ -9,7 +10,9 @@ import { parseBody } from '@/lib/validators/parse';
 import { getDemoStatus, resolveOrganizationByScenario } from '@/server/demo/demo.service';
 
 const switchSchema = z.object({
-  scenarioId: z.enum(['general', 'clinic', 'travel', 'retail']),
+  scenarioId: z.custom<DemoScenarioId>((value) => {
+    return typeof value === 'string' && !!getScenarioById(value);
+  }, 'شناسه سناریو نامعتبر است'),
 });
 
 export async function POST(request: Request) {

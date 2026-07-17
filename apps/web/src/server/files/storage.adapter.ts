@@ -8,6 +8,7 @@ import {
   type FileStorageWriteRequest,
 } from '@kesbyar/shared';
 
+import { isProduction } from '@/lib/env';
 import { getUploadDir, sanitizeStorageFileName } from '@/lib/uploads';
 
 class LocalFileStorageAdapter implements FileStorageAdapter {
@@ -51,6 +52,13 @@ export function getFileStorageAdapter(): FileStorageAdapter {
       PROVIDER_IDS.STORAGE_LOCAL,
       ALLOWED_STORAGE_PROVIDERS,
     );
+
+    if (id === PROVIDER_IDS.STORAGE_LOCAL && isProduction()) {
+      throw new Error(
+        'STORAGE_PROVIDER=local در production مجاز نیست؛ از storage سازگار با object storage استفاده کنید',
+      );
+    }
+
     if (id === PROVIDER_IDS.STORAGE_S3) {
       // post-V1: S3FileStorageAdapter
       cached = new LocalFileStorageAdapter();

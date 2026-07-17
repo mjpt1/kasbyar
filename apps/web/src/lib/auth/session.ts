@@ -5,8 +5,11 @@ import type { SessionContext } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 import { ORG_COOKIE, SESSION_COOKIE } from '@/lib/auth/crypto';
+import { shouldUseSecureCookies } from '@/lib/env';
 import { prisma } from '@/lib/prisma';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
+
+const LOGIN_EXPIRED = '/login?expired=1';
 
 export async function getSession(): Promise<SessionContext | null> {
   const cookieStore = await cookies();
@@ -50,7 +53,7 @@ export async function getSession(): Promise<SessionContext | null> {
 export async function requireSession(): Promise<SessionContext> {
   const session = await getSession();
   if (!session) {
-    redirect('/login');
+    redirect(LOGIN_EXPIRED);
   }
   return session;
 }
@@ -58,18 +61,22 @@ export async function requireSession(): Promise<SessionContext> {
 export async function requireActiveWorkspace(): Promise<SessionContext> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (!token) redirect('/login');
+  if (!token) redirect(LOGIN_EXPIRED);
 
   const sessionRecord = await prisma.session.findUnique({
     where: { token },
     include: { user: true },
   });
-  if (!sessionRecord || sessionRecord.expiresAt < new Date()) {
-    redirect('/login');
+  if (
+    !sessionRecord ||
+    sessionRecord.expiresAt < new Date() ||
+    !sessionRecord.user.isActive
+  ) {
+    redirect(LOGIN_EXPIRED);
   }
 
   const workspaces = await listUserWorkspaces(sessionRecord.user.id);
-  if (workspaces.length === 0) redirect('/login');
+  if (workspaces.length === 0) redirect(LOGIN_EXPIRED);
 
   const preferredOrgId = cookieStore.get(ORG_COOKIE)?.value;
   if (!preferredOrgId && workspaces.length > 1) {
@@ -102,7 +109,7 @@ export async function setActiveOrganizationCookie(organizationId: string) {
   const cookieStore = await cookies();
   cookieStore.set(ORG_COOKIE, organizationId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: shouldUseSecureCookies(),
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 365,

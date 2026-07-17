@@ -1,18 +1,16 @@
+import { DEMO_SCENARIO_LIST } from '@kesbyar/shared';
+
 /** رمز عبور مشترک همه کاربران دمو — فقط محیط توسعه */
 export const DEMO_PASSWORD = 'demo1234';
 
 export const DEMO_USER_EMAILS = [
+  'super@kesbyar.ir',
   'demo@kesbyar.ir',
   'manager@kesbyar.ir',
   'staff@kesbyar.ir',
 ] as const;
 
-export const DEMO_ORG_SLUGS = [
-  'demo-general',
-  'demo-retail',
-  'demo-clinic',
-  'demo-travel',
-] as const;
+export const DEMO_ORG_SLUGS = DEMO_SCENARIO_LIST.map((scenario) => scenario.orgSlug);
 
 /** سازمان‌های قدیمی seed — هنگام reseed پاک می‌شوند */
 export const LEGACY_ORG_SLUGS = ['demo-shop'] as const;

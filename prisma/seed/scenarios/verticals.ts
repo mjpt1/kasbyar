@@ -29,6 +29,210 @@ interface VerticalConfig {
   address: string;
 }
 
+interface RetailSeedPreset {
+  customerNames: [string, string, string];
+  secondCustomerCompany: string;
+  customerCities: [string, string, string];
+  productNames: [string, string];
+  productSkus: [string, string];
+  productPrices: [number, number];
+  productStocks: [number, number];
+  leadTitle: string;
+  renewalTitle: string;
+  paidInvoiceDescription: string;
+  overdueInvoiceDescription: string;
+  taskTitles: [string, string];
+}
+
+interface ClinicSeedPreset {
+  patientNames: [string, string, string];
+  patientCities: [string, string, string];
+  patientNote?: string;
+  serviceNames: [string, string, string];
+  servicePrices: [number, number, number];
+  leadTitle: string;
+  wonLeadTitle: string;
+  reminderTitle: string;
+  reminderMessage: string;
+}
+
+interface GeneralSeedPreset {
+  firstCustomerName: string;
+  firstCustomerCompany: string;
+  secondCustomerName: string;
+  firstCustomerCity: string;
+  secondCustomerCity: string;
+  leadTitles: [string, string];
+  invoiceDescription: string;
+  taskTitles: [string, string];
+  invoiceAmount: number;
+  paidAmount: number;
+}
+
+const RETAIL_PRESETS: Record<string, RetailSeedPreset> = {
+  'demo-retail': {
+    customerNames: ['لیلا فرهمند', 'بوتیک ماهان', 'پریسا نادری'],
+    secondCustomerCompany: 'ماهان استایل',
+    customerCities: ['تهران', 'اصفهان', 'شیراز'],
+    productNames: ['مانتو کتی زنانه', 'شلوار جین مردانه'],
+    productSkus: ['RT-101', 'RT-202'],
+    productPrices: [3200000, 1850000],
+    productStocks: [45, 80],
+    leadTitle: 'سفارش عمده مانتو پاییزه',
+    renewalTitle: 'تمدید قرارداد نمایندگی',
+    paidInvoiceDescription: 'مانتو کتی زنانه',
+    overdueInvoiceDescription: 'مانتو کتی زنانه — عمده',
+    taskTitles: ['انبارگردانی پایان فصل', 'پیگیری بدهی بوتیک ماهان'],
+  },
+  'demo-supermarket': {
+    customerNames: ['خانواده اکبری', 'رستوران گیلاس', 'منصور رفیعی'],
+    secondCustomerCompany: 'رستوران گیلاس',
+    customerCities: ['تهران', 'تهران', 'کرج'],
+    productNames: ['برنج ایرانی ۱۰ کیلویی', 'روغن مایع ۱.۸ لیتری'],
+    productSkus: ['SM-110', 'SM-220'],
+    productPrices: [2850000, 980000],
+    productStocks: [28, 64],
+    leadTitle: 'تامین ماهانه اقلام مصرفی ساختمان اداری',
+    renewalTitle: 'تمدید سفارش هفتگی رستوران',
+    paidInvoiceDescription: 'برنج ایرانی ۱۰ کیلویی',
+    overdueInvoiceDescription: 'روغن مایع ۱.۸ لیتری — عمده',
+    taskTitles: ['بازبینی سفارش صبحگاهی', 'پیگیری تسویه رستوران گیلاس'],
+  },
+  'demo-pharmacy': {
+    customerNames: ['سمیه شاکری', 'درمانگاه مهر', 'علی موسوی'],
+    secondCustomerCompany: 'درمانگاه مهر',
+    customerCities: ['تهران', 'تهران', 'ورامین'],
+    productNames: ['استامینوفن ۵۰۰', 'شربت سرفه کودکان'],
+    productSkus: ['PH-101', 'PH-204'],
+    productPrices: [145000, 275000],
+    productStocks: [120, 42],
+    leadTitle: 'درخواست تامین داروی مصرفی درمانگاه',
+    renewalTitle: 'تمدید همکاری تامین ماهانه',
+    paidInvoiceDescription: 'استامینوفن ۵۰۰',
+    overdueInvoiceDescription: 'شربت سرفه کودکان — عمده',
+    taskTitles: ['کنترل اقلام رو به اتمام', 'پیگیری بدهی درمانگاه مهر'],
+  },
+};
+
+const CLINIC_PRESETS: Record<string, ClinicSeedPreset> = {
+  'demo-clinic': {
+    patientNames: ['دکتر آرش میرزایی', 'فاطمه حیدری', 'محمد جوادی'],
+    patientCities: ['تهران', 'کرج', 'تهران'],
+    patientNote: 'ایمپلنت — دو جلسه باقی\u200cمانده',
+    serviceNames: ['معاینه و مشاوره', 'جرم\u200cگیری و بروساژ', 'ایمپلنت دندان'],
+    servicePrices: [850000, 1200000, 45000000],
+    leadTitle: 'درخواست مشاوره ارتودنسی',
+    wonLeadTitle: 'طرح درمان ایمپلنت',
+    reminderTitle: 'یادآوری نوبت فاطمه حیدری',
+    reminderMessage: 'جلسه دوم ایمپلنت',
+  },
+  'demo-medical-office': {
+    patientNames: ['حمید نادری', 'نرگس محسنی', 'رضا سلیمانی'],
+    patientCities: ['تهران', 'تهران', 'اسلامشهر'],
+    patientNote: 'چکاپ دوره\u200cای و پیگیری فشار خون',
+    serviceNames: ['ویزیت پزشک عمومی', 'آزمایش چکاپ', 'تفسیر نتایج و نسخه'],
+    servicePrices: [650000, 1800000, 950000],
+    leadTitle: 'درخواست ویزیت خانواده',
+    wonLeadTitle: 'پکیج چکاپ سالانه',
+    reminderTitle: 'یادآوری چکاپ نرگس محسنی',
+    reminderMessage: 'پیگیری نتایج آزمایش و مراجعه مجدد',
+  },
+  'demo-hospital': {
+    patientNames: ['بهزاد رحیمی', 'مینا شفیعی', 'یاسر طهماسبی'],
+    patientCities: ['تهران', 'قم', 'کرج'],
+    patientNote: 'نیازمند پیگیری ترخیص و کنترل هزینه خدمات',
+    serviceNames: ['پذیرش تخصصی', 'رادیولوژی و تصویربرداری', 'خدمات بستری روزانه'],
+    servicePrices: [1500000, 4200000, 18000000],
+    leadTitle: 'درخواست جراحی سرپایی',
+    wonLeadTitle: 'پذیرش خدمات بستری',
+    reminderTitle: 'یادآوری پیگیری پرونده مینا شفیعی',
+    reminderMessage: 'هماهنگی ترخیص و تسویه نهایی',
+  },
+  'demo-treatment-center': {
+    patientNames: ['امیرحسین قاسمی', 'زهرا کیانی', 'احسان مرادی'],
+    patientCities: ['کرج', 'فردیس', 'کرج'],
+    patientNote: 'درمانگاه شبانه\u200cروزی — مراجعه مجدد ۴۸ ساعته',
+    serviceNames: ['ویزیت عمومی', 'تزریقات و پانسمان', 'آزمایش فوری'],
+    servicePrices: [550000, 780000, 1250000],
+    leadTitle: 'درخواست خدمات فوری خانوادگی',
+    wonLeadTitle: 'پرونده درمان سرپایی',
+    reminderTitle: 'یادآوری مراجعه زهرا کیانی',
+    reminderMessage: 'کنترل وضعیت و تمدید نسخه',
+  },
+};
+
+const GENERAL_PRESETS: Record<string, GeneralSeedPreset> = {
+  'demo-contracting': {
+    firstCustomerName: 'شرکت توسعه عمران آریا',
+    firstCustomerCompany: 'توسعه عمران آریا',
+    secondCustomerName: 'مجتبی رضایی',
+    firstCustomerCity: 'تهران',
+    secondCustomerCity: 'پرند',
+    leadTitles: ['مذاکره پیمان فاز دوم پروژه', 'ارسال صورت\u200cوضعیت پروژه عمرانی'],
+    invoiceDescription: 'صورت\u200cوضعیت اجرای فاز اول',
+    taskTitles: ['پیگیری تایید صورت\u200cوضعیت', 'هماهنگی برنامه هفتگی کارگاه'],
+    invoiceAmount: 125000000,
+    paidAmount: 45000000,
+  },
+  'demo-education-center': {
+    firstCustomerName: 'آموزش و پژوهش پارس',
+    firstCustomerCompany: 'آموزش و پژوهش پارس',
+    secondCustomerName: 'ریحانه ساداتی',
+    firstCustomerCity: 'تهران',
+    secondCustomerCity: 'شهریار',
+    leadTitles: ['ثبت\u200cنام دوره سازمانی', 'ارسال پیش\u200cفاکتور شهریه ترم جدید'],
+    invoiceDescription: 'شهریه دوره مهارت\u200cافزایی',
+    taskTitles: ['پیگیری واریز شهریه سازمانی', 'به\u200cروزرسانی برنامه کلاس\u200cها'],
+    invoiceAmount: 68000000,
+    paidAmount: 25000000,
+  },
+  'demo-beauty-salon': {
+    firstCustomerName: 'نرگس بیات',
+    firstCustomerCompany: 'باشگاه مشتریان ماه\u200cچهره',
+    secondCustomerName: 'سحر صبوری',
+    firstCustomerCity: 'تهران',
+    secondCustomerCity: 'تهران',
+    leadTitles: ['رزرو پکیج خدمات عروس', 'ارسال پیش\u200cفاکتور خدمات VIP'],
+    invoiceDescription: 'پکیج خدمات زیبایی VIP',
+    taskTitles: ['پیگیری رزرو خدمات هفته آینده', 'هماهنگی شیفت تیم خدمات'],
+    invoiceAmount: 54000000,
+    paidAmount: 18000000,
+  },
+};
+
+const SUBSCRIPTION_PRESETS: Record<string, { planCode: 'FREE' | 'STARTER' | 'BUSINESS'; status: 'ACTIVE' | 'TRIALING'; trialDays?: number }> = {
+  'demo-retail': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-supermarket': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-pharmacy': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-clinic': { planCode: 'BUSINESS', status: 'TRIALING', trialDays: 7 },
+  'demo-medical-office': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-hospital': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-treatment-center': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-travel': { planCode: 'FREE', status: 'ACTIVE' },
+  'demo-contracting': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-education-center': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-beauty-salon': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-restaurant': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-cafe': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-bakery': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-mobile-shop': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-electronics-store': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-flower-shop': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-pet-shop': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-real-estate': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-law-office': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-accounting-office': { planCode: 'BUSINESS', status: 'ACTIVE' },
+  'demo-gym': { planCode: 'STARTER', status: 'ACTIVE' },
+  'demo-auto-repair': { planCode: 'STARTER', status: 'ACTIVE' },
+};
+
+const DEFAULT_SUBSCRIPTION_BY_PACK: Record<IndustryPack, { planCode: 'FREE' | 'STARTER' | 'BUSINESS'; status: 'ACTIVE' | 'TRIALING'; trialDays?: number }> = {
+  GENERAL: { planCode: 'STARTER', status: 'ACTIVE' },
+  CLINIC: { planCode: 'BUSINESS', status: 'TRIALING', trialDays: 7 },
+  RETAIL: { planCode: 'STARTER', status: 'ACTIVE' },
+  TRAVEL_AGENCY: { planCode: 'FREE', status: 'ACTIVE' },
+};
+
 const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-retail',
@@ -53,6 +257,294 @@ const VERTICALS: VerticalConfig[] = [
     phone: '02188990011',
     email: 'booking@asemanabi.ir',
     address: 'تهران، ولیعصر، نرسیده به پارک وی، پلاک ۸۹',
+  },
+  {
+    slug: 'demo-medical-office',
+    name: 'مطب دکتر نادری',
+    industryPack: 'CLINIC',
+    phone: '02122223344',
+    email: 'office@nadery-med.ir',
+    address: 'تهران، جردن، خیابان ناهید، پلاک ۱۲',
+  },
+  {
+    slug: 'demo-hospital',
+    name: 'بیمارستان مهر سلامت',
+    industryPack: 'CLINIC',
+    phone: '02133334455',
+    email: 'info@mehrhospital.ir',
+    address: 'تهران، بلوار کشاورز، خیابان قدس، پلاک ۳۲',
+  },
+  {
+    slug: 'demo-treatment-center',
+    name: 'درمانگاه امید',
+    industryPack: 'CLINIC',
+    phone: '02144445566',
+    email: 'info@omid-treatment.ir',
+    address: 'کرج، میدان سپاه، خیابان شهید بهشتی، پلاک ۴۷',
+  },
+  {
+    slug: 'demo-supermarket',
+    name: 'سوپرمارکت باران',
+    industryPack: 'RETAIL',
+    phone: '02155556677',
+    email: 'info@baran-market.ir',
+    address: 'تهران، صادقیه، خیابان گلستان، پلاک ۷',
+  },
+  {
+    slug: 'demo-pharmacy',
+    name: 'داروخانه درمان-یار',
+    industryPack: 'RETAIL',
+    phone: '02166667788',
+    email: 'info@darmanyar-pharmacy.ir',
+    address: 'تهران، نارمک، خیابان ثانی، پلاک ۲۱',
+  },
+  {
+    slug: 'demo-contracting',
+    name: 'پیمانکاری سازه-گستر',
+    industryPack: 'GENERAL',
+    phone: '02177778899',
+    email: 'info@sazegostar-co.ir',
+    address: 'تهران، شهرک غرب، بلوار دادمان، پلاک ۱۰۳',
+  },
+  {
+    slug: 'demo-education-center',
+    name: 'آموزشگاه مهارت-افزا',
+    industryPack: 'GENERAL',
+    phone: '02188889911',
+    email: 'info@maharatafza.ir',
+    address: 'تهران، ونک، خیابان ملاصدرا، پلاک ۵۱',
+  },
+  {
+    slug: 'demo-beauty-salon',
+    name: 'سالن زیبایی ماه-چهره',
+    industryPack: 'GENERAL',
+    phone: '02188991122',
+    email: 'hello@mahchehre-salon.ir',
+    address: 'تهران، پاسداران، بوستان هشتم، پلاک ۱۴',
+  },
+  {
+    slug: 'demo-restaurant',
+    name: 'رستوران شبستان',
+    industryPack: 'RETAIL',
+    phone: '02177112233',
+    email: 'info@shabestan-food.ir',
+    address: 'تهران، یوسف\u200cآباد، خیابان ۳۳، پلاک ۱۸',
+  },
+  {
+    slug: 'demo-cafe',
+    name: 'کافه روشنه',
+    industryPack: 'RETAIL',
+    phone: '02177223344',
+    email: 'hello@rosheneh-cafe.ir',
+    address: 'تهران، کریمخان، خیابان خردمند، پلاک ۲۵',
+  },
+  {
+    slug: 'demo-bakery',
+    name: 'قنادی نان و نبات',
+    industryPack: 'RETAIL',
+    phone: '02177334455',
+    email: 'orders@nannonabat.ir',
+    address: 'تهران، پونک، بلوار عدل، پلاک ۴۹',
+  },
+  {
+    slug: 'demo-mobile-shop',
+    name: 'موبایل سنتر پایتخت',
+    industryPack: 'RETAIL',
+    phone: '02177445566',
+    email: 'sales@paytakht-mobile.ir',
+    address: 'تهران، جمهوری، پاساژ علاءالدین، طبقه ۲',
+  },
+  {
+    slug: 'demo-electronics-store',
+    name: 'دیجیتال پارس',
+    industryPack: 'RETAIL',
+    phone: '02177556677',
+    email: 'info@digitalpars.ir',
+    address: 'تهران، لاله\u200cزار، پلاک ۷۲',
+  },
+  {
+    slug: 'demo-flower-shop',
+    name: 'گل\u200cفروشی بهارستان',
+    industryPack: 'RETAIL',
+    phone: '02177667788',
+    email: 'hello@baharestan-flowers.ir',
+    address: 'تهران، هفت\u200cتیر، خیابان مفتح، پلاک ۱۵',
+  },
+  {
+    slug: 'demo-pet-shop',
+    name: 'پت\u200cشاپ پاپی',
+    industryPack: 'RETAIL',
+    phone: '02177778890',
+    email: 'support@puppy-pet.ir',
+    address: 'تهران، مرزداران، خیابان ایثار، پلاک ۱۰',
+  },
+  {
+    slug: 'demo-real-estate',
+    name: 'املاک آسمان',
+    industryPack: 'GENERAL',
+    phone: '02177889911',
+    email: 'info@aseman-melk.ir',
+    address: 'تهران، ستارخان، خیابان پاتریس، پلاک ۳۱',
+  },
+  {
+    slug: 'demo-law-office',
+    name: 'دفتر حقوقی دادآور',
+    industryPack: 'GENERAL',
+    phone: '02177991122',
+    email: 'office@dadavar-law.ir',
+    address: 'تهران، ونک، خیابان برزیل غربی، پلاک ۱۲',
+  },
+  {
+    slug: 'demo-accounting-office',
+    name: 'حساب\u200cیاران تراز',
+    industryPack: 'GENERAL',
+    phone: '02178112233',
+    email: 'info@taraz-accounting.ir',
+    address: 'تهران، مطهری، خیابان سرافراز، پلاک ۲۲',
+  },
+  {
+    slug: 'demo-gym',
+    name: 'باشگاه انرژی+',
+    industryPack: 'GENERAL',
+    phone: '02178223344',
+    email: 'hello@energyplus-gym.ir',
+    address: 'تهران، تهرانپارس، خیابان جشنواره، پلاک ۶۰',
+  },
+  {
+    slug: 'demo-auto-repair',
+    name: 'تعمیرگاه چابک',
+    industryPack: 'GENERAL',
+    phone: '02178334455',
+    email: 'service@chabok-auto.ir',
+    address: 'تهران، جاده قدیم کرج، خیابان فتح، پلاک ۸۸',
+  },
+  {
+    slug: 'demo-optician',
+    name: 'اپتیک دیدآور',
+    industryPack: 'RETAIL',
+    phone: '02178445566',
+    email: 'info@didavar-optic.ir',
+    address: 'تهران، ولیعصر، بالاتر از فاطمی، پلاک ۴۴',
+  },
+  {
+    slug: 'demo-stationery-store',
+    name: 'نوشت‌افزار مهر',
+    industryPack: 'RETAIL',
+    phone: '02178556677',
+    email: 'hello@mehr-stationery.ir',
+    address: 'تهران، هروی، خیابان وفامنش، پلاک ۱۹',
+  },
+  {
+    slug: 'demo-bookstore',
+    name: 'کتاب‌فروشی فرهنگ',
+    industryPack: 'RETAIL',
+    phone: '02178667788',
+    email: 'sales@farhang-book.ir',
+    address: 'تهران، انقلاب، روبه‌روی دانشگاه تهران، پلاک ۱۲۸',
+  },
+  {
+    slug: 'demo-hardware-store',
+    name: 'ابزارسرا',
+    industryPack: 'RETAIL',
+    phone: '02178778899',
+    email: 'info@abzarsara.ir',
+    address: 'تهران، حسن‌آباد، خیابان وحدت اسلامی، پلاک ۸',
+  },
+  {
+    slug: 'demo-cosmetics-store',
+    name: 'زیبانگار',
+    industryPack: 'RETAIL',
+    phone: '02178889910',
+    email: 'hello@zibanegar.ir',
+    address: 'تهران، تجریش، خیابان مقصودبیک، پلاک ۳۷',
+  },
+  {
+    slug: 'demo-tailor-shop',
+    name: 'مزون نقش',
+    industryPack: 'GENERAL',
+    phone: '02178991121',
+    email: 'info@naghsh-maison.ir',
+    address: 'تهران، ونک، خیابان خدامی، پلاک ۹',
+  },
+  {
+    slug: 'demo-jewelry-store',
+    name: 'جواهری زرین',
+    industryPack: 'RETAIL',
+    phone: '02179012232',
+    email: 'gold@zarrin-jewelry.ir',
+    address: 'تهران، بازار زرگرها، پاساژ طلا، واحد ۱۱',
+  },
+  {
+    slug: 'demo-cleaning-services',
+    name: 'پاک‌خانه',
+    industryPack: 'GENERAL',
+    phone: '02179123343',
+    email: 'ops@pakkhaneh.ir',
+    address: 'تهران، صادقیه، بلوار فردوس، پلاک ۵۵',
+  },
+  {
+    slug: 'demo-marketing-agency',
+    name: 'رشدنو',
+    industryPack: 'GENERAL',
+    phone: '02179234454',
+    email: 'hello@roshdno.ir',
+    address: 'تهران، میرداماد، خیابان نفت شمالی، پلاک ۲۴',
+  },
+  {
+    slug: 'demo-printing-shop',
+    name: 'چاپ‌خانه رنگین',
+    industryPack: 'GENERAL',
+    phone: '02179345565',
+    email: 'print@ranginprint.ir',
+    address: 'تهران، جمهوری، خیابان رازی، پلاک ۷۰',
+  },
+  {
+    slug: 'demo-insurance-agency',
+    name: 'بیمه‌یار',
+    industryPack: 'GENERAL',
+    phone: '02179456676',
+    email: 'info@bimehyar.ir',
+    address: 'تهران، سیدخندان، خیابان دبستان، پلاک ۳۶',
+  },
+  {
+    slug: 'demo-appliance-repair',
+    name: 'خانه‌ساز سرویس',
+    industryPack: 'GENERAL',
+    phone: '02179567787',
+    email: 'service@khanehsaz.ir',
+    address: 'تهران، آریاشهر، خیابان کاشانی، پلاک ۱۰۱',
+  },
+  {
+    slug: 'demo-photography-studio',
+    name: 'آتلیه نور',
+    industryPack: 'GENERAL',
+    phone: '02179678898',
+    email: 'booking@noor-studio.ir',
+    address: 'تهران، بلوار فردوس شرق، پلاک ۲۸',
+  },
+  {
+    slug: 'demo-daycare-center',
+    name: 'مهد ستاره‌ها',
+    industryPack: 'GENERAL',
+    phone: '02179789909',
+    email: 'info@setareha-kindergarten.ir',
+    address: 'تهران، پیروزی، خیابان پنجم نیروهوایی، پلاک ۶۶',
+  },
+  {
+    slug: 'demo-computer-service',
+    name: 'فناوران سیستم',
+    industryPack: 'GENERAL',
+    phone: '02179890010',
+    email: 'support@fanavaran-system.ir',
+    address: 'تهران، جلال آل‌احمد، خیابان کارگر شمالی، پلاک ۱۷۴',
+  },
+  {
+    slug: 'demo-veterinary-clinic',
+    name: 'دامپزشکی مهربان',
+    industryPack: 'CLINIC',
+    phone: '02179901121',
+    email: 'hello@mehraban-vet.ir',
+    address: 'تهران، نیاوران، خیابان باهنر، پلاک ۸۵',
   },
 ];
 
@@ -102,32 +594,33 @@ async function seedVertical(
   let invoiceSeq = 1;
 
   if (config.industryPack === 'RETAIL') {
+    const preset = RETAIL_PRESETS[config.slug] ?? RETAIL_PRESETS['demo-retail'];
     const customers = await Promise.all([
       prisma.customer.create({
         data: {
           organizationId: orgId,
-          name: 'لیلا فرهمند',
+          name: preset.customerNames[0],
           phone: '09131112233',
-          city: 'تهران',
+          city: preset.customerCities[0],
           createdAt: daysAgo(60),
         },
       }),
       prisma.customer.create({
         data: {
           organizationId: orgId,
-          name: 'بوتیک ماهان',
-          company: 'ماهان استایل',
+          name: preset.customerNames[1],
+          company: preset.secondCustomerCompany,
           phone: '09132223344',
-          city: 'اصفهان',
+          city: preset.customerCities[1],
           createdAt: daysAgo(20),
         },
       }),
       prisma.customer.create({
         data: {
           organizationId: orgId,
-          name: 'پریسا نادری',
+          name: preset.customerNames[2],
           phone: '09133334455',
-          city: 'شیراز',
+          city: preset.customerCities[2],
           isActive: false,
           createdAt: daysAgo(120),
         },
@@ -138,19 +631,19 @@ async function seedVertical(
       prisma.product.create({
         data: {
           organizationId: orgId,
-          name: 'مانتو کتی زنانه',
-          sku: 'RT-101',
-          unitPrice: 3200000,
-          stockQty: 45,
+          name: preset.productNames[0],
+          sku: preset.productSkus[0],
+          unitPrice: preset.productPrices[0],
+          stockQty: preset.productStocks[0],
         },
       }),
       prisma.product.create({
         data: {
           organizationId: orgId,
-          name: 'شلوار جین مردانه',
-          sku: 'RT-202',
-          unitPrice: 1850000,
-          stockQty: 80,
+          name: preset.productNames[1],
+          sku: preset.productSkus[1],
+          unitPrice: preset.productPrices[1],
+          stockQty: preset.productStocks[1],
         },
       }),
     ]);
@@ -160,7 +653,7 @@ async function seedVertical(
         {
           organizationId: orgId,
           stageId: stages[0]!.id,
-          title: 'سفارش عمده مانتو پاییزه',
+          title: preset.leadTitle,
           status: 'NEW',
           source: 'INSTAGRAM',
           contactName: 'نگین صالحی',
@@ -172,7 +665,7 @@ async function seedVertical(
           organizationId: orgId,
           customerId: customers[1]!.id,
           stageId: stages[2]!.id,
-          title: 'تمدید قرارداد نمایندگی',
+          title: preset.renewalTitle,
           status: 'PROPOSAL',
           source: 'REFERRAL',
           value: 25000000,
@@ -192,15 +685,15 @@ async function seedVertical(
       paidAmount: 5050000,
       items: [
         {
-          description: 'مانتو کتی زنانه',
+          description: preset.paidInvoiceDescription,
           quantity: 1,
-          unitPrice: 3200000,
+          unitPrice: preset.productPrices[0],
           productId: products[0]!.id,
         },
         {
-          description: 'شلوار جین مردانه',
+          description: preset.productNames[1],
           quantity: 1,
-          unitPrice: 1850000,
+          unitPrice: preset.productPrices[1],
           productId: products[1]!.id,
         },
       ],
@@ -225,9 +718,9 @@ async function seedVertical(
       paidAmount: 0,
       items: [
         {
-          description: 'مانتو کتی زنانه — عمده',
+          description: preset.overdueInvoiceDescription,
           quantity: 10,
-          unitPrice: 2800000,
+          unitPrice: Math.max(100000, Math.round(preset.productPrices[0] * 0.87)),
           productId: products[0]!.id,
         },
       ],
@@ -238,13 +731,13 @@ async function seedVertical(
         {
           organizationId: orgId,
           assigneeId: owner.id,
-          title: 'انبارگردانی پایان فصل',
+          title: preset.taskTitles[0],
           priority: 'MEDIUM',
           dueDate: daysFromNow(5),
         },
         {
           organizationId: orgId,
-          title: 'پیگیری بدهی بوتیک ماهان',
+          title: preset.taskTitles[1],
           priority: 'HIGH',
           status: 'TODO',
           dueDate: endOfToday(),
@@ -256,31 +749,32 @@ async function seedVertical(
   }
 
   if (config.industryPack === 'CLINIC') {
+    const preset = CLINIC_PRESETS[config.slug] ?? CLINIC_PRESETS['demo-clinic'];
     const patients = await Promise.all([
       prisma.customer.create({
         data: {
           organizationId: orgId,
-          name: 'دکتر آرش میرزایی',
+          name: preset.patientNames[0],
           company: 'مشتری شخصی',
           phone: '09136667788',
-          city: 'تهران',
+          city: preset.patientCities[0],
         },
       }),
       prisma.customer.create({
         data: {
           organizationId: orgId,
-          name: 'فاطمه حیدری',
+          name: preset.patientNames[1],
           phone: '09137778899',
-          city: 'کرج',
-          notes: 'ایمپلنت — دو جلسه باقی‌مانده',
+          city: preset.patientCities[1],
+          notes: preset.patientNote,
         },
       }),
       prisma.customer.create({
         data: {
           organizationId: orgId,
-          name: 'محمد جوادی',
+          name: preset.patientNames[2],
           phone: '09138889900',
-          city: 'تهران',
+          city: preset.patientCities[2],
         },
       }),
     ]);
@@ -289,24 +783,24 @@ async function seedVertical(
       prisma.service.create({
         data: {
           organizationId: orgId,
-          name: 'معاینه و مشاوره',
-          unitPrice: 850000,
+          name: preset.serviceNames[0],
+          unitPrice: preset.servicePrices[0],
           durationMin: 30,
         },
       }),
       prisma.service.create({
         data: {
           organizationId: orgId,
-          name: 'جرم‌گیری و بروساژ',
-          unitPrice: 1200000,
+          name: preset.serviceNames[1],
+          unitPrice: preset.servicePrices[1],
           durationMin: 45,
         },
       }),
       prisma.service.create({
         data: {
           organizationId: orgId,
-          name: 'ایمپلنت دندان',
-          unitPrice: 45000000,
+          name: preset.serviceNames[2],
+          unitPrice: preset.servicePrices[2],
           durationMin: 90,
         },
       }),
@@ -317,7 +811,7 @@ async function seedVertical(
         {
           organizationId: orgId,
           stageId: stages[1]!.id,
-          title: 'درخواست مشاوره ارتودنسی',
+          title: preset.leadTitle,
           status: 'CONTACTED',
           source: 'WHATSAPP',
           contactName: 'سارا امینی',
@@ -328,11 +822,11 @@ async function seedVertical(
         {
           organizationId: orgId,
           stageId: stages[4]!.id,
-          title: 'طرح درمان ایمپلنت',
+          title: preset.wonLeadTitle,
           status: 'WON',
           source: 'REFERRAL',
           customerId: patients[1]!.id,
-          value: 45000000,
+          value: preset.servicePrices[2],
           wonAt: daysAgo(20),
         },
       ],
@@ -346,12 +840,12 @@ async function seedVertical(
       issueDate: daysAgo(25),
       dueDate: daysFromNow(10),
       paidAmount: 20000000,
-      notes: 'پیش‌پرداخت ایمپلنت',
+      notes: `پیش‌پرداخت ${preset.serviceNames[2]}`,
       items: [
         {
-          description: 'ایمپلنت دندان',
+          description: preset.serviceNames[2],
           quantity: 1,
-          unitPrice: 45000000,
+          unitPrice: preset.servicePrices[2],
           serviceId: services[2]!.id,
         },
       ],
@@ -376,9 +870,9 @@ async function seedVertical(
       dueDate: daysFromNow(7),
       items: [
         {
-          description: 'جرم‌گیری و بروساژ',
+          description: preset.serviceNames[1],
           quantity: 1,
-          unitPrice: 1200000,
+          unitPrice: preset.servicePrices[1],
           serviceId: services[1]!.id,
         },
       ],
@@ -388,8 +882,8 @@ async function seedVertical(
       data: {
         organizationId: orgId,
         userId: owner.id,
-        title: 'یادآوری نوبت فاطمه حیدری',
-        message: 'جلسه دوم ایمپلنت',
+        title: preset.reminderTitle,
+        message: preset.reminderMessage,
         remindAt: atHour(daysFromNow(3), 9),
       },
     });
@@ -401,7 +895,7 @@ async function seedVertical(
           userId: owner.id,
           type: 'PAYMENT',
           title: 'پیش‌پرداخت دریافت شد',
-          description: '۲۰٬۰۰۰٬۰۰۰ ریال — فاطمه حیدری',
+          description: `۲۰٬۰۰۰٬۰۰۰ ریال — ${preset.patientNames[1]}`,
           customerId: patients[1]!.id,
           createdAt: daysAgo(22),
         },
@@ -574,6 +1068,101 @@ async function seedVertical(
     await seedTravelPackData(prisma, orgId, [clients[0]!.id, clients[1]!.id]);
   }
 
+  if (config.industryPack === 'GENERAL') {
+    const preset = GENERAL_PRESETS[config.slug] ?? GENERAL_PRESETS['demo-contracting'];
+    const customers = await Promise.all([
+      prisma.customer.create({
+        data: {
+          organizationId: orgId,
+          name: preset.firstCustomerName,
+          company: preset.firstCustomerCompany,
+          phone: '09135556677',
+          city: preset.firstCustomerCity,
+          createdAt: daysAgo(50),
+        },
+      }),
+      prisma.customer.create({
+        data: {
+          organizationId: orgId,
+          name: preset.secondCustomerName,
+          phone: '09136667788',
+          city: preset.secondCustomerCity,
+          createdAt: daysAgo(18),
+        },
+      }),
+    ]);
+
+    await prisma.lead.createMany({
+      data: [
+        {
+          organizationId: orgId,
+          customerId: customers[0]!.id,
+          stageId: stages[1]!.id,
+          title: preset.leadTitles[0],
+          status: 'CONTACTED',
+          source: 'REFERRAL',
+          value: 98000000,
+          nextFollowUpAt: daysFromNow(2),
+        },
+        {
+          organizationId: orgId,
+          stageId: stages[2]!.id,
+          title: preset.leadTitles[1],
+          status: 'PROPOSAL',
+          source: 'WEBSITE',
+          contactName: 'الناز صمدی',
+          contactPhone: '09137778899',
+          value: 56000000,
+          nextFollowUpAt: startOfToday(),
+        },
+      ],
+    });
+
+    const invoice = await createInvoiceWithItems(prisma, {
+      organizationId: orgId,
+      customerId: customers[0]!.id,
+      number: invoiceNumber(YEAR, invoiceSeq++),
+      status: 'PARTIAL',
+      issueDate: daysAgo(15),
+      dueDate: daysFromNow(7),
+      paidAmount: preset.paidAmount,
+      items: [
+        {
+          description: preset.invoiceDescription,
+          quantity: 1,
+          unitPrice: preset.invoiceAmount,
+        },
+      ],
+    });
+
+    await createPayment(prisma, {
+      organizationId: orgId,
+      customerId: customers[0]!.id,
+      invoiceId: invoice.id,
+      amount: preset.paidAmount,
+      method: 'TRANSFER',
+      paidAt: daysAgo(4),
+    });
+
+    await prisma.task.createMany({
+      data: [
+        {
+          organizationId: orgId,
+          assigneeId: owner.id,
+          title: preset.taskTitles[0],
+          priority: 'HIGH',
+          dueDate: endOfToday(),
+        },
+        {
+          organizationId: orgId,
+          title: preset.taskTitles[1],
+          priority: 'MEDIUM',
+          dueDate: daysFromNow(3),
+        },
+      ],
+    });
+  }
+
   await prisma.activityLog.create({
     data: {
       organizationId: orgId,
@@ -586,21 +1175,8 @@ async function seedVertical(
   });
 
   const { seedOrganizationSubscription } = await import('../billing');
-  if (config.industryPack === 'RETAIL') {
-    await seedOrganizationSubscription(prisma, orgId, {
-      planCode: 'STARTER',
-      status: 'ACTIVE',
-    });
-  } else if (config.industryPack === 'CLINIC') {
-    await seedOrganizationSubscription(prisma, orgId, {
-      planCode: 'BUSINESS',
-      status: 'TRIALING',
-      trialDays: 7,
-    });
-  } else if (config.industryPack === 'TRAVEL_AGENCY') {
-    await seedOrganizationSubscription(prisma, orgId, {
-      planCode: 'FREE',
-      status: 'ACTIVE',
-    });
+  const subscription = SUBSCRIPTION_PRESETS[config.slug] ?? DEFAULT_SUBSCRIPTION_BY_PACK[config.industryPack];
+  if (subscription) {
+    await seedOrganizationSubscription(prisma, orgId, subscription);
   }
 }

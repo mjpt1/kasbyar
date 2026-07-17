@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 
 import { apiSuccess, errorResponse, jsonResponse } from '@/lib/api-response';
 import { SESSION_COOKIE } from '@/lib/auth/crypto';
+import { shouldUseSecureCookies } from '@/lib/env';
 import { setActiveOrganizationCookie } from '@/lib/auth/session';
 import { registerSchema } from '@/lib/validators';
 import { loginUser, registerUser } from '@/server/auth/auth.service';
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
     const cookieStore = await cookies();
     cookieStore.set(SESSION_COOKIE, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: shouldUseSecureCookies(),
       sameSite: 'lax',
       path: '/',
       expires: expiresAt,

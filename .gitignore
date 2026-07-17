@@ -55,5 +55,9 @@ backups/*
 # docker
 docker/data
 
-.vercel
-.env*
+# temp agent / local scratch
+lint2.txt
+typecheck-important-fixes.txt
+.agents/
+skills-lock.json
+

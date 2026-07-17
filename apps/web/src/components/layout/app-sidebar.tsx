@@ -6,6 +6,8 @@ interface AppSidebarProps {
   organizationName: string;
   userName: string;
   industryPack: string;
+  role: string;
+  isSuperAdmin?: boolean;
 }
 
 /** @deprecated Desktop sidebar — prefer AppLayoutClient */

@@ -13,6 +13,8 @@ const serverEnvSchema = z.object({
   AI_SERVICE_TOKEN: z.string().min(1).optional(),
   UPLOAD_DIR: z.string().optional(),
   MAX_UPLOAD_SIZE_MB: z.coerce.number().positive().optional(),
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
   LOG_LEVEL: logLevelSchema.optional(),
   NODE_ENV: z.enum(['development', 'test', 'production']).optional(),
   SENTRY_DSN: z.string().url().optional().or(z.literal('')),
@@ -54,6 +56,11 @@ export function getAppEnv(): 'development' | 'staging' | 'production' | 'test' {
 
 export function isProduction(): boolean {
   return getAppEnv() === 'production';
+}
+
+export function shouldUseSecureCookies(): boolean {
+  const env = getAppEnv();
+  return env === 'production' || env === 'staging';
 }
 
 export function isSeedAllowed(): boolean {

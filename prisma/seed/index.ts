@@ -17,7 +17,7 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
   console.log('🏢 سناریوی اصلی: شرکت خدمات تدبیر (demo-general)...');
   const general = await seedGeneralBusiness(prisma, users);
 
-  console.log('📦 سناریوهای عمودی: خرده‌فروشی، کلینیک، آژانس مسافرتی...');
+  console.log('📦 سناریوهای عمودی و صنفی: پزشکی، فروشگاهی، پیمانکاری و ...');
   await seedVerticalWorkspaces(prisma, users);
 
   const [
@@ -76,7 +76,8 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
   console.log('سازمان پیش‌فرض: ' + general.organization.name);
   console.log('  slug: demo-general');
   console.log('');
-  console.log('سازمان‌های عمودی: demo-retail | demo-clinic | demo-travel');
+  console.log('سازمان‌های دمو: هسته عمومی + طیف گسترده‌ای از کسب‌وکارهای درمانی، فروشگاهی و خدماتی');
+  console.log('نمونه‌ها: کلینیک، داروخانه، سوپرمارکت، رستوران، املاک، دفتر حقوقی، خدمات نظافتی، آتلیه و ...');
   console.log('طرح‌های دمو: general=BUSINESS | retail=STARTER | clinic=TRIAL | travel=FREE');
 
   return summary;

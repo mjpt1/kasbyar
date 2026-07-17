@@ -42,6 +42,42 @@ npm run dev
 | `clinic` | `demo-clinic` | کلینیک | حرفه‌ای (آزمایشی) |
 | `travel` | `demo-travel` | مسافرتی | رایگان (نمایش ارتقا) |
 | `retail` | `demo-retail` | خرده‌فروشی | استارتر |
+| `medical-office` | `demo-medical-office` | کلینیک (مطب) | حرفه‌ای |
+| `hospital` | `demo-hospital` | کلینیک (بیمارستان) | حرفه‌ای |
+| `treatment-center` | `demo-treatment-center` | کلینیک (درمانگاه) | استارتر |
+| `supermarket` | `demo-supermarket` | خرده‌فروشی (سوپرمارکت) | استارتر |
+| `pharmacy` | `demo-pharmacy` | خرده‌فروشی (داروخانه) | حرفه‌ای |
+| `contracting` | `demo-contracting` | عمومی (پیمانکاری) | استارتر |
+| `education-center` | `demo-education-center` | عمومی (آموزشگاه) | استارتر |
+| `beauty-salon` | `demo-beauty-salon` | عمومی (سالن زیبایی) | استارتر |
+| `restaurant` | `demo-restaurant` | خرده‌فروشی (رستوران) | حرفه‌ای |
+| `cafe` | `demo-cafe` | خرده‌فروشی (کافه) | استارتر |
+| `bakery` | `demo-bakery` | خرده‌فروشی (قنادی/نانوایی) | استارتر |
+| `mobile-shop` | `demo-mobile-shop` | خرده‌فروشی (فروشگاه موبایل) | حرفه‌ای |
+| `electronics-store` | `demo-electronics-store` | خرده‌فروشی (الکترونیک) | حرفه‌ای |
+| `flower-shop` | `demo-flower-shop` | خرده‌فروشی (گل‌فروشی) | استارتر |
+| `pet-shop` | `demo-pet-shop` | خرده‌فروشی (پت‌شاپ) | استارتر |
+| `real-estate` | `demo-real-estate` | عمومی (مشاور املاک) | حرفه‌ای |
+| `law-office` | `demo-law-office` | عمومی (دفتر حقوقی) | حرفه‌ای |
+| `accounting-office` | `demo-accounting-office` | عمومی (دفتر حسابداری) | حرفه‌ای |
+| `gym` | `demo-gym` | عمومی (باشگاه ورزشی) | استارتر |
+| `auto-repair` | `demo-auto-repair` | عمومی (تعمیرگاه خودرو) | استارتر |
+| `optician` | `demo-optician` | خرده‌فروشی (عینک‌فروشی) | حرفه‌ای |
+| `stationery-store` | `demo-stationery-store` | خرده‌فروشی (لوازم‌التحریر) | استارتر |
+| `bookstore` | `demo-bookstore` | خرده‌فروشی (کتاب‌فروشی) | استارتر |
+| `hardware-store` | `demo-hardware-store` | خرده‌فروشی (ابزار و یراق) | حرفه‌ای |
+| `cosmetics-store` | `demo-cosmetics-store` | خرده‌فروشی (آرایشی) | استارتر |
+| `tailor-shop` | `demo-tailor-shop` | عمومی (خیاطی/مزون) | استارتر |
+| `jewelry-store` | `demo-jewelry-store` | خرده‌فروشی (طلافروشی) | حرفه‌ای |
+| `cleaning-services` | `demo-cleaning-services` | عمومی (خدمات نظافتی) | استارتر |
+| `marketing-agency` | `demo-marketing-agency` | عمومی (آژانس بازاریابی) | حرفه‌ای |
+| `printing-shop` | `demo-printing-shop` | عمومی (چاپ و تبلیغات) | استارتر |
+| `insurance-agency` | `demo-insurance-agency` | عمومی (نمایندگی بیمه) | حرفه‌ای |
+| `appliance-repair` | `demo-appliance-repair` | عمومی (تعمیرات لوازم خانگی) | استارتر |
+| `photography-studio` | `demo-photography-studio` | عمومی (آتلیه عکاسی) | استارتر |
+| `daycare-center` | `demo-daycare-center` | عمومی (مهدکودک) | استارتر |
+| `computer-service` | `demo-computer-service` | عمومی (خدمات کامپیوتری) | حرفه‌ای |
+| `veterinary-clinic` | `demo-veterinary-clinic` | کلینیک (دامپزشکی) | حرفه‌ای |
 
 تعریف سناریوها: `packages/shared/src/demo/scenarios.ts`
 
@@ -49,7 +85,7 @@ npm run dev
 
 | ایمیل | نقش | دسترسی |
 |--------|-----|--------|
-| `demo@kesbyar.ir` | مالک | هر ۴ سازمان |
+| `demo@kesbyar.ir` | مالک | همه سازمان‌های دمو |
 | `manager@kesbyar.ir` | مدیر | فقط `demo-general` |
 | `staff@kesbyar.ir` | کارمند | فقط `demo-general` |
 

@@ -13,7 +13,11 @@ export async function POST(request: Request) {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
 
-    const limit = checkRateLimit(`workspace-select:${session.user.id}`, 20, 60_000);
+    const limit = await checkRateLimit(
+      `workspace-select:${session.user.id}`,
+      20,
+      60_000,
+    );
     if (!limit.allowed) {
       return errorResponse('تعداد درخواست بیش از حد مجاز است', 429, 'RATE_LIMIT');
     }

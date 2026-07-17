@@ -10,6 +10,7 @@
   "scripts": {
     "postinstall": "prisma generate --schema=./prisma/schema.prisma",
     "dev": "npm run dev --workspace=@kesbyar/web",
+    "dev:local": "node scripts/sync-local-db-env.mjs && node scripts/test-db.mjs && npm run dev",
     "dev:ai": "npm run dev --workspace=@kesbyar/ai-service",
     "build": "npm run build --workspace=@kesbyar/web",
     "lint": "npm run lint --workspaces --if-present",
@@ -37,7 +38,7 @@
     "docker:staging:down": "docker compose -f docker/docker-compose.staging.yml down",
     "verify": "npm run db:generate && npm run lint && npm run typecheck && npm test",
     "ci": "npm run verify && npm run build",
-    "setup": "npm install && npm run db:push && npm run db:seed"
+    "setup": "npm install && npm run db:migrate && npm run db:seed"
   },
   "devDependencies": {
     "@prisma/client": "^6.1.0",

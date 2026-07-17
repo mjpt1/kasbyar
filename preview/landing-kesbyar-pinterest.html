@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>پیش‌نمایش پوستری — کسب‌یار</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1C1917;
+      --ink-soft: #44403C;
+      --blush: #F2B8B8;
+      --blush-deep: #E89595;
+      --sage: #8FB89E;
+      --peach: #F5C9A8;
+      --coral: #F08A7A;
+      --mist: #EEF1F4;
+      --font: "Vazirmatn", Tahoma, system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: auto;
+      height: 100%;
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--ink);
+      color: var(--ink);
+      line-height: 1.75;
+      overflow-x: hidden;
+      overscroll-behavior-y: none;
+    }
+    a { color: inherit; text-decoration: none; cursor: pointer; }
+
+    .banner {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(28, 25, 23, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #F5F5F4;
+      text-align: center; padding: 11px 16px; font-size: 13px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .banner em { color: #FFD4D4; font-style: normal; font-weight: 600; }
+
+    .dots {
+      position: fixed;
+      inset-inline-start: clamp(12px, 2.5vw, 28px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .dots a {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.5);
+      transition: transform 200ms ease, background 200ms ease;
+    }
+    .dots a.is-active {
+      background: var(--blush);
+      box-shadow: 0 0 0 3px rgba(242,184,184,0.4);
+      transform: scale(1.35);
+    }
+
+    /* ── Chapter / Poster slide ── */
+    .chapter {
+      position: relative;
+      height: 100dvh;
+      min-height: 100dvh;
+      display: grid;
+      align-items: end;
+      overflow: hidden;
+      color: #FFFBF8;
+      isolation: isolate;
+    }
+    .chapter-bg {
+      position: absolute;
+      inset: -20% 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      will-change: transform;
+      transform: translate3d(0, var(--bg-y, 0px), 0) scale(1.05);
+      z-index: 0;
+      filter: saturate(1.35) contrast(1.08) brightness(1.04);
+    }
+    /* فقط لمسهٔ رنگی — نه لایهٔ تیره */
+    .chapter-tint {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        radial-gradient(ellipse at 85% 15%, rgba(242,184,184,0.18), transparent 50%),
+        radial-gradient(ellipse at 10% 80%, rgba(143,184,158,0.14), transparent 45%);
+      pointer-events: none;
+    }
+
+    .poster-card {
+      position: relative;
+      z-index: 2;
+      width: min(680px, calc(100% - clamp(24px, 6vw, 56px)));
+      margin: clamp(16px, 4vw, 36px);
+      margin-bottom: clamp(28px, 6vw, 56px);
+      padding: clamp(28px, 5vw, 44px) clamp(26px, 4.5vw, 44px);
+      will-change: transform;
+      transform: translate3d(0, var(--fg-y, 0px), 0);
+      background: none;
+      border: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .poster-card.start { justify-self: start; }
+    .poster-card.end { justify-self: end; }
+    .poster-card.center {
+      justify-self: center;
+      margin-inline: auto;
+      text-align: center;
+      width: min(720px, calc(100% - clamp(24px, 6vw, 56px)));
+    }
+
+    .poster-num {
+      position: absolute;
+      top: -0.15em;
+      inset-inline-start: -0.05em;
+      font-size: clamp(5rem, 18vw, 9rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.06em;
+      color: rgba(255,255,255,0.12);
+      pointer-events: none;
+      user-select: none;
+    }
+    .poster-card.center .poster-num {
+      inset-inline-start: 50%;
+      transform: translateX(50%);
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      color: #FFE4E4;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+    }
+    .kicker::after {
+      content: "";
+      width: 28px; height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.7), transparent);
+    }
+    .poster-card.center .kicker { justify-content: center; }
+    .poster-card.center .kicker::after { display: none; }
+
+    .chapter h1 {
+      margin: 0 0 10px;
+      font-size: clamp(3.2rem, 10vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #FFFFFF;
+      text-shadow:
+        0 2px 4px rgba(0,0,0,0.25),
+        0 8px 32px rgba(0,0,0,0.35);
+    }
+    .chapter h2 {
+      margin: 0 0 14px;
+      font-size: clamp(1.85rem, 4.5vw, 2.85rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.25;
+      color: #FFFFFF;
+      text-shadow:
+        0 2px 4px rgba(0,0,0,0.22),
+        0 6px 24px rgba(0,0,0,0.3);
+    }
+    .chapter .lead {
+      margin: 0 0 14px;
+      font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+      font-weight: 700;
+      color: #FFF5F0;
+      max-width: 34ch;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    }
+    .chapter .support {
+      margin: 0 0 22px;
+      color: rgba(255, 252, 248, 0.95);
+      font-weight: 500;
+      font-size: 1.04rem;
+      max-width: 42ch;
+      line-height: 1.9;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+    }
+    .poster-card.center .lead,
+    .poster-card.center .support { margin-inline: auto; }
+
+    .points {
+      list-style: none;
+      margin: 0 0 24px;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .points li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: rgba(255, 252, 248, 0.97);
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+    }
+    .points li::before {
+      content: "◆";
+      font-size: 0.45rem;
+      margin-top: 0.65em;
+      color: var(--peach);
+      flex-shrink: 0;
+    }
+
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; position: relative; z-index: 1; }
+    .poster-card.center .cta-row { justify-content: center; }
+
+    .btn-main {
+      background: linear-gradient(135deg, rgba(255,240,240,0.95), rgba(242,184,184,0.92));
+      color: var(--ink);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-weight: 800;
+      font-size: 0.96rem;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+      display: inline-block;
+    }
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.22);
+    }
+    .btn-soft {
+      background: rgba(255,255,255,0.12);
+      color: #FFFBF8;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 999px;
+      padding: 13px 24px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      text-shadow: 0 1px 6px rgba(0,0,0,0.25);
+      transition: background 200ms ease, transform 200ms ease;
+      display: inline-block;
+    }
+    .btn-soft:hover {
+      background: rgba(255,255,255,0.22);
+      transform: translateY(-2px);
+    }
+
+    /* ── منوی خوانا روی هر پس‌زمینه ── */
+    .nav {
+      position: absolute;
+      inset-inline: clamp(14px, 3vw, 32px);
+      top: clamp(14px, 2.5vw, 24px);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px clamp(16px, 3vw, 28px);
+      color: var(--ink);
+      background: rgba(255, 251, 248, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(28, 25, 23, 0.1);
+      border-radius: 18px;
+      box-shadow: 0 10px 36px rgba(28, 25, 23, 0.16);
+    }
+    .nav-brand {
+      font-weight: 900;
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-pill {
+      border: 0;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      background: var(--ink);
+      color: #FFFBF8;
+      white-space: nowrap;
+    }
+    .nav-pill:hover { background: #292524; }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+      animation: hintPulse 2.4s ease-in-out infinite;
+    }
+
+    footer {
+      background: var(--mist);
+      color: #78716C;
+      padding: 28px clamp(18px, 5vw, 64px) 40px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.84rem;
+    }
+
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.9; transform: translateX(-50%) translateY(5px); }
+    }
+
+    @media (max-width: 800px) {
+      .nav-links { display: none; }
+      .dots { display: none; }
+      .poster-card.end { justify-self: stretch; }
+      .poster-num { font-size: clamp(4rem, 22vw, 6rem); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .chapter-bg, .poster-card { transform: none !important; }
+      .scroll-hint { animation: none; }
+      body { overscroll-behavior-y: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    نسخه <em>شعارهای مبتنی بر محصول</em> · مشتری · فاکتور · نقش · صنف
+  </div>
+
+  <nav class="dots" aria-label="بخش‌های صفحه" id="dots">
+    <a href="#hero" data-target="hero" title="محصول"></a>
+    <a href="#details" data-target="details" title="مشتری و لید"></a>
+    <a href="#sales" data-target="sales" title="فاکتور و پرداخت"></a>
+    <a href="#team" data-target="team" title="نقش‌ها"></a>
+    <a href="#packs" data-target="packs" title="صنف"></a>
+    <a href="#start" data-target="start" title="شروع کار"></a>
+  </nav>
+
+  <!-- ۱. محصول -->
+  <section class="chapter" id="hero" data-chapter>
+    <div class="chapter-bg" style="background-image:url('./poster-hero.jpg')"></div>
+    <div class="chapter-tint"></div>
+    <nav class="nav" aria-label="منو">
+      <div class="nav-brand">کسب‌یار</div>
+      <div class="nav-links">
+        <a href="#details">مشتری</a>
+        <a href="#sales">فاکتور</a>
+        <a href="#team">نقش</a>
+        <a href="#packs">صنف</a>
+      </div>
+      <a class="nav-pill" href="#start">ورود به پیشخوان</a>
+    </nav>
+    <div class="poster-card start">
+      <h1>کسب‌یار</h1>
+      <p class="lead">سیستم‌عاملِ رشدِ تو</p>
+      <p class="support">
+        پلتفرمی که ابزارهای پراکنده را حذف می‌کند و مدیریت کسب‌وکارت را
+        از یک «وظیفه» به یک «تجربه» تبدیل می‌کند — فارسی، جلالی، تومان.
+      </p>
+      <div class="cta-row">
+        <a class="btn-main" href="#start">۱۴ روز رایگان</a>
+        <a class="btn-soft" href="#details">ببینید چه کار می‌کند</a>
+      </div>
+    </div>
+    <div class="scroll-hint">اسکرول</div>
+  </section>
+
+  <!-- ۲. مشتری -->
+  <section class="chapter" id="details" data-chapter>
+    <div class="chapter-bg" style="background-image:url('./poster-details.jpg')"></div>
+    <div class="chapter-tint"></div>
+    <div class="poster-card end">
+      <span class="poster-num" aria-hidden="true">۰۱</span>
+      <span class="kicker">مشتری و لید</span>
+      <h2>مشتریانت را به خاطر بسپار، قبل از اینکه رقبا آن‌ها را ببرند</h2>
+      <p class="support">
+        کسب‌یار حافظهٔ بلندمدتِ تیم توست؛ جایی که هر لید تا لحظهٔ تبدیل شدن به مشتری، پیگیری می‌شود.
+      </p>
+      <ul class="points">
+        <li>جایی که لیدهای خاک‌خورده، به مشتری‌های وفادار تبدیل می‌شوند</li>
+        <li>به مشتریانتان نه یک شماره، بلکه یک تجربه بدهید</li>
+        <li>داستانِ هر مشتری در یک نگاه — تصویر ۳۶۰ درجه از تعاملات</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn-soft" href="#sales">فاکتور و مالی</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ۳. فاکتور -->
+  <section class="chapter" id="sales" data-chapter>
+    <div class="chapter-bg" style="background-image:url('./poster-sales.jpg')"></div>
+    <div class="chapter-tint"></div>
+    <div class="poster-card start">
+      <span class="poster-num" aria-hidden="true">۰۲</span>
+      <span class="kicker">فاکتور و مالی</span>
+      <h2>پولِ توی راه، پولِ توی حساب</h2>
+      <p class="support">
+        از صدورِ آنی تا گزارش‌گیری لحظه‌ای؛ چرخهٔ مالی کسب‌وکارت را بدونِ خطا
+        و در یک محیطِ امن مدیریت کن — از صدور تا تسویه با یک نگاه.
+      </p>
+      <ul class="points">
+        <li>فاکتورتان نباید برایتان دغدغه باشد؛ ریاضیاتش با کسب‌یار است</li>
+        <li>حساب‌وکتابِ شفاف؛ یعنی خوابِ راحتِ شب برای مدیر</li>
+        <li>پایانِ اختلاف‌حساب‌های آخرِ ماه</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn-soft" href="#team">نقش‌های تیم</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ۴. نقش -->
+  <section class="chapter" id="team" data-chapter>
+    <div class="chapter-bg" style="background-image:url('./poster-team.jpg')"></div>
+    <div class="chapter-tint"></div>
+    <div class="poster-card end">
+      <span class="poster-num" aria-hidden="true">۰۳</span>
+      <span class="kicker">نقش‌ها</span>
+      <h2>هر نقش، یک تجربهٔ شخصی‌سازی‌شده</h2>
+      <p class="support">
+        از داشبوردِ مدیریتی تا لیستِ وظایفِ کارمندان؛ کسب‌یار دقیقاً همان‌جایی است
+        که هر کس باید باشد تا کارش را عالی انجام دهد.
+      </p>
+      <ul class="points">
+        <li>مدیرِ ارشد یا کارمندِ خطِ‌مقدم؟ هر کدام فضای اختصاصی دارد</li>
+        <li>هماهنگی در عینِ تفکیک — بدونِ جلساتِ بی‌پایان</li>
+        <li>سلسله‌مراتبِ هوشمند؛ هر نقش فقط آنچه برایش اهمیت دارد</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn-soft" href="#packs">مناسب صنف شما</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ۵. صنف -->
+  <section class="chapter" id="packs" data-chapter>
+    <div class="chapter-bg" style="background-image:url('./poster-packs.jpg')"></div>
+    <div class="chapter-tint"></div>
+    <div class="poster-card center">
+      <span class="poster-num" aria-hidden="true">۰۴</span>
+      <span class="kicker">صنف</span>
+      <h2>ابزاری که دقیقاً اندازهٔ کسب‌وکار توست</h2>
+      <p class="support">
+        چه کلینیک باشی، چه خرده‌فروشی؛ کسب‌یار با هسته‌ای قدرتمند،
+        برای نیازهای خاصِ صنفِ تو شخصی‌سازی می‌شود.
+      </p>
+      <ul class="points" style="max-width:42ch;margin-inline:auto;text-align:start;">
+        <li>یک سیستم‌عامل، هزاران کاربرد؛ از ویزیتِ بیمار تا فروشِ آنلاین</li>
+        <li>برای هر صنف، یک اَبَر‌قدرت اختصاصی درون کسب‌یار</li>
+        <li>کلینیک · خرده‌فروشی · آژانس — بستهٔ عمودی آماده‌به‌کار</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn-soft" href="#start">پیشخوان را باز کنید</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- شروع -->
+  <section class="chapter" id="start" data-chapter>
+    <div class="chapter-bg" style="background-image:url('./poster-start.jpg')"></div>
+    <div class="chapter-tint"></div>
+    <div class="poster-card center">
+      <span class="kicker">شروع کار</span>
+      <h2>پیچیدگی را به منطق تبدیل کن</h2>
+      <p class="support">
+        یک محیط یکپارچه برای مدیریتِ بی‌وقفه؛ از CRM تا صورتحساب.
+        ثبت‌نام سریع · ۱۴ روز رایگان · دادهٔ نمونه برای دمو
+      </p>
+      <div class="cta-row">
+        <a class="btn-main" href="#">ساخت پیشخوان رایگان</a>
+        <a class="btn-soft" href="#">درخواست دمو زنده</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>کسب‌یار · پیش‌نمایش پوستری</span>
+    <span>اگر OK بدهید همین را در Next.js می‌سازم</span>
+  </footer>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const chapters = Array.from(document.querySelectorAll('[data-chapter]'));
+      const dots = Array.from(document.querySelectorAll('#dots a'));
+      const footer = document.querySelector('footer');
+      const state = chapters.map(() => ({ bg: 0, fg: 0 }));
+      let animating = false;
+      let scrollAnim = null;
+      const SCROLL_MS = 1450;
+      const WHEEL_COOLDOWN = 1100;
+      const PARALLAX_LERP = 0.085;
+
+      function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+      function easeInOutQuart(t) {
+        return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+      }
+      function easeSilk(t) { return easeInOutQuart(easeOutQuint(t)); }
+
+      function sectionTop(el) { return window.scrollY + el.getBoundingClientRect().top; }
+
+      function setActive(i) {
+        const idx = Math.max(0, Math.min(chapters.length - 1, i));
+        dots.forEach((d) => d.classList.toggle('is-active', d.dataset.target === chapters[idx].id));
+      }
+
+      function nearestIndex() {
+        const mid = window.scrollY + window.innerHeight * 0.45;
+        let best = 0, bestDist = Infinity;
+        chapters.forEach((ch, i) => {
+          const d = Math.abs(sectionTop(ch) + ch.offsetHeight / 2 - mid);
+          if (d < bestDist) { bestDist = d; best = i; }
+        });
+        return best;
+      }
+
+      function scrollToY(targetY, then) {
+        const startY = window.scrollY, delta = targetY - startY;
+        if (Math.abs(delta) < 2) { animating = false; then && then(); return; }
+        animating = true;
+        const start = performance.now();
+        if (scrollAnim) cancelAnimationFrame(scrollAnim);
+        function frame(now) {
+          const t = Math.min(1, (now - start) / SCROLL_MS);
+          window.scrollTo(0, startY + delta * easeSilk(t));
+          if (t < 1) scrollAnim = requestAnimationFrame(frame);
+          else { window.scrollTo(0, targetY); animating = false; scrollAnim = null; then && then(); }
+        }
+        scrollAnim = requestAnimationFrame(frame);
+      }
+
+      function goTo(i) {
+        if (i < 0 || i >= chapters.length) return;
+        setActive(i);
+        scrollToY(sectionTop(chapters[i]));
+      }
+
+      function goFooter() {
+        if (!footer) return;
+        scrollToY(sectionTop(footer), () => setActive(chapters.length - 1));
+      }
+
+      function onStep(dir) {
+        if (animating) return;
+        const near = nearestIndex();
+        setActive(near);
+        if (dir > 0 && near >= chapters.length - 1) {
+          if (footer && footer.getBoundingClientRect().top >= window.innerHeight * 0.85) goFooter();
+          return;
+        }
+        if (dir < 0 && footer && window.scrollY + window.innerHeight > sectionTop(footer) + 40) {
+          goTo(chapters.length - 1);
+          return;
+        }
+        goTo(near + dir);
+      }
+
+      if (reduce) {
+        setActive(0);
+        dots.forEach((dot) => {
+          dot.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById(dot.dataset.target)?.scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+        return;
+      }
+
+      let wheelAccum = 0, wheelTimer = null, wheelLocked = false;
+      window.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) < 2) return;
+        e.preventDefault();
+        if (animating || wheelLocked) return;
+        wheelAccum += e.deltaY;
+        clearTimeout(wheelTimer);
+        wheelTimer = setTimeout(() => {
+          if (Math.abs(wheelAccum) < 18) { wheelAccum = 0; return; }
+          const dir = wheelAccum > 0 ? 1 : -1;
+          wheelAccum = 0;
+          wheelLocked = true;
+          onStep(dir);
+          setTimeout(() => { wheelLocked = false; }, WHEEL_COOLDOWN);
+        }, 72);
+      }, { passive: false });
+
+      window.addEventListener('keydown', (e) => {
+        if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); if (!animating) onStep(1); }
+        else if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); if (!animating) onStep(-1); }
+        else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+        else if (e.key === 'End') { e.preventDefault(); goTo(chapters.length - 1); }
+      });
+
+      let touchY = null, touchMoved = false;
+      window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; touchMoved = false; }, { passive: true });
+      window.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+      window.addEventListener('touchend', (e) => {
+        if (touchY == null || animating || !touchMoved) return;
+        const dy = touchY - e.changedTouches[0].clientY;
+        touchY = null;
+        if (Math.abs(dy) < 56) return;
+        onStep(dy > 0 ? 1 : -1);
+      }, { passive: true });
+
+      dots.forEach((dot) => {
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          const i = chapters.findIndex((c) => c.id === dot.dataset.target);
+          if (i >= 0) goTo(i);
+        });
+      });
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        if (a.closest('#dots')) return;
+        a.addEventListener('click', (e) => {
+          const i = chapters.findIndex((c) => c.id === a.getAttribute('href')?.slice(1));
+          if (i >= 0) { e.preventDefault(); goTo(i); }
+        });
+      });
+
+      function tickParallax() {
+        const vh = window.innerHeight;
+        chapters.forEach((chapter, i) => {
+          const rect = chapter.getBoundingClientRect();
+          const progress = 1 - (rect.bottom / (rect.height + vh));
+          const clamped = Math.max(0, Math.min(1, progress));
+          const targetBg = (clamped - 0.5) * 72;
+          const targetFg = (clamped - 0.5) * -16;
+          state[i].bg += (targetBg - state[i].bg) * PARALLAX_LERP;
+          state[i].fg += (targetFg - state[i].fg) * PARALLAX_LERP;
+          chapter.style.setProperty('--bg-y', state[i].bg.toFixed(2) + 'px');
+          chapter.style.setProperty('--fg-y', state[i].fg.toFixed(2) + 'px');
+        });
+        requestAnimationFrame(tickParallax);
+      }
+
+      setActive(0);
+      requestAnimationFrame(tickParallax);
+    })();
+  </script>
+</body>
+</html>

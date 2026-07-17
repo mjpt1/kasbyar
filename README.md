@@ -1,21 +1,47 @@
 # کسب‌یار (KesbYar)
 
-سیستم‌عامل کسب‌وکار برای بازار ایران — فارسی‌اول، راست‌به‌چپ، تقویم شمسی، چند‌مستاجری (workspace).
+<p align="center">
+  <img src="apps/web/public/landing/logo.svg" alt="لوگوی کسب‌یار" width="72" height="72" />
+</p>
 
-**مخزن:** [github.com/mjpt1/kasbyar](https://github.com/mjpt1/kasbyar)
+<p align="center">
+  <strong>سیستم‌عامل کسب‌وکار برای بازار ایران</strong><br />
+  فارسی‌اول · راست‌به‌چپ · تقویم شمسی · چندمستأجری
+</p>
+
+<p align="center">
+  <a href="https://kasbyar.vercel.app">نسخه آنلاین</a>
+  ·
+  <a href="https://github.com/mjpt1/kasbyar">مخزن GitHub</a>
+</p>
 
 ---
 
-## معرفی
+![پیش‌نمایش لندینگ کسب‌یار](apps/web/public/landing/poster-hero.jpg)
 
-کسب‌یار به تیم‌های کوچک و متوسط کمک می‌کند مشتری، لید، فاکتور، پرداخت و گزارش‌های روزانه را در یک محیط یکپارچه مدیریت کنند. بسته‌های عمودی (کلینیک، خرده‌فروشی، آژانس مسافرتی) روی هستهٔ مشترک CRM و صورتحساب سوار می‌شوند.
+**کسب‌یار** پیشخوان یکپارچه برای تیم‌های کوچک و متوسط است: از اولین تماس مشتری تا فاکتور و وصول — بدون پراکندگی بین اکسل، واتساپ و چند نرم‌افزار جدا.
+
+| | |
+|:---|:---|
+| ![مشتری و لید](apps/web/public/landing/poster-details.jpg) | ![فاکتور و مالی](apps/web/public/landing/poster-sales.jpg) |
+| **مشتری و لید** — حافظه بلندمدت تیم؛ پیگیری تا تبدیل به فروش | **فاکتور و پرداخت** — از صدور تا تسویه با یک نگاه |
+| ![نقش‌ها](apps/web/public/landing/poster-team.jpg) | ![بسته‌های صنفی](apps/web/public/landing/poster-packs.jpg) |
+| **نقش‌ها** — مالک، مدیر و کارمند؛ هر کس فضای خودش را دارد | **صنف‌ها** — کلینیک، خرده‌فروشی، آژانس روی یک هسته |
+
+---
+
+## قابلیت‌ها
 
 | قابلیت | وضعیت |
 |--------|--------|
+| لندینگ پوستری + پارالاکس | ✅ |
 | CRM (مشتری، لید، وظیفه) | ✅ |
-| فاکتور و دریافت | ✅ |
+| فاکتور و دریافت پرداخت | ✅ |
 | داشبورد و گزارش | ✅ |
-| دستیار عملیاتی | ✅ (با سرویس جدا — حالت آفلاین در قطعی) |
+| نقش و دسترسی (مالک / مدیر / کارمند) | ✅ |
+| پنل سوپرادمین پلتفرم | ✅ |
+| بسته‌های عمودی (کلینیک، خرده‌فروشی، سفر) | ✅ |
+| دستیار عملیاتی (سرویس جدا) | ✅ (آفلاین در قطعی) |
 | طرح اشتراک و محدودیت | ✅ |
 | حالت نمایش (دمو) | ✅ |
 | درگاه پرداخت آنلاین | 📋 فاز بعد |
@@ -25,17 +51,17 @@
 ## ساختار مخزن
 
 ```
-apps/web          اپ اصلی — Next.js 15
+apps/web          اپ اصلی — Next.js 15 + لندینگ
 apps/ai-service   سرویس دستیار — FastAPI (استقرار جدا)
 packages/shared   جلالی، فرمت، billing، observability
 packages/ui       اجزای UI مشترک
-prisma/           طرحواره و seed
-docs/             معماری، عملیات، پایلوت
+prisma/           طرحواره، migration و seed
+docs/             معماری، استقرار، پایلوت
 ```
 
 ---
 
-## شروع سریع (توسعه محلی)
+## شروع سریع (محلی)
 
 ```bash
 git clone https://github.com/mjpt1/kasbyar.git
@@ -45,16 +71,20 @@ npm run setup
 npm run dev
 ```
 
-- اپ: [http://localhost:3000](http://localhost:3000)
-- سرویس دستیار (اختیاری): `npm run dev:ai` → پورت ۸۰۰۰
+| سرویس | آدرس |
+|--------|------|
+| وب و لندینگ | [http://localhost:3000](http://localhost:3000) |
+| ورود | [http://localhost:3000/login](http://localhost:3000/login) |
+| دستیار (اختیاری) | `npm run dev:ai` → پورت `8000` |
 
 ### حساب‌های نمونه
 
-| ایمیل | رمز |
-|-------|-----|
-| `demo@kesbyar.ir` | `demo1234` |
-| `manager@kesbyar.ir` | `demo1234` |
-| `staff@kesbyar.ir` | `demo1234` |
+| ایمیل | رمز | نقش |
+|-------|-----|-----|
+| `demo@kesbyar.ir` | `demo1234` | مالک / دمو |
+| `manager@kesbyar.ir` | `demo1234` | مدیر |
+| `staff@kesbyar.ir` | `demo1234` | کارمند |
+| `super@kesbyar.ir` | `demo1234` | سوپرادمین |
 
 جزئیات seed: [docs/SEED.md](./docs/SEED.md)
 
@@ -80,24 +110,37 @@ npm run db:reseed
 | `npm run verify` | lint + typecheck + test |
 | `npm run ci` | verify + build (مثل CI) |
 | `npm run db:migrate` | migration توسعه |
+| `npm run db:push` | همگام‌سازی schema |
 | `npm run db:seed` | داده نمونه |
-| `npm run db:backup` | پشتیبان SQL |
 | `npm run docker:up` | PostgreSQL محلی + سرویس دستیار |
 
 ---
 
-## استقرار
+## استقرار روی Vercel
 
-### Vercel (اپ وب)
+نسخهٔ فعلی: **[kasbyar.vercel.app](https://kasbyar.vercel.app)**
 
-1. Import از GitHub → مخزن `mjpt1/kasbyar`
-2. **Root Directory:** `apps/web`
-3. **Include files outside root:** فعال
-4. متغیرهای الزامی: `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, `APP_ENV=production`, `ALLOW_SEED=false`
+1. Import مخزن `mjpt1/kasbyar` از GitHub
+2. تنظیمات پروژه:
+
+| فیلد | مقدار |
+|------|--------|
+| **Root Directory** | `apps/web` |
+| **Include files outside root** | ✅ فعال |
+
+3. متغیرهای محیط:
+
+| متغیر | مقدار نمونه |
+|--------|-------------|
+| `DATABASE_URL` | اتصال Neon / Postgres |
+| `SESSION_SECRET` | رشته تصادفی ≥ ۳۲ کاراکتر |
+| `NEXT_PUBLIC_APP_URL` | `https://kasbyar.vercel.app` |
+| `APP_ENV` | `production` |
+| `ALLOW_SEED` | `false` |
 
 راهنمای کامل: [docs/DEPLOY_VERCEL.md](./docs/DEPLOY_VERCEL.md)
 
-> سرویس FastAPI روی Vercel اجرا نمی‌شود؛ اپ بدون آن هم کار می‌کند (خلاصه محلی). برای دستیار کامل، سرویس را جدا deploy کنید.
+> سرویس FastAPI روی Vercel اجرا نمی‌شود؛ اپ بدون آن هم کار می‌کند. برای دستیار کامل، سرویس را جدا deploy کنید.
 
 ### Docker / VPS
 
@@ -128,6 +171,14 @@ npm run db:reseed
 - [OPERATIONS.md](./docs/OPERATIONS.md) — عملیات
 - [KNOWN_LIMITATIONS.md](./docs/KNOWN_LIMITATIONS.md) — محدودیت‌های V1
 - [V1_LAUNCH.md](./docs/V1_LAUNCH.md) — چک‌لیست لانچ
+
+---
+
+<p align="center">
+  <img src="apps/web/public/landing/poster-start.jpg" alt="شروع با کسب‌یار" width="100%" />
+</p>
+
+<p align="center"><em>کسب‌یار — سیستم‌عاملِ رشد کسب‌وکار شما</em></p>
 
 ---
 
