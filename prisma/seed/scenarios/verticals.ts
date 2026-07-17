@@ -594,7 +594,7 @@ async function seedVertical(
   let invoiceSeq = 1;
 
   if (config.industryPack === 'RETAIL') {
-    const preset = RETAIL_PRESETS[config.slug] ?? RETAIL_PRESETS['demo-retail'];
+    const preset = RETAIL_PRESETS[config.slug] ?? RETAIL_PRESETS['demo-retail']!;
     const customers = await Promise.all([
       prisma.customer.create({
         data: {
@@ -749,7 +749,7 @@ async function seedVertical(
   }
 
   if (config.industryPack === 'CLINIC') {
-    const preset = CLINIC_PRESETS[config.slug] ?? CLINIC_PRESETS['demo-clinic'];
+    const preset = CLINIC_PRESETS[config.slug] ?? CLINIC_PRESETS['demo-clinic']!;
     const patients = await Promise.all([
       prisma.customer.create({
         data: {
@@ -1069,7 +1069,7 @@ async function seedVertical(
   }
 
   if (config.industryPack === 'GENERAL') {
-    const preset = GENERAL_PRESETS[config.slug] ?? GENERAL_PRESETS['demo-contracting'];
+    const preset = GENERAL_PRESETS[config.slug] ?? GENERAL_PRESETS['demo-contracting']!;
     const customers = await Promise.all([
       prisma.customer.create({
         data: {

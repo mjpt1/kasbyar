@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     debug: bool = False
     log_level: str = "info"
-    ai_service_token: str
+    ai_service_token: str = "dev-token"
     database_url: str | None = None
     cors_origins: str = "http://localhost:3000"
 

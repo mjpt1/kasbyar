@@ -102,7 +102,7 @@ const DEFAULT_STEPS_BY_PACK = {
       href: '/travel/bookings',
     },
   ],
-} as const;
+} satisfies Record<string, DemoWalkthroughStep[]>;
 
 const SCENARIO_STEPS: Partial<Record<DemoScenarioId, DemoWalkthroughStep[]>> = {
   general: [

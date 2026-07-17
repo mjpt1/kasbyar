@@ -67,6 +67,9 @@ jobs:
   ai-service:
     name: AI service — validate
     runs-on: ubuntu-latest
+    env:
+      AI_SERVICE_TOKEN: ci-internal-token
+      APP_ENV: test
     defaults:
       run:
         working-directory: apps/ai-service
