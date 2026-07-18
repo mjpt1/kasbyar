@@ -67,30 +67,60 @@ async function main() {
         continue;
       }
 
-      const organization = await prisma.organization.create({
-        data: {
-          name: `دمو — ${specialty.label}`,
-          slug,
-          industryPack: specialty.basePack,
-          industrySpecialty: specialty.id,
-          isDemo: true,
-          phone: '02100000000',
-          email: `demo+${specialty.id}@kesbyar.ir`,
-          address: 'تهران — محیط نمایش تخصصی',
-          workspaces: {
-            create: { name: 'شعبه اصلی', slug: 'main', isDefault: true },
+      let organization;
+      try {
+        organization = await prisma.organization.create({
+          data: {
+            name: `دمو — ${specialty.label}`,
+            slug,
+            industryPack: specialty.basePack,
+            industrySpecialty: specialty.id,
+            isDemo: true,
+            phone: '02100000000',
+            email: `demo+${specialty.id}@kesbyar.ir`,
+            address: 'تهران — محیط نمایش تخصصی',
+            workspaces: {
+              create: { name: 'شعبه اصلی', slug: 'main', isDefault: true },
+            },
+            memberships: {
+              create: [
+                { userId: owner.id, role: 'OWNER' },
+                { userId: superAdmin.id, role: 'OWNER' },
+              ],
+            },
+            pipelineStages: {
+              create: PIPELINE_STAGES_DEFAULT.map((s) => ({ ...s })),
+            },
           },
-          memberships: {
-            create: [
-              { userId: owner.id, role: 'OWNER' },
-              { userId: superAdmin.id, role: 'OWNER' },
-            ],
-          },
-          pipelineStages: {
-            create: PIPELINE_STAGES_DEFAULT.map((s) => ({ ...s })),
-          },
-        },
-      });
+        });
+      } catch (err) {
+        // Pooler/replica lag can miss an existing slug on findUnique, then lose the race on create.
+        const isUnique =
+          typeof err === 'object' &&
+          err !== null &&
+          'code' in err &&
+          (err as { code?: string }).code === 'P2002';
+        if (!isUnique) throw err;
+        const raced = await prisma.organization.findUnique({ where: { slug } });
+        if (!raced) throw err;
+        if (
+          raced.industryPack !== specialty.basePack ||
+          raced.industrySpecialty !== specialty.id
+        ) {
+          await prisma.organization.update({
+            where: { id: raced.id },
+            data: {
+              industryPack: specialty.basePack,
+              industrySpecialty: specialty.id,
+              isDemo: true,
+            },
+          });
+          updated += 1;
+        } else {
+          skipped += 1;
+        }
+        continue;
+      }
 
       const customers = await Promise.all([
         prisma.customer.create({
