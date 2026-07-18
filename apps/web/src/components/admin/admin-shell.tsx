@@ -6,12 +6,12 @@ import { usePathname } from 'next/navigation';
 import { LogoutButton } from '@/components/layout/logout-button';
 import { cn } from '@/lib/utils';
 
-const ADMIN_NAV = [
+const ADMIN_NAV: { href: string; label: string; exact?: boolean }[] = [
   { href: '/admin', label: 'خلاصه پلتفرم', exact: true },
   { href: '/admin/users', label: 'کاربران' },
   { href: '/admin/organizations', label: 'سازمان‌ها' },
   { href: '/admin/settings', label: 'تنظیمات پلتفرم' },
-] as const;
+];
 
 export function AdminShell({
   email,
