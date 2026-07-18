@@ -4,26 +4,27 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* Pastel KesbYar — soft sky / mint / peach */
+    --background: 260 33% 98%;
+    --foreground: 225 16% 29%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --radius: 0.5rem;
+    --card-foreground: 225 16% 29%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 225 16% 29%;
+    --primary: 200 38% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 150 28% 92%;
+    --secondary-foreground: 225 16% 29%;
+    --muted: 210 35% 95%;
+    --muted-foreground: 225 12% 45%;
+    --accent: 5 70% 94%;
+    --accent-foreground: 5 35% 38%;
+    --destructive: 5 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 25% 88%;
+    --input: 210 25% 88%;
+    --ring: 200 38% 58%;
+    --radius: 0.9rem;
   }
 
   * {
@@ -36,5 +37,125 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 75% 48% at 100% 0%, rgba(245, 198, 194, 0.28), transparent 55%),
+      radial-gradient(ellipse 55% 42% at 0% 100%, rgba(168, 201, 184, 0.22), transparent 50%),
+      radial-gradient(ellipse 40% 35% at 50% 40%, rgba(185, 212, 240, 0.18), transparent 60%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .admin-pastel {
+    color: hsl(var(--foreground));
+  }
+
+  .admin-rail {
+    background:
+      linear-gradient(165deg, rgba(255, 255, 255, 0.55), transparent 40%),
+      linear-gradient(180deg, #d7e6f5 0%, #c5d8ec 55%, #d4ebe3 100%);
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: -8px 0 32px rgba(120, 140, 170, 0.08);
+  }
+
+  .admin-brand-mark {
+    background: linear-gradient(135deg, #f5c6c2, #f5e4c8);
+    box-shadow: 0 0 0 4px rgba(245, 198, 194, 0.35);
+    color: hsl(var(--foreground));
+  }
+
+  .admin-nav-active {
+    background: linear-gradient(90deg, rgba(245, 198, 194, 0.55), rgba(255, 255, 255, 0.35));
+    box-shadow: inset 3px 0 0 #d98984;
+  }
+
+  .admin-nav-dot {
+    background: #d98984 !important;
+    box-shadow: 0 0 0 4px rgba(245, 198, 194, 0.45);
+  }
+
+  .admin-eyebrow {
+    color: #d98984;
+    background: rgba(245, 198, 194, 0.45);
+  }
+
+  .admin-eyebrow::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6a9a82;
+    box-shadow: 0 0 0 4px rgba(168, 201, 184, 0.45);
+  }
+
+  .admin-btn-primary {
+    background: linear-gradient(135deg, #7a9ec4, #8bb8a8);
+    box-shadow: 0 8px 20px rgba(122, 158, 196, 0.28);
+  }
+
+  .admin-metric-sky {
+    background: linear-gradient(145deg, rgba(185, 212, 240, 0.95), rgba(221, 208, 240, 0.88));
+  }
+
+  .admin-metric-blush {
+    background: linear-gradient(145deg, rgba(245, 198, 194, 0.55), rgba(255, 255, 255, 0.85));
+  }
+
+  .admin-metric-sage {
+    background: linear-gradient(145deg, rgba(168, 201, 184, 0.4), rgba(255, 255, 255, 0.85));
+  }
+
+  .admin-metric-butter {
+    background: linear-gradient(145deg, rgba(245, 228, 200, 0.55), rgba(255, 255, 255, 0.85));
+  }
+
+  .admin-chip {
+    background: rgba(168, 201, 184, 0.4);
+    color: #6a9a82;
+  }
+
+  .admin-pulse {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .admin-pulse-blush {
+    background: #f5c6c2;
+    box-shadow: 0 0 0 4px rgba(245, 198, 194, 0.45);
+  }
+
+  .admin-pulse-sage {
+    background: #a8c9b8;
+    box-shadow: 0 0 0 4px rgba(168, 201, 184, 0.4);
+  }
+
+  .admin-pulse-sky {
+    background: #8aa8c8;
+    box-shadow: 0 0 0 4px rgba(185, 212, 240, 0.55);
+  }
+
+  .admin-quick {
+    background: linear-gradient(120deg, rgba(245, 198, 194, 0.28), rgba(185, 212, 240, 0.28));
+  }
+
+  .admin-arrow {
+    background: linear-gradient(135deg, #b9d4f0, #a8c9b8);
+  }
+
+  .admin-pack-1 {
+    background: linear-gradient(160deg, rgba(245, 198, 194, 0.45), rgba(255, 255, 255, 0.7));
+  }
+
+  .admin-pack-2 {
+    background: linear-gradient(160deg, rgba(168, 201, 184, 0.4), rgba(255, 255, 255, 0.7));
+  }
+
+  .admin-pack-3 {
+    background: linear-gradient(160deg, rgba(185, 212, 240, 0.45), rgba(255, 255, 255, 0.7));
+  }
+
+  .admin-pack-4 {
+    background: linear-gradient(160deg, rgba(221, 208, 240, 0.4), rgba(255, 255, 255, 0.7));
   }
 }

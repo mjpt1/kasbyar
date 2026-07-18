@@ -10,8 +10,8 @@ export default async function AdminUsersPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold">کاربران و نقش‌ها</h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="text-2xl font-bold tracking-tight">کاربران و نقش‌ها</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           نقش سازمانی تعیین می‌کند کاربر چه منو و پیشخوانی ببیند. بسته صنعتی سازمان
           تعیین می‌کند کلینیک، خرده‌فروشی یا عمومی باشد.
         </p>

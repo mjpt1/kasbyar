@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>پیش‌نمایش — داشبورد سوپرادمین کسب‌یار</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Pastel control tower — soft sky / mint / peach */
+        --ink: #3f4456;
+        --ink-2: #5a6178;
+        --rail: #d7e6f5;
+        --rail-2: #c5d8ec;
+        --paper: #faf9fc;
+        --paper-2: #f3eef8;
+        --mist: #e6f3ef;
+        --blush: #f5c6c2;
+        --blush-deep: #d98984;
+        --sage: #a8c9b8;
+        --sage-deep: #6a9a82;
+        --sky: #b9d4f0;
+        --lilac: #ddd0f0;
+        --butter: #f5e4c8;
+        --line: rgba(63, 68, 86, 0.1);
+        --glow: rgba(245, 198, 194, 0.5);
+        --ok: #6a9a82;
+        --warn: #c9a06a;
+        --shadow: 0 18px 44px rgba(120, 140, 170, 0.14);
+        --radius: 22px;
+        --font-display: 'IBM Plex Sans Arabic', 'Vazirmatn', sans-serif;
+        --font-body: 'Vazirmatn', sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: var(--font-body);
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse 75% 48% at 100% 0%, rgba(245, 198, 194, 0.45), transparent 55%),
+          radial-gradient(ellipse 55% 42% at 0% 100%, rgba(168, 201, 184, 0.35), transparent 50%),
+          radial-gradient(ellipse 40% 35% at 50% 40%, rgba(185, 212, 240, 0.28), transparent 60%),
+          linear-gradient(165deg, #faf9fc 0%, #eef4fb 45%, #eef8f4 100%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 100vh;
+      }
+
+      .rail {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        padding: 28px 18px;
+        background:
+          linear-gradient(165deg, rgba(255, 255, 255, 0.55), transparent 40%),
+          linear-gradient(180deg, var(--rail) 0%, var(--rail-2) 55%, #d4ebe3 100%);
+        color: var(--ink);
+        border-left: 1px solid rgba(255, 255, 255, 0.65);
+        box-shadow: -8px 0 32px rgba(120, 140, 170, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 10px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--blush), var(--butter));
+        display: grid;
+        place-items: center;
+        font-family: var(--font-display);
+        font-weight: 800;
+        color: var(--ink);
+        box-shadow: 0 0 0 4px rgba(245, 198, 194, 0.35);
+      }
+
+      .brand small {
+        display: block;
+        opacity: 0.55;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        color: var(--ink-2);
+      }
+
+      .brand strong {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        color: rgba(63, 68, 86, 0.72);
+        font-size: 14px;
+        transition:
+          background 180ms ease,
+          color 180ms ease,
+          transform 180ms ease;
+      }
+
+      .nav a:hover {
+        background: rgba(255, 255, 255, 0.45);
+        color: var(--ink);
+      }
+
+      .nav a.is-active {
+        background: linear-gradient(90deg, rgba(245, 198, 194, 0.55), rgba(255, 255, 255, 0.35));
+        color: var(--ink);
+        box-shadow: inset 3px 0 0 var(--blush-deep);
+      }
+
+      .nav .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.45;
+      }
+
+      .nav a.is-active .dot {
+        background: var(--blush-deep);
+        opacity: 1;
+        box-shadow: 0 0 0 4px rgba(245, 198, 194, 0.45);
+      }
+
+      .rail-foot {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        line-height: 1.7;
+        color: rgba(63, 68, 86, 0.7);
+      }
+
+      .main {
+        padding: 28px 32px 48px;
+      }
+
+      .topbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--blush-deep);
+        background: rgba(245, 198, 194, 0.45);
+        padding: 6px 12px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+
+      .eyebrow::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--ok);
+        box-shadow: 0 0 0 4px rgba(168, 201, 184, 0.45);
+      }
+
+      h1 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(28px, 3.2vw, 40px);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .lede {
+        margin: 8px 0 0;
+        max-width: 42ch;
+        color: rgba(63, 68, 86, 0.68);
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .top-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          box-shadow 160ms ease,
+          background 160ms ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #7a9ec4, #8bb8a8);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 8px 20px rgba(122, 158, 196, 0.28);
+      }
+
+      .pulse-strip {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .metric {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius);
+        padding: 22px 20px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: var(--shadow);
+        isolation: isolate;
+        min-height: 132px;
+        animation: rise 0.7s ease both;
+      }
+
+      .metric:nth-child(1) {
+        animation-delay: 0.05s;
+        background:
+          linear-gradient(145deg, rgba(185, 212, 240, 0.95), rgba(221, 208, 240, 0.88)),
+          var(--sky);
+        color: var(--ink);
+        grid-row: span 1;
+      }
+
+      .metric:nth-child(2) {
+        animation-delay: 0.12s;
+        background:
+          linear-gradient(145deg, rgba(245, 198, 194, 0.55), rgba(255, 255, 255, 0.85)),
+          rgba(255, 255, 255, 0.72);
+      }
+      .metric:nth-child(3) {
+        animation-delay: 0.18s;
+        background:
+          linear-gradient(145deg, rgba(168, 201, 184, 0.4), rgba(255, 255, 255, 0.85)),
+          rgba(255, 255, 255, 0.72);
+      }
+      .metric:nth-child(4) {
+        animation-delay: 0.24s;
+        background:
+          linear-gradient(145deg, rgba(245, 228, 200, 0.55), rgba(255, 255, 255, 0.85)),
+          rgba(255, 255, 255, 0.72);
+      }
+
+      .metric::after {
+        content: '';
+        position: absolute;
+        inset: auto -20% -40% auto;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: var(--glow);
+        filter: blur(18px);
+        z-index: -1;
+        opacity: 0.7;
+      }
+
+      .metric:nth-child(1)::after {
+        background: rgba(255, 255, 255, 0.55);
+      }
+
+      .metric-label {
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0.65;
+        margin-bottom: 18px;
+      }
+
+      .metric-value {
+        font-family: var(--font-display);
+        font-size: clamp(34px, 4vw, 46px);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .metric-foot {
+        margin-top: 14px;
+        font-size: 12px;
+        opacity: 0.7;
+      }
+
+      .delta {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--sage-deep);
+        font-weight: 600;
+      }
+
+      .metric:nth-child(1) .delta {
+        color: #6a7fa3;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.35fr 0.85fr;
+        gap: 14px;
+      }
+
+      .panel {
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        animation: rise 0.75s ease both;
+        animation-delay: 0.28s;
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .panel-head h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .chip {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: rgba(168, 201, 184, 0.4);
+        color: var(--sage-deep);
+      }
+
+      .activity {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .activity-row {
+        display: grid;
+        grid-template-columns: 18px 1fr auto;
+        gap: 12px;
+        align-items: start;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .activity-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .activity-row:first-child {
+        padding-top: 0;
+      }
+
+      .pulse {
+        width: 10px;
+        height: 10px;
+        margin-top: 6px;
+        border-radius: 50%;
+        background: var(--blush);
+        box-shadow: 0 0 0 4px rgba(245, 198, 194, 0.45);
+      }
+
+      .pulse.sage {
+        background: var(--sage);
+        box-shadow: 0 0 0 4px rgba(168, 201, 184, 0.4);
+      }
+
+      .pulse.ink {
+        background: #8aa8c8;
+        box-shadow: 0 0 0 4px rgba(185, 212, 240, 0.55);
+      }
+
+      .activity strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+
+      .activity span {
+        font-size: 12px;
+        color: rgba(63, 68, 86, 0.55);
+      }
+
+      .activity time {
+        font-size: 11px;
+        color: rgba(63, 68, 86, 0.4);
+        white-space: nowrap;
+      }
+
+      .quick {
+        display: grid;
+        gap: 10px;
+      }
+
+      .quick a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 16px;
+        border-radius: 16px;
+        background: linear-gradient(120deg, rgba(245, 198, 194, 0.28), rgba(185, 212, 240, 0.28));
+        border: 1px solid var(--line);
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease;
+      }
+
+      .quick a:hover {
+        transform: translateX(-3px);
+        border-color: rgba(217, 137, 132, 0.4);
+      }
+
+      .quick strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      .quick span {
+        font-size: 12px;
+        color: rgba(63, 68, 86, 0.55);
+      }
+
+      .arrow {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--sky), var(--sage));
+        color: #fff;
+        font-size: 14px;
+      }
+
+      .packs {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        animation: rise 0.8s ease both;
+        animation-delay: 0.34s;
+      }
+
+      .pack {
+        border-radius: 18px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px dashed rgba(63, 68, 86, 0.12);
+      }
+
+      .pack:nth-child(1) {
+        background: linear-gradient(160deg, rgba(245, 198, 194, 0.45), rgba(255, 255, 255, 0.7));
+      }
+      .pack:nth-child(2) {
+        background: linear-gradient(160deg, rgba(168, 201, 184, 0.4), rgba(255, 255, 255, 0.7));
+      }
+      .pack:nth-child(3) {
+        background: linear-gradient(160deg, rgba(185, 212, 240, 0.45), rgba(255, 255, 255, 0.7));
+      }
+      .pack:nth-child(4) {
+        background: linear-gradient(160deg, rgba(221, 208, 240, 0.4), rgba(255, 255, 255, 0.7));
+      }
+
+      .pack b {
+        display: block;
+        font-size: 22px;
+        font-family: var(--font-display);
+        margin: 8px 0 2px;
+      }
+
+      .pack span {
+        font-size: 12px;
+        color: rgba(63, 68, 86, 0.55);
+      }
+
+      .banner {
+        margin-bottom: 18px;
+        padding: 12px 16px;
+        border-radius: 14px;
+        background: linear-gradient(90deg, rgba(185, 212, 240, 0.75), rgba(245, 198, 194, 0.7));
+        color: var(--ink);
+        font-size: 13px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+      }
+
+      .banner em {
+        font-style: normal;
+        color: var(--blush-deep);
+        font-weight: 600;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @media (max-width: 1100px) {
+        .pulse-strip,
+        .packs {
+          grid-template-columns: 1fr 1fr;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+        .rail {
+          position: relative;
+          height: auto;
+        }
+        .packs {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .metric,
+        .panel,
+        .packs {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banner">
+      <div>
+        این فقط <em>پیش‌نمایش طراحی</em> است — هنوز روی اپ اعمال نشده.
+      </div>
+      <div>اگر اکی دادید، روی Next.js اعمال می‌شود.</div>
+    </div>
+
+    <div class="shell">
+      <aside class="rail" aria-label="ناوبری سوپرادمین">
+        <div class="brand">
+          <div class="brand-mark">ک</div>
+          <div>
+            <small>CONTROL TOWER</small>
+            <strong>سوپرادمین کسب‌یار</strong>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="is-active" href="#"><span class="dot"></span>خلاصه پلتفرم</a>
+          <a href="#"><span class="dot"></span>کاربران</a>
+          <a href="#"><span class="dot"></span>سازمان‌ها</a>
+          <a href="#"><span class="dot"></span>تنظیمات پلتفرم</a>
+        </nav>
+
+        <div class="rail-foot">
+          وضعیت سرویس‌ها پایدار است.
+          <br />
+          آخرین همگام‌سازی: چند لحظه پیش
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">پلتفرم زنده</div>
+            <h1>نبض کسب‌یار را از یک نگاه ببین</h1>
+            <p class="lede">
+              کاربران، سازمان‌ها و ثبت‌نام‌های تازه — با دسترسی سریع به کنترل نقش‌ها و بسته‌های صنفی.
+            </p>
+          </div>
+          <div class="top-actions">
+            <button class="btn" type="button">بازگشت به اپ</button>
+            <button class="btn btn-primary" type="button">مدیریت کاربران</button>
+          </div>
+        </header>
+
+        <section class="pulse-strip" aria-label="شاخص‌های کلیدی">
+          <article class="metric">
+            <div class="metric-label">کل کاربران</div>
+            <div class="metric-value">128</div>
+            <div class="metric-foot"><span class="delta">▲ ۱۲٪</span> نسبت به ماه قبل</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">سازمان‌ها</div>
+            <div class="metric-value">41</div>
+            <div class="metric-foot">فعال روی پلتفرم</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">عضویت‌های فعال</div>
+            <div class="metric-value">96</div>
+            <div class="metric-foot">نقش‌دار و متصل</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">ثبت‌نام امروز</div>
+            <div class="metric-value">7</div>
+            <div class="metric-foot"><span class="delta">▲ ۳</span> نسبت به دیروز</div>
+          </article>
+        </section>
+
+        <section class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>فعالیت اخیر پلتفرم</h2>
+              <span class="chip">زنده</span>
+            </div>
+            <div class="activity">
+              <div class="activity-row">
+                <span class="pulse"></span>
+                <div>
+                  <strong>سازمان جدید: رستوران شبستان</strong>
+                  <span>بسته خرده‌فروشی · طرح Business</span>
+                </div>
+                <time>۱۲ دقیقه پیش</time>
+              </div>
+              <div class="activity-row">
+                <span class="pulse sage"></span>
+                <div>
+                  <strong>ارتقا نقش مدیر برای امیر حسینی</strong>
+                  <span>سازمان demo-general</span>
+                </div>
+                <time>۴۱ دقیقه پیش</time>
+              </div>
+              <div class="activity-row">
+                <span class="pulse ink"></span>
+                <div>
+                  <strong>تغییر بسته صنعتی مطب دکتر نادری</strong>
+                  <span>CLINIC · پرونده ویزیت فعال</span>
+                </div>
+                <time>۲ ساعت پیش</time>
+              </div>
+              <div class="activity-row">
+                <span class="pulse"></span>
+                <div>
+                  <strong>ثبت‌نام کاربر جدید</strong>
+                  <span>super@kesbyar.ir دعوت کرده</span>
+                </div>
+                <time>امروز</time>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>اقدام سریع</h2>
+            </div>
+            <div class="quick">
+              <a href="#">
+                <div>
+                  <strong>کاربران و نقش‌ها</strong>
+                  <span>سوپرادمین، مالک، مدیر، کارمند</span>
+                </div>
+                <span class="arrow">←</span>
+              </a>
+              <a href="#">
+                <div>
+                  <strong>سازمان‌ها و بسته صنفی</strong>
+                  <span>کلینیک · خرده‌فروشی · سفر · عمومی</span>
+                </div>
+                <span class="arrow">←</span>
+              </a>
+              <a href="#">
+                <div>
+                  <strong>تنظیمات پلتفرم</strong>
+                  <span>ثبت‌نام خودکار و نقش پیش‌فرض</span>
+                </div>
+                <span class="arrow">←</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section class="packs" aria-label="توزیع بسته‌های صنفی">
+          <div class="pack">
+            <span>کلینیک</span>
+            <b>9</b>
+            <span>سازمان</span>
+          </div>
+          <div class="pack">
+            <span>خرده‌فروشی</span>
+            <b>16</b>
+            <span>سازمان</span>
+          </div>
+          <div class="pack">
+            <span>مسافرتی</span>
+            <b>1</b>
+            <span>سازمان</span>
+          </div>
+          <div class="pack">
+            <span>عمومی</span>
+            <b>15</b>
+            <span>سازمان</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

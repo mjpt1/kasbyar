@@ -1,9 +1,9 @@
 .landing-root {
-  --ink: #1c1917;
-  --ink-soft: #44403c;
-  --blush: #f2b8b8;
-  --peach: #f5c9a8;
-  --mist: #eef1f4;
+  --ink: #2a2f3d;
+  --ink-soft: #5a6178;
+  --blush: #f5c6c2;
+  --peach: #f5e4c8;
+  --mist: #e6f3ef;
   margin: 0;
   background: var(--ink);
   color: var(--ink);

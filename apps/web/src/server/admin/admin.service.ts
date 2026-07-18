@@ -248,16 +248,54 @@ export async function updateOrganizationPackByAdmin(input: {
 }
 
 export async function getAdminStats() {
-  const [users, organizations, activeMemberships, signupsToday] = await Promise.all([
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [
+    users,
+    organizations,
+    activeMemberships,
+    signupsToday,
+    packGroups,
+    recentUsers,
+    recentOrganizations,
+  ] = await Promise.all([
     prisma.user.count(),
     prisma.organization.count(),
     prisma.membership.count({ where: { isActive: true } }),
-    prisma.user.count({
-      where: {
-        createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+    prisma.user.count({ where: { createdAt: { gte: startOfToday } } }),
+    prisma.organization.groupBy({
+      by: ['industryPack'],
+      _count: { _all: true },
+    }),
+    prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 4,
+      select: { id: true, name: true, email: true, createdAt: true },
+    }),
+    prisma.organization.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 4,
+      select: {
+        id: true,
+        name: true,
+        industryPack: true,
+        createdAt: true,
       },
     }),
   ]);
 
-  return { users, organizations, activeMemberships, signupsToday };
+  const packs = Object.fromEntries(
+    packGroups.map((row) => [row.industryPack, row._count._all]),
+  ) as Partial<Record<IndustryPack, number>>;
+
+  return {
+    users,
+    organizations,
+    activeMemberships,
+    signupsToday,
+    packs,
+    recentUsers,
+    recentOrganizations,
+  };
 }
