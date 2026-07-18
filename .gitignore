@@ -63,3 +63,13 @@ skills-lock.json
 .wiki-tmp/
 
 .env*
+
+# local auth API scratch / curl dumps
+cookies.txt
+login-body.txt
+login-headers.txt
+login.json
+register-body.txt
+register-headers.txt
+register.json
+wrong.json
