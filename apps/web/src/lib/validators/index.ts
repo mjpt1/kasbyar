@@ -220,6 +220,17 @@ export const appointmentSchema = z.object({
 
 export const appointmentUpdateSchema = appointmentSchema.partial();
 
+export const visitRecordSchema = z.object({
+  customerId: z.string().min(1, 'بیمار الزامی است'),
+  practitionerId: z.string().optional(),
+  appointmentId: z.string().optional(),
+  visitDate: z.coerce.date().optional(),
+  chiefComplaint: z.string().optional(),
+  diagnosis: z.string().optional(),
+  treatmentNotes: z.string().optional(),
+  followUpAt: z.coerce.date().optional().nullable(),
+});
+
 export const patientProfileSchema = z.object({
   customerId: z.string().min(1),
   fileNumber: z.string().optional(),

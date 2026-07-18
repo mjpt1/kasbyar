@@ -40,6 +40,7 @@ const PACK_ICON_MAP: Record<string, LucideIcon> = {
   Stethoscope,
   Calendar,
   HeartPulse,
+  FolderOpen,
   Plane,
   Luggage,
   Store,

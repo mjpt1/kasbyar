@@ -35,7 +35,7 @@ export default async function ClinicPatientsPage({
           {items.map((patient) => (
             <Link
               key={patient.id}
-              href={`/customers/${patient.id}`}
+              href={`/clinic/patients/${patient.id}`}
               className="flex items-center justify-between rounded-md border bg-card p-4 hover:bg-muted/50"
             >
               <div>

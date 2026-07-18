@@ -156,36 +156,128 @@ export async function ensurePatientProfile(
   });
 }
 
+export async function listVisitRecords(
+  organizationId: string,
+  params?: { customerId?: string; page?: number },
+) {
+  const page = params?.page ?? 1;
+  const pageSize = 20;
+  const where: Prisma.VisitRecordWhereInput = {
+    organizationId,
+    ...(params?.customerId ? { customerId: params.customerId } : {}),
+  };
+
+  const [items, total] = await Promise.all([
+    prisma.visitRecord.findMany({
+      where,
+      orderBy: { visitDate: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        customer: { select: { id: true, name: true, phone: true } },
+        practitioner: { select: { id: true, name: true, specialty: true } },
+      },
+    }),
+    prisma.visitRecord.count({ where }),
+  ]);
+
+  return { items, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+}
+
+export async function getPatientFile(organizationId: string, customerId: string) {
+  const customer = await prisma.customer.findFirst({
+    where: { id: customerId, organizationId },
+    include: {
+      patientProfile: true,
+      visitRecords: {
+        orderBy: { visitDate: 'desc' },
+        take: 20,
+        include: {
+          practitioner: { select: { id: true, name: true } },
+        },
+      },
+      appointments: {
+        orderBy: { scheduledAt: 'desc' },
+        take: 10,
+        include: {
+          practitioner: { select: { name: true } },
+        },
+      },
+    },
+  });
+
+  if (!customer) return null;
+
+  return {
+    customer,
+    patientProfile: customer.patientProfile,
+    visits: customer.visitRecords,
+    appointments: customer.appointments,
+  };
+}
+
+export async function createVisitRecord(
+  organizationId: string,
+  data: Omit<Prisma.VisitRecordUncheckedCreateInput, 'organizationId'>,
+) {
+  await requireCustomerInOrg(organizationId, data.customerId);
+  if (data.practitionerId) {
+    await requirePractitionerInOrg(organizationId, data.practitionerId);
+  }
+
+  return prisma.visitRecord.create({
+    data: { ...data, organizationId },
+    include: {
+      customer: { select: { id: true, name: true, phone: true } },
+      practitioner: { select: { id: true, name: true } },
+    },
+  });
+}
+
 export async function getClinicDashboardSignals(organizationId: string) {
   const todayStart = startOfToday();
   const todayEnd = endOfToday();
+  const followUpUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
 
-  const [todayCount, missedCount, followUpCount, patientCount] = await Promise.all([
-    prisma.appointment.count({
-      where: {
-        organizationId,
-        scheduledAt: { gte: todayStart, lte: todayEnd },
-        status: { notIn: ['CANCELLED'] },
-      },
-    }),
-    prisma.appointment.count({
-      where: {
-        organizationId,
-        scheduledAt: { lt: todayStart },
-        status: { in: ['SCHEDULED', 'CONFIRMED', 'NO_SHOW'] },
-      },
-    }),
-    prisma.appointment.count({
-      where: {
-        organizationId,
-        followUpAt: { lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-        status: 'COMPLETED',
-      },
-    }),
-    prisma.patientProfile.count({ where: { organizationId } }),
-  ]);
+  const [todayCount, missedCount, appointmentFollowUps, visitFollowUps, patientCount] =
+    await Promise.all([
+      prisma.appointment.count({
+        where: {
+          organizationId,
+          scheduledAt: { gte: todayStart, lte: todayEnd },
+          status: { notIn: ['CANCELLED'] },
+        },
+      }),
+      prisma.appointment.count({
+        where: {
+          organizationId,
+          scheduledAt: { lt: todayStart },
+          status: { in: ['SCHEDULED', 'CONFIRMED', 'NO_SHOW'] },
+        },
+      }),
+      prisma.appointment.count({
+        where: {
+          organizationId,
+          followUpAt: { lte: followUpUntil },
+          status: 'COMPLETED',
+        },
+      }),
+      prisma.visitRecord.count({
+        where: {
+          organizationId,
+          followUpAt: { gte: now, lte: followUpUntil },
+        },
+      }),
+      prisma.patientProfile.count({ where: { organizationId } }),
+    ]);
 
-  return { todayCount, missedCount, followUpCount, patientCount };
+  return {
+    todayCount,
+    missedCount,
+    followUpCount: appointmentFollowUps + visitFollowUps,
+    patientCount,
+  };
 }
 
 export async function listPractitioners(organizationId: string) {

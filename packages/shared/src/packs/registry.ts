@@ -18,6 +18,7 @@ export const PACK_REGISTRY: Record<IndustryPackId, PackDefinition> = {
       { href: '/clinic', label: 'کلینیک', icon: 'Stethoscope' },
       { href: '/clinic/appointments', label: 'نوبت‌ها', icon: 'Calendar' },
       { href: '/clinic/patients', label: 'بیماران', icon: 'HeartPulse' },
+      { href: '/clinic/visits', label: 'پرونده ویزیت', icon: 'FolderOpen' },
     ],
     labels: { customer: 'بیمار', customers: 'بیماران' },
   },

@@ -3,6 +3,11 @@ import type { IndustryPack, PrismaClient } from '@prisma/client';
 import { PIPELINE_STAGES_DEFAULT } from '../constants';
 import type { SeedUsers } from '../types';
 import {
+  CLINIC_PRESETS,
+  GENERAL_PRESETS,
+  RETAIL_PRESETS,
+} from './industry-presets';
+import {
   seedClinicPackData,
   seedRetailPackData,
   seedTravelPackData,
@@ -28,177 +33,6 @@ interface VerticalConfig {
   email: string;
   address: string;
 }
-
-interface RetailSeedPreset {
-  customerNames: [string, string, string];
-  secondCustomerCompany: string;
-  customerCities: [string, string, string];
-  productNames: [string, string];
-  productSkus: [string, string];
-  productPrices: [number, number];
-  productStocks: [number, number];
-  leadTitle: string;
-  renewalTitle: string;
-  paidInvoiceDescription: string;
-  overdueInvoiceDescription: string;
-  taskTitles: [string, string];
-}
-
-interface ClinicSeedPreset {
-  patientNames: [string, string, string];
-  patientCities: [string, string, string];
-  patientNote?: string;
-  serviceNames: [string, string, string];
-  servicePrices: [number, number, number];
-  leadTitle: string;
-  wonLeadTitle: string;
-  reminderTitle: string;
-  reminderMessage: string;
-}
-
-interface GeneralSeedPreset {
-  firstCustomerName: string;
-  firstCustomerCompany: string;
-  secondCustomerName: string;
-  firstCustomerCity: string;
-  secondCustomerCity: string;
-  leadTitles: [string, string];
-  invoiceDescription: string;
-  taskTitles: [string, string];
-  invoiceAmount: number;
-  paidAmount: number;
-}
-
-const RETAIL_PRESETS: Record<string, RetailSeedPreset> = {
-  'demo-retail': {
-    customerNames: ['لیلا فرهمند', 'بوتیک ماهان', 'پریسا نادری'],
-    secondCustomerCompany: 'ماهان استایل',
-    customerCities: ['تهران', 'اصفهان', 'شیراز'],
-    productNames: ['مانتو کتی زنانه', 'شلوار جین مردانه'],
-    productSkus: ['RT-101', 'RT-202'],
-    productPrices: [3200000, 1850000],
-    productStocks: [45, 80],
-    leadTitle: 'سفارش عمده مانتو پاییزه',
-    renewalTitle: 'تمدید قرارداد نمایندگی',
-    paidInvoiceDescription: 'مانتو کتی زنانه',
-    overdueInvoiceDescription: 'مانتو کتی زنانه — عمده',
-    taskTitles: ['انبارگردانی پایان فصل', 'پیگیری بدهی بوتیک ماهان'],
-  },
-  'demo-supermarket': {
-    customerNames: ['خانواده اکبری', 'رستوران گیلاس', 'منصور رفیعی'],
-    secondCustomerCompany: 'رستوران گیلاس',
-    customerCities: ['تهران', 'تهران', 'کرج'],
-    productNames: ['برنج ایرانی ۱۰ کیلویی', 'روغن مایع ۱.۸ لیتری'],
-    productSkus: ['SM-110', 'SM-220'],
-    productPrices: [2850000, 980000],
-    productStocks: [28, 64],
-    leadTitle: 'تامین ماهانه اقلام مصرفی ساختمان اداری',
-    renewalTitle: 'تمدید سفارش هفتگی رستوران',
-    paidInvoiceDescription: 'برنج ایرانی ۱۰ کیلویی',
-    overdueInvoiceDescription: 'روغن مایع ۱.۸ لیتری — عمده',
-    taskTitles: ['بازبینی سفارش صبحگاهی', 'پیگیری تسویه رستوران گیلاس'],
-  },
-  'demo-pharmacy': {
-    customerNames: ['سمیه شاکری', 'درمانگاه مهر', 'علی موسوی'],
-    secondCustomerCompany: 'درمانگاه مهر',
-    customerCities: ['تهران', 'تهران', 'ورامین'],
-    productNames: ['استامینوفن ۵۰۰', 'شربت سرفه کودکان'],
-    productSkus: ['PH-101', 'PH-204'],
-    productPrices: [145000, 275000],
-    productStocks: [120, 42],
-    leadTitle: 'درخواست تامین داروی مصرفی درمانگاه',
-    renewalTitle: 'تمدید همکاری تامین ماهانه',
-    paidInvoiceDescription: 'استامینوفن ۵۰۰',
-    overdueInvoiceDescription: 'شربت سرفه کودکان — عمده',
-    taskTitles: ['کنترل اقلام رو به اتمام', 'پیگیری بدهی درمانگاه مهر'],
-  },
-};
-
-const CLINIC_PRESETS: Record<string, ClinicSeedPreset> = {
-  'demo-clinic': {
-    patientNames: ['دکتر آرش میرزایی', 'فاطمه حیدری', 'محمد جوادی'],
-    patientCities: ['تهران', 'کرج', 'تهران'],
-    patientNote: 'ایمپلنت — دو جلسه باقی\u200cمانده',
-    serviceNames: ['معاینه و مشاوره', 'جرم\u200cگیری و بروساژ', 'ایمپلنت دندان'],
-    servicePrices: [850000, 1200000, 45000000],
-    leadTitle: 'درخواست مشاوره ارتودنسی',
-    wonLeadTitle: 'طرح درمان ایمپلنت',
-    reminderTitle: 'یادآوری نوبت فاطمه حیدری',
-    reminderMessage: 'جلسه دوم ایمپلنت',
-  },
-  'demo-medical-office': {
-    patientNames: ['حمید نادری', 'نرگس محسنی', 'رضا سلیمانی'],
-    patientCities: ['تهران', 'تهران', 'اسلامشهر'],
-    patientNote: 'چکاپ دوره\u200cای و پیگیری فشار خون',
-    serviceNames: ['ویزیت پزشک عمومی', 'آزمایش چکاپ', 'تفسیر نتایج و نسخه'],
-    servicePrices: [650000, 1800000, 950000],
-    leadTitle: 'درخواست ویزیت خانواده',
-    wonLeadTitle: 'پکیج چکاپ سالانه',
-    reminderTitle: 'یادآوری چکاپ نرگس محسنی',
-    reminderMessage: 'پیگیری نتایج آزمایش و مراجعه مجدد',
-  },
-  'demo-hospital': {
-    patientNames: ['بهزاد رحیمی', 'مینا شفیعی', 'یاسر طهماسبی'],
-    patientCities: ['تهران', 'قم', 'کرج'],
-    patientNote: 'نیازمند پیگیری ترخیص و کنترل هزینه خدمات',
-    serviceNames: ['پذیرش تخصصی', 'رادیولوژی و تصویربرداری', 'خدمات بستری روزانه'],
-    servicePrices: [1500000, 4200000, 18000000],
-    leadTitle: 'درخواست جراحی سرپایی',
-    wonLeadTitle: 'پذیرش خدمات بستری',
-    reminderTitle: 'یادآوری پیگیری پرونده مینا شفیعی',
-    reminderMessage: 'هماهنگی ترخیص و تسویه نهایی',
-  },
-  'demo-treatment-center': {
-    patientNames: ['امیرحسین قاسمی', 'زهرا کیانی', 'احسان مرادی'],
-    patientCities: ['کرج', 'فردیس', 'کرج'],
-    patientNote: 'درمانگاه شبانه\u200cروزی — مراجعه مجدد ۴۸ ساعته',
-    serviceNames: ['ویزیت عمومی', 'تزریقات و پانسمان', 'آزمایش فوری'],
-    servicePrices: [550000, 780000, 1250000],
-    leadTitle: 'درخواست خدمات فوری خانوادگی',
-    wonLeadTitle: 'پرونده درمان سرپایی',
-    reminderTitle: 'یادآوری مراجعه زهرا کیانی',
-    reminderMessage: 'کنترل وضعیت و تمدید نسخه',
-  },
-};
-
-const GENERAL_PRESETS: Record<string, GeneralSeedPreset> = {
-  'demo-contracting': {
-    firstCustomerName: 'شرکت توسعه عمران آریا',
-    firstCustomerCompany: 'توسعه عمران آریا',
-    secondCustomerName: 'مجتبی رضایی',
-    firstCustomerCity: 'تهران',
-    secondCustomerCity: 'پرند',
-    leadTitles: ['مذاکره پیمان فاز دوم پروژه', 'ارسال صورت\u200cوضعیت پروژه عمرانی'],
-    invoiceDescription: 'صورت\u200cوضعیت اجرای فاز اول',
-    taskTitles: ['پیگیری تایید صورت\u200cوضعیت', 'هماهنگی برنامه هفتگی کارگاه'],
-    invoiceAmount: 125000000,
-    paidAmount: 45000000,
-  },
-  'demo-education-center': {
-    firstCustomerName: 'آموزش و پژوهش پارس',
-    firstCustomerCompany: 'آموزش و پژوهش پارس',
-    secondCustomerName: 'ریحانه ساداتی',
-    firstCustomerCity: 'تهران',
-    secondCustomerCity: 'شهریار',
-    leadTitles: ['ثبت\u200cنام دوره سازمانی', 'ارسال پیش\u200cفاکتور شهریه ترم جدید'],
-    invoiceDescription: 'شهریه دوره مهارت\u200cافزایی',
-    taskTitles: ['پیگیری واریز شهریه سازمانی', 'به\u200cروزرسانی برنامه کلاس\u200cها'],
-    invoiceAmount: 68000000,
-    paidAmount: 25000000,
-  },
-  'demo-beauty-salon': {
-    firstCustomerName: 'نرگس بیات',
-    firstCustomerCompany: 'باشگاه مشتریان ماه\u200cچهره',
-    secondCustomerName: 'سحر صبوری',
-    firstCustomerCity: 'تهران',
-    secondCustomerCity: 'تهران',
-    leadTitles: ['رزرو پکیج خدمات عروس', 'ارسال پیش\u200cفاکتور خدمات VIP'],
-    invoiceDescription: 'پکیج خدمات زیبایی VIP',
-    taskTitles: ['پیگیری رزرو خدمات هفته آینده', 'هماهنگی شیفت تیم خدمات'],
-    invoiceAmount: 54000000,
-    paidAmount: 18000000,
-  },
-};
 
 const SUBSCRIPTION_PRESETS: Record<string, { planCode: 'FREE' | 'STARTER' | 'BUSINESS'; status: 'ACTIVE' | 'TRIALING'; trialDays?: number }> = {
   'demo-retail': { planCode: 'STARTER', status: 'ACTIVE' },
@@ -682,7 +516,7 @@ async function seedVertical(
       status: 'PAID',
       issueDate: daysAgo(7),
       dueDate: daysAgo(1),
-      paidAmount: 5050000,
+      paidAmount: preset.productPrices[0] + preset.productPrices[1],
       items: [
         {
           description: preset.paidInvoiceDescription,
@@ -703,7 +537,7 @@ async function seedVertical(
       organizationId: orgId,
       customerId: customers[0]!.id,
       invoiceId: invPaid.id,
-      amount: 5050000,
+      amount: preset.productPrices[0] + preset.productPrices[1],
       method: 'CARD',
       paidAt: daysAgo(5),
     });
@@ -745,7 +579,7 @@ async function seedVertical(
       ],
     });
 
-    await seedRetailPackData(prisma, orgId, [products[0]!.id, products[1]!.id]);
+    await seedRetailPackData(prisma, orgId, [products[0]!.id, products[1]!.id], config.slug);
   }
 
   if (config.industryPack === 'CLINIC') {
@@ -915,6 +749,7 @@ async function seedVertical(
       orgId,
       [patients[0]!.id, patients[1]!.id, patients[2]!.id],
       owner.id,
+      config.slug,
     );
   }
 

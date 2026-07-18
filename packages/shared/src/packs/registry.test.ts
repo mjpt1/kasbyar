@@ -12,6 +12,7 @@ describe('pack registry', () => {
     const nav = getPackNavItems('CLINIC');
     expect(nav.length).toBeGreaterThan(0);
     expect(nav.some((n) => n.href === '/clinic/appointments')).toBe(true);
+    expect(nav.some((n) => n.href === '/clinic/visits')).toBe(true);
     expect(getPackDefinition('CLINIC').labels.customer).toBe('بیمار');
   });
 

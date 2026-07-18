@@ -1,21 +1,34 @@
 import type { PrismaClient } from '@prisma/client';
 
+import {
+  CLINIC_PACK_EXTENSIONS,
+  RETAIL_PACK_EXTENSIONS,
+  type ClinicPackExtensionPreset,
+  type RetailPackExtensionPreset,
+} from './industry-presets';
 import { atHour, daysAgo, daysFromNow, endOfToday, startOfToday } from '../utils';
+
+const DEFAULT_CLINIC_EXT = CLINIC_PACK_EXTENSIONS['demo-clinic']!;
+const DEFAULT_RETAIL_EXT = RETAIL_PACK_EXTENSIONS['demo-retail']!;
 
 export async function seedClinicPackData(
   prisma: PrismaClient,
   organizationId: string,
   customerIds: string[],
   ownerId: string,
+  slug?: string,
 ) {
   const [p1, p2, p3] = customerIds;
   if (!p1 || !p2 || !p3) return;
 
+  const ext: ClinicPackExtensionPreset =
+    (slug ? CLINIC_PACK_EXTENSIONS[slug] : undefined) ?? DEFAULT_CLINIC_EXT;
+
   const practitioner = await prisma.practitioner.create({
     data: {
       organizationId,
-      name: 'دکتر نیلوفر رضایی',
-      specialty: 'دندانپزشک',
+      name: ext.practitionerName,
+      specialty: ext.specialty,
       phone: '09121110000',
     },
   });
@@ -25,20 +38,21 @@ export async function seedClinicPackData(
       {
         organizationId,
         customerId: p1,
-        fileNumber: 'P-1001',
-        notes: 'مراجع دوره‌ای',
+        fileNumber: `${ext.filePrefix}-1001`,
+        notes: ext.patientNotes[0],
       },
       {
         organizationId,
         customerId: p2,
-        fileNumber: 'P-1002',
-        allergies: 'پنی‌سیلین',
-        notes: 'ایمپلنت — دو جلسه باقی‌مانده',
+        fileNumber: `${ext.filePrefix}-1002`,
+        allergies: ext.allergies,
+        notes: ext.patientNotes[1],
       },
       {
         organizationId,
         customerId: p3,
-        fileNumber: 'P-1003',
+        fileNumber: `${ext.filePrefix}-1003`,
+        notes: ext.patientNotes[2],
       },
     ],
   });
@@ -51,8 +65,8 @@ export async function seedClinicPackData(
       status: 'CONFIRMED',
       scheduledAt: atHour(startOfToday(), 10),
       durationMin: 60,
-      reason: 'جلسه دوم ایمپلنت',
-      notes: 'آماده‌سازی پروتز',
+      reason: ext.appointmentReasons.today,
+      notes: ext.visit.treatmentNotes,
     },
   });
 
@@ -65,7 +79,7 @@ export async function seedClinicPackData(
         status: 'SCHEDULED',
         scheduledAt: atHour(startOfToday(), 14),
         durationMin: 45,
-        reason: 'جرم‌گیری',
+        reason: ext.appointmentReasons.afternoon,
       },
       {
         organizationId,
@@ -73,7 +87,7 @@ export async function seedClinicPackData(
         status: 'SCHEDULED',
         scheduledAt: atHour(daysFromNow(2), 11),
         durationMin: 30,
-        reason: 'معاینه دوره‌ای',
+        reason: ext.appointmentReasons.upcoming,
       },
       {
         organizationId,
@@ -82,7 +96,18 @@ export async function seedClinicPackData(
         status: 'NO_SHOW',
         scheduledAt: daysAgo(3),
         durationMin: 30,
-        reason: 'پیگیری درمان',
+        reason: ext.appointmentReasons.noShow,
+      },
+      {
+        organizationId,
+        customerId: p1,
+        practitionerId: practitioner.id,
+        status: 'COMPLETED',
+        scheduledAt: daysAgo(5),
+        durationMin: 30,
+        reason: ext.appointmentReasons.upcoming,
+        completedAt: daysAgo(5),
+        followUpAt: daysFromNow(3),
       },
     ],
   });
@@ -93,9 +118,21 @@ export async function seedClinicPackData(
       customerId: p2,
       appointmentId: todayAppt.id,
       practitionerId: practitioner.id,
-      chiefComplaint: 'ایمپلنت فک پایین',
-      treatmentNotes: 'پیچ گذاری انجام شد — جلسه بعدی پروتز',
+      chiefComplaint: ext.visit.chiefComplaint,
+      treatmentNotes: ext.visit.treatmentNotes,
       followUpAt: daysFromNow(14),
+    },
+  });
+
+  await prisma.visitRecord.create({
+    data: {
+      organizationId,
+      customerId: p1,
+      practitionerId: practitioner.id,
+      visitDate: daysAgo(5),
+      chiefComplaint: ext.appointmentReasons.upcoming,
+      treatmentNotes: 'ویزیت تکمیل شد — پیگیری طبق برنامه',
+      followUpAt: daysFromNow(3),
     },
   });
 
@@ -103,7 +140,7 @@ export async function seedClinicPackData(
     data: {
       organizationId,
       assigneeId: ownerId,
-      title: 'تماس یادآوری نوبت فاطمه حیدری',
+      title: ext.taskTitle,
       priority: 'HIGH',
       dueDate: endOfToday(),
     },
@@ -177,17 +214,21 @@ export async function seedRetailPackData(
   prisma: PrismaClient,
   organizationId: string,
   productIds: string[],
+  slug?: string,
 ) {
   const [prod1, prod2] = productIds;
   if (!prod1 || !prod2) return;
 
+  const ext: RetailPackExtensionPreset =
+    (slug ? RETAIL_PACK_EXTENSIONS[slug] : undefined) ?? DEFAULT_RETAIL_EXT;
+
   await prisma.product.update({
     where: { id: prod1 },
-    data: { reorderLevel: 50 },
+    data: { reorderLevel: ext.reorderLevels[0] },
   });
   await prisma.product.update({
     where: { id: prod2 },
-    data: { reorderLevel: 100, stockQty: 8 },
+    data: { reorderLevel: ext.reorderLevels[1], stockQty: 8 },
   });
 
   await prisma.stockMovement.createMany({
@@ -197,7 +238,7 @@ export async function seedRetailPackData(
         productId: prod1,
         type: 'IN',
         quantity: 50,
-        reason: 'خرید فصل پاییز',
+        reason: ext.stockInReason,
         reference: 'PO-2401',
         createdAt: daysAgo(10),
       },
@@ -206,7 +247,7 @@ export async function seedRetailPackData(
         productId: prod2,
         type: 'OUT',
         quantity: 12,
-        reason: 'فروش خرده',
+        reason: ext.stockOutReason,
         reference: 'SL-8891',
         createdAt: daysAgo(3),
       },
@@ -215,7 +256,8 @@ export async function seedRetailPackData(
         productId: prod2,
         type: 'OUT',
         quantity: 8,
-        reason: 'فروش عمده بوتیک ماهان',
+        reason: ext.stockBulkReason,
+        reference: ext.bulkRef,
         createdAt: daysAgo(1),
       },
     ],
