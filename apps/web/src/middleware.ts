@@ -1,38 +1,34 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import { ORG_COOKIE, SESSION_COOKIE } from '@/lib/auth/constants';
+import {
+  SESSION_COOKIE,
+  clearAuthCookiesOnResponse,
+} from '@/lib/auth/cookie-options';
 
-const publicPaths = ['/login', '/register'];
+const publicPaths = ['/', '/login', '/register'];
 const workspacePaths = ['/workspace/select'];
 const authPaths = ['/login', '/register'];
-
-function clearAuthCookies(response: NextResponse) {
-  response.cookies.set(SESSION_COOKIE, '', { path: '/', maxAge: 0 });
-  response.cookies.set(ORG_COOKIE, '', { path: '/', maxAge: 0 });
-}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(SESSION_COOKIE)?.value;
 
-  const isPublic = publicPaths.some((p) => pathname.startsWith(p));
+  const isPublic =
+    pathname === '/' || publicPaths.some((p) => p !== '/' && pathname.startsWith(p));
   const isAuthPage = authPaths.some((p) => pathname === p);
   const expired = request.nextUrl.searchParams.get('expired') === '1';
 
-  // Landing is public for guests; signed-in users go to dashboard.
+  // Always serve the marketing landing at "/".
+  // Do not redirect based on cookie *presence* alone — stale cookies caused
+  // "/" → /dashboard → /login?expired=1 loops and hid the landing page.
   if (pathname === '/') {
-    if (token) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
     return NextResponse.next();
   }
 
-  // Never bounce /login → /dashboard based only on cookie presence.
-  // Invalid cookies previously caused ERR_TOO_MANY_REDIRECTS.
   if (isAuthPage) {
     const response = NextResponse.next();
-    if (expired) clearAuthCookies(response);
+    if (expired) clearAuthCookiesOnResponse(response);
     return response;
   }
 

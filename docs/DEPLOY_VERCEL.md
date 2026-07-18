@@ -37,9 +37,19 @@
 | `SESSION_SECRET` | بله | رشته تصادفی ≥۳۲ کاراکتر |
 | `NEXT_PUBLIC_APP_URL` | بله | `https://your-app.vercel.app` |
 | `APP_ENV` | بله | `production` |
-| `ALLOW_SEED` | بله | `false` |
+| `ALLOW_SEED` | بله | `false` (برای seed اولیه موقت `true`) |
 | `DEMO_MODE` | خیر | `false` (یا `true` برای نمایش) |
 | `NEXT_PUBLIC_DEMO_MODE` | خیر | هم‌راستا با DEMO_MODE |
+
+> **حساب‌های دمو روی Vercel به‌صورت خودکار ساخته نمی‌شوند.**  
+> بعد از اتصال `DATABASE_URL`، یک‌بار از ماشین محلی:
+>
+> ```bash
+> DATABASE_URL="postgresql://..." ALLOW_SEED=true npm run db:push
+> DATABASE_URL="postgresql://..." ALLOW_SEED=true npm run db:seed
+> ```
+>
+> سپس در Vercel می‌توانید `DEMO_MODE=true` و `NEXT_PUBLIC_DEMO_MODE=true` بگذارید و redeploy کنید تا میانبرهای ورود دمو روی `/login` ظاهر شوند.
 | `AI_SERVICE_URL` | خیر | URL سرویس FastAPI |
 | `AI_SERVICE_TOKEN` | اگر AI دارید | توکن داخلی |
 | `UPLOAD_DIR` | خیر | `/tmp/uploads` (موقت serverless) |

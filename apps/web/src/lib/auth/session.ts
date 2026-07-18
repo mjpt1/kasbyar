@@ -4,8 +4,11 @@ import { redirect } from 'next/navigation';
 import type { SessionContext } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
-import { ORG_COOKIE, SESSION_COOKIE } from '@/lib/auth/crypto';
-import { shouldUseSecureCookies } from '@/lib/env';
+import {
+  ORG_COOKIE,
+  SESSION_COOKIE,
+  orgCookieOptions,
+} from '@/lib/auth/cookie-options';
 import { prisma } from '@/lib/prisma';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
 
@@ -107,11 +110,5 @@ export async function requirePlatformAdmin(): Promise<SessionContext> {
 
 export async function setActiveOrganizationCookie(organizationId: string) {
   const cookieStore = await cookies();
-  cookieStore.set(ORG_COOKIE, organizationId, {
-    httpOnly: true,
-    secure: shouldUseSecureCookies(),
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  cookieStore.set(ORG_COOKIE, organizationId, orgCookieOptions());
 }

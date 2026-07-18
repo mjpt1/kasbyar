@@ -1,22 +1,24 @@
-import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-import { apiSuccess, errorResponse, jsonResponse } from '@/lib/api-response';
-import { SESSION_COOKIE } from '@/lib/auth/crypto';
-import { shouldUseSecureCookies } from '@/lib/env';
-import { setActiveOrganizationCookie } from '@/lib/auth/session';
+import { apiSuccess, apiError } from '@/lib/api-response';
+import { applyAuthCookies } from '@/lib/auth/cookie-options';
 import { registerSchema } from '@/lib/validators';
 import { loginUser, registerUser } from '@/server/auth/auth.service';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
-      return errorResponse(
-        parsed.error.errors[0]?.message ?? 'داده نامعتبر',
-        400,
-        'VALIDATION_ERROR',
+      return NextResponse.json(
+        apiError(
+          parsed.error.errors[0]?.message ?? 'داده نامعتبر',
+          'VALIDATION_ERROR',
+        ),
+        { status: 400 },
       );
     }
 
@@ -26,23 +28,29 @@ export async function POST(request: Request) {
       parsed.data.password,
     );
 
-    const cookieStore = await cookies();
-    cookieStore.set(SESSION_COOKIE, token, {
-      httpOnly: true,
-      secure: shouldUseSecureCookies(),
-      sameSite: 'lax',
-      path: '/',
-      expires: expiresAt,
-    });
-
     const workspaces = await listUserWorkspaces(user.id);
-    if (workspaces[0]) {
-      await setActiveOrganizationCookie(workspaces[0].organizationId);
+    if (workspaces.length === 0) {
+      return NextResponse.json(
+        apiError(
+          'ثبت‌نام انجام شد ولی فضای کاری ساخته نشد. دوباره تلاش کنید.',
+          'NO_WORKSPACE',
+        ),
+        { status: 500 },
+      );
     }
 
-    return jsonResponse(apiSuccess({ registered: true }), 201);
+    const response = NextResponse.json(
+      apiSuccess({
+        registered: true,
+        organizationId: workspaces[0]!.organizationId,
+      }),
+      { status: 201 },
+    );
+
+    applyAuthCookies(response, token, expiresAt, workspaces[0]!.organizationId);
+    return response;
   } catch (err) {
     const message = err instanceof Error ? err.message : 'خطای سرور';
-    return errorResponse(message, 400);
+    return NextResponse.json(apiError(message), { status: 400 });
   }
 }

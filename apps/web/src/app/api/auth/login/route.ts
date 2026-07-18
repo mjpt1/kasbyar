@@ -1,22 +1,24 @@
-import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-import { apiSuccess, errorResponse, jsonResponse } from '@/lib/api-response';
-import { SESSION_COOKIE } from '@/lib/auth/crypto';
-import { setActiveOrganizationCookie } from '@/lib/auth/session';
-import { shouldUseSecureCookies } from '@/lib/env';
+import { apiSuccess, apiError } from '@/lib/api-response';
+import { applyAuthCookies } from '@/lib/auth/cookie-options';
 import { loginSchema } from '@/lib/validators';
 import { loginUser } from '@/server/auth/auth.service';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
-      return errorResponse(
-        parsed.error.errors[0]?.message ?? 'داده نامعتبر',
-        400,
-        'VALIDATION_ERROR',
+      return NextResponse.json(
+        apiError(
+          parsed.error.errors[0]?.message ?? 'داده نامعتبر',
+          'VALIDATION_ERROR',
+        ),
+        { status: 400 },
       );
     }
 
@@ -25,29 +27,30 @@ export async function POST(request: Request) {
       parsed.data.password,
     );
 
-    const cookieStore = await cookies();
-    cookieStore.set(SESSION_COOKIE, token, {
-      httpOnly: true,
-      secure: shouldUseSecureCookies(),
-      sameSite: 'lax',
-      path: '/',
-      expires: expiresAt,
-    });
-
     const workspaces = await listUserWorkspaces(user.id);
-    if (workspaces[0]) {
-      await setActiveOrganizationCookie(workspaces[0].organizationId);
+    if (workspaces.length === 0) {
+      return NextResponse.json(
+        apiError(
+          'حساب شما به هیچ فضای کاری متصل نیست. دوباره ثبت‌نام کنید یا با پشتیبانی تماس بگیرید.',
+          'NO_WORKSPACE',
+        ),
+        { status: 403 },
+      );
     }
 
-    return jsonResponse(
+    const response = NextResponse.json(
       apiSuccess({
         id: user.id,
         name: user.name,
         email: user.email,
+        organizationId: workspaces[0]!.organizationId,
       }),
     );
+
+    applyAuthCookies(response, token, expiresAt, workspaces[0]!.organizationId);
+    return response;
   } catch (err) {
     const message = err instanceof Error ? err.message : 'خطای سرور';
-    return errorResponse(message, 401);
+    return NextResponse.json(apiError(message), { status: 401 });
   }
 }

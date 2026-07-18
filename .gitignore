@@ -62,3 +62,4 @@ typecheck-important-fixes.txt
 skills-lock.json
 .wiki-tmp/
 
+.env*

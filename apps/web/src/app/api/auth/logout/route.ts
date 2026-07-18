@@ -1,7 +1,11 @@
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { SESSION_COOKIE } from '@/lib/auth/crypto';
+import { apiSuccess } from '@/lib/api-response';
+import {
+  SESSION_COOKIE,
+  clearAuthCookiesOnResponse,
+} from '@/lib/auth/cookie-options';
 import { logoutUser } from '@/server/auth/auth.service';
 
 export async function POST() {
@@ -10,6 +14,8 @@ export async function POST() {
   if (token) {
     await logoutUser(token);
   }
-  cookieStore.delete(SESSION_COOKIE);
-  return jsonResponse(apiSuccess({ loggedOut: true }));
+
+  const response = NextResponse.json(apiSuccess({ loggedOut: true }));
+  clearAuthCookiesOnResponse(response);
+  return response;
 }

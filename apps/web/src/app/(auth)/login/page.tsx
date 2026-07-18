@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -12,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -24,6 +22,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           email: form.get('email'),
           password: form.get('password'),
@@ -35,8 +34,8 @@ export default function LoginPage() {
         return;
       }
       toast.success('خوش آمدید');
-      router.push('/dashboard');
-      router.refresh();
+      // Full navigation so the session cookie is always sent on the next request.
+      window.location.assign('/dashboard');
     } catch {
       toast.error('خطا در ارتباط با سرور');
     } finally {
@@ -69,6 +68,11 @@ export default function LoginPage() {
             حساب ندارید؟{' '}
             <Link href="/register" className="text-primary hover:underline">
               ثبت‌نام
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-sm">
+            <Link href="/" className="text-muted-foreground hover:text-primary hover:underline">
+              بازگشت به صفحهٔ اصلی
             </Link>
           </p>
           <DemoLoginShortcuts />

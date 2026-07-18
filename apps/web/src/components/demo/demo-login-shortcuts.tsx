@@ -1,7 +1,6 @@
 'use client';
 
 import { DEMO_PASSWORD_HINT, DEMO_PERSONAS } from '@kesbyar/shared';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,7 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 const DEMO_ENABLED = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 
 export function DemoLoginShortcuts() {
-  const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
 
   if (!DEMO_ENABLED) return null;
@@ -22,6 +20,7 @@ export function DemoLoginShortcuts() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password: DEMO_PASSWORD_HINT }),
       });
       const data = await res.json();
@@ -30,8 +29,7 @@ export function DemoLoginShortcuts() {
         return;
       }
       toast.success('ورود دمو موفق');
-      router.push('/demo');
-      router.refresh();
+      window.location.assign('/demo');
     } catch {
       toast.error('خطا در ورود');
     } finally {
@@ -63,7 +61,12 @@ export function DemoLoginShortcuts() {
             </div>
           </Button>
         ))}
-        <Button type="button" variant="link" className="text-xs" onClick={() => router.push('/workspace/select')}>
+        <Button
+          type="button"
+          variant="link"
+          className="text-xs"
+          onClick={() => window.location.assign('/workspace/select')}
+        >
           پس از ورود، سناریوی دمو را از صفحه انتخاب فضا انتخاب کنید
         </Button>
       </CardContent>

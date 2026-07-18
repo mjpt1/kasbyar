@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -19,7 +18,6 @@ import {
 import { INDUSTRY_PACK_LABELS } from '@kesbyar/shared';
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [industryPack, setIndustryPack] = useState('GENERAL');
 
@@ -32,6 +30,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           name: form.get('name'),
           email: form.get('email'),
@@ -46,8 +45,7 @@ export default function RegisterPage() {
         return;
       }
       toast.success('ثبت‌نام با موفقیت انجام شد');
-      router.push('/dashboard');
-      router.refresh();
+      window.location.assign('/dashboard');
     } catch {
       toast.error('خطا در ارتباط با سرور');
     } finally {
