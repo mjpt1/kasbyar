@@ -2,7 +2,7 @@
 
 import { SESSION_DAYS, ORG_COOKIE, SESSION_COOKIE } from './constants';
 
-export function useSecureCookies(): boolean {
+export function secureCookiesEnabled(): boolean {
   if (process.env.VERCEL === '1') return true;
   const appEnv = process.env.APP_ENV;
   if (appEnv === 'production' || appEnv === 'staging') return true;
@@ -12,7 +12,7 @@ export function useSecureCookies(): boolean {
 function baseCookieOptions() {
   return {
     httpOnly: true,
-    secure: useSecureCookies(),
+    secure: secureCookiesEnabled(),
     sameSite: 'lax' as const,
     path: '/',
   };
