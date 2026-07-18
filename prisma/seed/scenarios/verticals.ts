@@ -8,9 +8,15 @@ import {
   RETAIL_PRESETS,
 } from './industry-presets';
 import {
+  seedBeautyPackData,
   seedClinicPackData,
+  seedEducationPackData,
+  seedFitnessPackData,
+  seedFoodPackData,
+  seedRealEstatePackData,
   seedRetailPackData,
   seedTravelPackData,
+  seedWorkshopPackData,
 } from './pack-extensions';
 import {
   atHour,
@@ -65,6 +71,12 @@ const DEFAULT_SUBSCRIPTION_BY_PACK: Record<IndustryPack, { planCode: 'FREE' | 'S
   CLINIC: { planCode: 'BUSINESS', status: 'TRIALING', trialDays: 7 },
   RETAIL: { planCode: 'STARTER', status: 'ACTIVE' },
   TRAVEL_AGENCY: { planCode: 'FREE', status: 'ACTIVE' },
+  BEAUTY_SALON: { planCode: 'STARTER', status: 'ACTIVE' },
+  FOOD_SERVICE: { planCode: 'STARTER', status: 'ACTIVE' },
+  EDUCATION: { planCode: 'STARTER', status: 'ACTIVE' },
+  FITNESS: { planCode: 'STARTER', status: 'ACTIVE' },
+  REAL_ESTATE: { planCode: 'STARTER', status: 'ACTIVE' },
+  WORKSHOP: { planCode: 'STARTER', status: 'ACTIVE' },
 };
 
 const VERTICALS: VerticalConfig[] = [
@@ -143,7 +155,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-education-center',
     name: 'آموزشگاه مهارت-افزا',
-    industryPack: 'GENERAL',
+    industryPack: 'EDUCATION',
     phone: '02188889911',
     email: 'info@maharatafza.ir',
     address: 'تهران، ونک، خیابان ملاصدرا، پلاک ۵۱',
@@ -151,7 +163,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-beauty-salon',
     name: 'سالن زیبایی ماه-چهره',
-    industryPack: 'GENERAL',
+    industryPack: 'BEAUTY_SALON',
     phone: '02188991122',
     email: 'hello@mahchehre-salon.ir',
     address: 'تهران، پاسداران، بوستان هشتم، پلاک ۱۴',
@@ -159,7 +171,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-restaurant',
     name: 'رستوران شبستان',
-    industryPack: 'RETAIL',
+    industryPack: 'FOOD_SERVICE',
     phone: '02177112233',
     email: 'info@shabestan-food.ir',
     address: 'تهران، یوسف\u200cآباد، خیابان ۳۳، پلاک ۱۸',
@@ -167,7 +179,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-cafe',
     name: 'کافه روشنه',
-    industryPack: 'RETAIL',
+    industryPack: 'FOOD_SERVICE',
     phone: '02177223344',
     email: 'hello@rosheneh-cafe.ir',
     address: 'تهران، کریمخان، خیابان خردمند، پلاک ۲۵',
@@ -175,7 +187,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-bakery',
     name: 'قنادی نان و نبات',
-    industryPack: 'RETAIL',
+    industryPack: 'FOOD_SERVICE',
     phone: '02177334455',
     email: 'orders@nannonabat.ir',
     address: 'تهران، پونک، بلوار عدل، پلاک ۴۹',
@@ -215,7 +227,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-real-estate',
     name: 'املاک آسمان',
-    industryPack: 'GENERAL',
+    industryPack: 'REAL_ESTATE',
     phone: '02177889911',
     email: 'info@aseman-melk.ir',
     address: 'تهران، ستارخان، خیابان پاتریس، پلاک ۳۱',
@@ -239,7 +251,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-gym',
     name: 'باشگاه انرژی+',
-    industryPack: 'GENERAL',
+    industryPack: 'FITNESS',
     phone: '02178223344',
     email: 'hello@energyplus-gym.ir',
     address: 'تهران، تهرانپارس، خیابان جشنواره، پلاک ۶۰',
@@ -247,7 +259,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-auto-repair',
     name: 'تعمیرگاه چابک',
-    industryPack: 'GENERAL',
+    industryPack: 'WORKSHOP',
     phone: '02178334455',
     email: 'service@chabok-auto.ir',
     address: 'تهران، جاده قدیم کرج، خیابان فتح، پلاک ۸۸',
@@ -295,7 +307,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-tailor-shop',
     name: 'مزون نقش',
-    industryPack: 'GENERAL',
+    industryPack: 'WORKSHOP',
     phone: '02178991121',
     email: 'info@naghsh-maison.ir',
     address: 'تهران، ونک، خیابان خدامی، پلاک ۹',
@@ -343,7 +355,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-appliance-repair',
     name: 'خانه‌ساز سرویس',
-    industryPack: 'GENERAL',
+    industryPack: 'WORKSHOP',
     phone: '02179567787',
     email: 'service@khanehsaz.ir',
     address: 'تهران، آریاشهر، خیابان کاشانی، پلاک ۱۰۱',
@@ -359,7 +371,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-daycare-center',
     name: 'مهد ستاره‌ها',
-    industryPack: 'GENERAL',
+    industryPack: 'EDUCATION',
     phone: '02179789909',
     email: 'info@setareha-kindergarten.ir',
     address: 'تهران، پیروزی، خیابان پنجم نیروهوایی، پلاک ۶۶',
@@ -367,7 +379,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-computer-service',
     name: 'فناوران سیستم',
-    industryPack: 'GENERAL',
+    industryPack: 'WORKSHOP',
     phone: '02179890010',
     email: 'support@fanavaran-system.ir',
     address: 'تهران، جلال آل‌احمد، خیابان کارگر شمالی، پلاک ۱۷۴',
@@ -903,7 +915,17 @@ async function seedVertical(
     await seedTravelPackData(prisma, orgId, [clients[0]!.id, clients[1]!.id]);
   }
 
-  if (config.industryPack === 'GENERAL') {
+  const GENERAL_CORE_PACKS: IndustryPack[] = [
+    'GENERAL',
+    'BEAUTY_SALON',
+    'FOOD_SERVICE',
+    'EDUCATION',
+    'FITNESS',
+    'REAL_ESTATE',
+    'WORKSHOP',
+  ];
+
+  if (GENERAL_CORE_PACKS.includes(config.industryPack)) {
     const preset = GENERAL_PRESETS[config.slug] ?? GENERAL_PRESETS['demo-contracting']!;
     const customers = await Promise.all([
       prisma.customer.create({
@@ -996,6 +1018,21 @@ async function seedVertical(
         },
       ],
     });
+
+    const customerIds = [customers[0]!.id, customers[1]!.id];
+    if (config.industryPack === 'BEAUTY_SALON') {
+      await seedBeautyPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'FOOD_SERVICE') {
+      await seedFoodPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'EDUCATION') {
+      await seedEducationPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'FITNESS') {
+      await seedFitnessPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'REAL_ESTATE') {
+      await seedRealEstatePackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'WORKSHOP') {
+      await seedWorkshopPackData(prisma, orgId, customerIds);
+    }
   }
 
   await prisma.activityLog.create({

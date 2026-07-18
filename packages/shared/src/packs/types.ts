@@ -1,5 +1,15 @@
 /** Vertical pack identifiers — mirrors Prisma IndustryPack enum. */
-export type IndustryPackId = 'GENERAL' | 'CLINIC' | 'TRAVEL_AGENCY' | 'RETAIL';
+export type IndustryPackId =
+  | 'GENERAL'
+  | 'CLINIC'
+  | 'TRAVEL_AGENCY'
+  | 'RETAIL'
+  | 'BEAUTY_SALON'
+  | 'FOOD_SERVICE'
+  | 'EDUCATION'
+  | 'FITNESS'
+  | 'REAL_ESTATE'
+  | 'WORKSHOP';
 
 export interface PackNavItemDef {
   href: string;

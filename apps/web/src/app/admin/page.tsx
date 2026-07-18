@@ -43,7 +43,18 @@ export default async function AdminDashboardPage() {
     },
   ];
 
-  const packOrder = ['CLINIC', 'RETAIL', 'TRAVEL_AGENCY', 'GENERAL'] as const;
+  const packOrder = [
+    'CLINIC',
+    'RETAIL',
+    'TRAVEL_AGENCY',
+    'BEAUTY_SALON',
+    'FOOD_SERVICE',
+    'EDUCATION',
+    'FITNESS',
+    'REAL_ESTATE',
+    'WORKSHOP',
+    'GENERAL',
+  ] as const;
   const packItems = packOrder.map((key) => ({
     key,
     label: INDUSTRY_PACK_LABELS[key] ?? key,

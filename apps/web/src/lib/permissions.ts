@@ -29,6 +29,12 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/clinic': 'STAFF',
   '/travel': 'STAFF',
   '/retail': 'STAFF',
+  '/beauty': 'STAFF',
+  '/food': 'STAFF',
+  '/education': 'STAFF',
+  '/fitness': 'STAFF',
+  '/real-estate': 'STAFF',
+  '/workshop': 'STAFF',
   '/demo': 'STAFF',
   '/workspace': 'VIEWER',
 };
@@ -82,6 +88,12 @@ export function getDefaultHomePath(
     CLINIC: '/clinic',
     TRAVEL_AGENCY: '/travel',
     RETAIL: '/retail',
+    BEAUTY_SALON: '/beauty',
+    FOOD_SERVICE: '/food',
+    EDUCATION: '/education',
+    FITNESS: '/fitness',
+    REAL_ESTATE: '/real-estate',
+    WORKSHOP: '/workshop',
   };
   return packHome[industryPack] ?? '/dashboard';
 }

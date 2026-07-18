@@ -1,13 +1,20 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   Activity,
+  BadgeCheck,
   BarChart3,
+  BookOpen,
   Boxes,
+  Building2,
   Calendar,
   CheckSquare,
+  ClipboardList,
+  Dumbbell,
   FolderOpen,
+  GraduationCap,
   HeartPulse,
   HelpCircle,
+  Home,
   LayoutDashboard,
   Luggage,
   MessageSquare,
@@ -15,12 +22,15 @@ import {
   Plane,
   Receipt,
   Settings,
+  Sparkles,
   Stethoscope,
   Store,
   Target,
   Users,
+  UtensilsCrossed,
   Wallet,
   Workflow,
+  Wrench,
 } from 'lucide-react';
 
 import { getPackDefinition, getPackNavItems, type IndustryPackId } from '@kesbyar/shared';
@@ -46,6 +56,17 @@ const PACK_ICON_MAP: Record<string, LucideIcon> = {
   Store,
   Package,
   Boxes,
+  Sparkles,
+  UtensilsCrossed,
+  ClipboardList,
+  GraduationCap,
+  BookOpen,
+  Users,
+  Dumbbell,
+  BadgeCheck,
+  Building2,
+  Home,
+  Wrench,
 };
 
 const CORE_NAV_ITEMS: NavItem[] = [

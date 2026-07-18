@@ -14,7 +14,18 @@ import {
 
 const patchSchema = z.object({
   organizationId: z.string(),
-  industryPack: z.enum(['GENERAL', 'CLINIC', 'TRAVEL_AGENCY', 'RETAIL']),
+  industryPack: z.enum([
+    'GENERAL',
+    'CLINIC',
+    'TRAVEL_AGENCY',
+    'RETAIL',
+    'BEAUTY_SALON',
+    'FOOD_SERVICE',
+    'EDUCATION',
+    'FITNESS',
+    'REAL_ESTATE',
+    'WORKSHOP',
+  ]),
 });
 
 export async function GET(request: Request) {

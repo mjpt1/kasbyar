@@ -1,9 +1,15 @@
 import type { PackDashboardWidget } from '@kesbyar/shared';
 
+import { getBeautyDashboardSignals } from '@/server/packs/beauty/beauty.service';
 import { getClinicDashboardSignals } from '@/server/packs/clinic/clinic.service';
+import { getEducationDashboardSignals } from '@/server/packs/education/education.service';
+import { getFitnessDashboardSignals } from '@/server/packs/fitness/fitness.service';
+import { getFoodDashboardSignals } from '@/server/packs/food/food.service';
 import { getPackContext } from '@/server/packs/pack-context';
+import { getRealEstateDashboardSignals } from '@/server/packs/real-estate/real-estate.service';
 import { getRetailDashboardSignals } from '@/server/packs/retail/retail.service';
 import { getTravelDashboardSignals } from '@/server/packs/travel/travel.service';
+import { getWorkshopDashboardSignals } from '@/server/packs/workshop/workshop.service';
 
 export async function getPackDashboardWidgets(
   organizationId: string,
@@ -74,6 +80,96 @@ export async function getPackDashboardWidgets(
         value: s.activeProductCount,
         href: '/retail/products',
       },
+    ];
+  }
+
+  if (ctx.industryPack === 'BEAUTY_SALON') {
+    const s = await getBeautyDashboardSignals(organizationId);
+    return [
+      { key: 'today', title: 'نوبت‌های امروز', value: s.todayCount, href: '/beauty/appointments' },
+      {
+        key: 'open',
+        title: 'نوبت‌های باز',
+        value: s.openCount,
+        href: '/beauty/appointments',
+        variant: s.openCount > 0 ? 'warning' : 'default',
+      },
+      { key: 'upcoming', title: '۷ روز آینده', value: s.upcomingCount, href: '/beauty' },
+    ];
+  }
+
+  if (ctx.industryPack === 'FOOD_SERVICE') {
+    const s = await getFoodDashboardSignals(organizationId);
+    return [
+      {
+        key: 'open',
+        title: 'سفارش باز',
+        value: s.openCount,
+        href: '/food/orders',
+        variant: s.openCount > 0 ? 'warning' : 'default',
+      },
+      { key: 'today', title: 'سفارش امروز', value: s.todayCount, href: '/food/orders' },
+      { key: 'menu', title: 'آیتم منو', value: s.menuCount, href: '/food/menu' },
+    ];
+  }
+
+  if (ctx.industryPack === 'EDUCATION') {
+    const s = await getEducationDashboardSignals(organizationId);
+    return [
+      { key: 'courses', title: 'دوره فعال', value: s.activeCourseCount, href: '/education/courses' },
+      { key: 'enrollments', title: 'ثبت‌نام فعال', value: s.enrollmentCount, href: '/education/enrollments' },
+      {
+        key: 'interested',
+        title: 'علاقه‌مند',
+        value: s.interestedCount,
+        href: '/education/enrollments',
+        variant: s.interestedCount > 0 ? 'warning' : 'default',
+      },
+    ];
+  }
+
+  if (ctx.industryPack === 'FITNESS') {
+    const s = await getFitnessDashboardSignals(organizationId);
+    return [
+      { key: 'active', title: 'عضویت فعال', value: s.activeCount, href: '/fitness/memberships' },
+      {
+        key: 'expiring',
+        title: 'انقضای ۳۰ روز',
+        value: s.expiringCount,
+        href: '/fitness/memberships',
+        variant: s.expiringCount > 0 ? 'warning' : 'default',
+      },
+      { key: 'classes', title: 'کلاس ۷ روز آینده', value: s.upcomingClassCount, href: '/fitness/classes' },
+    ];
+  }
+
+  if (ctx.industryPack === 'REAL_ESTATE') {
+    const s = await getRealEstateDashboardSignals(organizationId);
+    return [
+      { key: 'available', title: 'فایل موجود', value: s.availableCount, href: '/real-estate/listings' },
+      {
+        key: 'reserved',
+        title: 'رزرو شده',
+        value: s.reservedCount,
+        href: '/real-estate/listings',
+        variant: s.reservedCount > 0 ? 'warning' : 'default',
+      },
+      { key: 'showings', title: 'بازدید ۷ روز آینده', value: s.upcomingShowingCount, href: '/real-estate/showings' },
+    ];
+  }
+
+  if (ctx.industryPack === 'WORKSHOP') {
+    const s = await getWorkshopDashboardSignals(organizationId);
+    return [
+      { key: 'open', title: 'پذیرش باز', value: s.openCount, href: '/workshop/jobs' },
+      {
+        key: 'ready',
+        title: 'آماده تحویل',
+        value: s.readyCount,
+        href: '/workshop/jobs',
+        variant: s.readyCount > 0 ? 'warning' : 'default',
+      },
+      { key: 'inprogress', title: 'در حال تعمیر', value: s.inProgressCount, href: '/workshop/jobs' },
     ];
   }
 

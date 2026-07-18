@@ -89,6 +89,12 @@ export const INDUSTRY_PACK_LABELS: Record<string, string> = {
   CLINIC: 'کلینیک / مطب',
   TRAVEL_AGENCY: 'آژانس مسافرتی',
   RETAIL: 'خرده‌فروشی',
+  BEAUTY_SALON: 'سالن زیبایی',
+  FOOD_SERVICE: 'رستوران و کافه',
+  EDUCATION: 'آموزشگاه',
+  FITNESS: 'باشگاه ورزشی',
+  REAL_ESTATE: 'املاک',
+  WORKSHOP: 'تعمیرگاه / خدمات فنی',
 };
 
 export const LEAD_SOURCE_LABELS: Record<string, string> = {

@@ -1,5 +1,6 @@
 import { getScenarioById } from './scenarios';
 import type { DemoScenarioId, DemoWalkthroughStep } from './types';
+import type { IndustryPackId } from '../packs/types';
 
 export const SALES_WALKTHROUGH_INTRO: DemoWalkthroughStep[] = [
   {
@@ -45,7 +46,7 @@ export const INVESTOR_WALKTHROUGH_INTRO: DemoWalkthroughStep[] = [
   },
 ];
 
-const DEFAULT_STEPS_BY_PACK = {
+const DEFAULT_STEPS_BY_PACK: Record<IndustryPackId, DemoWalkthroughStep[]> = {
   GENERAL: [
     {
       id: 'gen-default-1',
@@ -102,7 +103,127 @@ const DEFAULT_STEPS_BY_PACK = {
       href: '/travel/bookings',
     },
   ],
-} satisfies Record<string, DemoWalkthroughStep[]>;
+  BEAUTY_SALON: [
+    {
+      id: 'beauty-default-1',
+      title: 'نمای سالن',
+      description: 'نوبت‌های امروز و وضعیت خدمات',
+      href: '/beauty',
+    },
+    {
+      id: 'beauty-default-2',
+      title: 'نوبت‌دهی زیبایی',
+      description: 'ثبت و پیگیری نوبت مراجعان',
+      href: '/beauty/appointments',
+    },
+    {
+      id: 'beauty-default-3',
+      title: 'وصول خدمات',
+      description: 'فاکتور خدمات و پیگیری پرداخت',
+      href: '/invoices',
+    },
+  ],
+  FOOD_SERVICE: [
+    {
+      id: 'food-default-1',
+      title: 'نمای سالن',
+      description: 'سفارش‌های باز و وضعیت آماده‌سازی',
+      href: '/food',
+    },
+    {
+      id: 'food-default-2',
+      title: 'سفارش‌ها',
+      description: 'پیگیری سفارش میز و بیرون‌بر',
+      href: '/food/orders',
+    },
+    {
+      id: 'food-default-3',
+      title: 'منو',
+      description: 'اقلام منو و قیمت‌گذاری',
+      href: '/food/menu',
+    },
+  ],
+  EDUCATION: [
+    {
+      id: 'edu-default-1',
+      title: 'نمای آموزشگاه',
+      description: 'دوره‌های فعال و ظرفیت کلاس',
+      href: '/education',
+    },
+    {
+      id: 'edu-default-2',
+      title: 'دوره‌ها',
+      description: 'برنامه دوره‌ها و شهریه',
+      href: '/education/courses',
+    },
+    {
+      id: 'edu-default-3',
+      title: 'ثبت‌نام‌ها',
+      description: 'هنرجویان و وضعیت شهریه',
+      href: '/education/enrollments',
+    },
+  ],
+  FITNESS: [
+    {
+      id: 'fit-default-1',
+      title: 'نمای باشگاه',
+      description: 'اعضا، تمدید و کلاس‌های امروز',
+      href: '/fitness',
+    },
+    {
+      id: 'fit-default-2',
+      title: 'عضویت‌ها',
+      description: 'اشتراک‌های نزدیک به انقضا',
+      href: '/fitness/memberships',
+    },
+    {
+      id: 'fit-default-3',
+      title: 'کلاس‌ها',
+      description: 'برنامه کلاس‌های گروهی',
+      href: '/fitness/classes',
+    },
+  ],
+  REAL_ESTATE: [
+    {
+      id: 're-default-1',
+      title: 'نمای املاک',
+      description: 'فایل‌های فعال و بازدیدهای پیشِ رو',
+      href: '/real-estate',
+    },
+    {
+      id: 're-default-2',
+      title: 'فایل‌ها',
+      description: 'لیست ملک‌ها و وضعیت معامله',
+      href: '/real-estate/listings',
+    },
+    {
+      id: 're-default-3',
+      title: 'بازدیدها',
+      description: 'هماهنگی بازدید با متقاضیان',
+      href: '/real-estate/showings',
+    },
+  ],
+  WORKSHOP: [
+    {
+      id: 'ws-default-1',
+      title: 'نمای تعمیرگاه',
+      description: 'پذیرش‌های باز و وضعیت تعمیر',
+      href: '/workshop',
+    },
+    {
+      id: 'ws-default-2',
+      title: 'پذیرش‌ها',
+      description: 'ثبت کار، پیگیری و تحویل',
+      href: '/workshop/jobs',
+    },
+    {
+      id: 'ws-default-3',
+      title: 'صورتحساب خدمات',
+      description: 'فاکتور تعمیر و وصول دستمزد',
+      href: '/invoices',
+    },
+  ],
+};
 
 const SCENARIO_STEPS: Partial<Record<DemoScenarioId, DemoWalkthroughStep[]>> = {
   general: [

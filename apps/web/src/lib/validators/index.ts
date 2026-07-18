@@ -13,7 +13,18 @@ export const registerSchema = z.object({
   password: z.string().min(6, 'رمز عبور حداقل ۶ کاراکتر باشد'),
   organizationName: z.string().min(2, 'نام کسب‌وکار حداقل ۲ کاراکتر باشد'),
   industryPack: z
-    .enum(['GENERAL', 'CLINIC', 'TRAVEL_AGENCY', 'RETAIL'])
+    .enum([
+      'GENERAL',
+      'CLINIC',
+      'TRAVEL_AGENCY',
+      'RETAIL',
+      'BEAUTY_SALON',
+      'FOOD_SERVICE',
+      'EDUCATION',
+      'FITNESS',
+      'REAL_ESTATE',
+      'WORKSHOP',
+    ])
     .optional(),
 });
 

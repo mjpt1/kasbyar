@@ -22,6 +22,12 @@ enum IndustryPack {
   CLINIC
   TRAVEL_AGENCY
   RETAIL
+  BEAUTY_SALON
+  FOOD_SERVICE
+  EDUCATION
+  FITNESS
+  REAL_ESTATE
+  WORKSHOP
 }
 
 enum LeadStatus {
@@ -243,6 +249,16 @@ model Organization {
   travelerProfiles TravelerProfile[]
   travelBookings  TravelBooking[]
   stockMovements  StockMovement[]
+  beautyAppointments BeautyAppointment[]
+  menuItems       MenuItem[]
+  foodOrders      FoodOrder[]
+  courses         Course[]
+  courseEnrollments CourseEnrollment[]
+  gymMemberships  GymMembership[]
+  gymClasses      GymClass[]
+  propertyListings PropertyListing[]
+  propertyShowings PropertyShowing[]
+  repairJobs      RepairJob[]
   subscription    Subscription?
   subscriptionEvents SubscriptionEvent[]
 }
@@ -316,6 +332,12 @@ model Customer {
   appointments Appointment[]
   travelBookings TravelBooking[]
   visitRecords VisitRecord[]
+  beautyAppointments BeautyAppointment[]
+  foodOrders FoodOrder[]
+  courseEnrollments CourseEnrollment[]
+  gymMemberships GymMembership[]
+  propertyShowings PropertyShowing[]
+  repairJobs RepairJob[]
 
   @@index([organizationId])
   @@index([organizationId, name])
@@ -846,6 +868,245 @@ model StockMovement {
   @@index([organizationId])
   @@index([productId])
   @@index([organizationId, createdAt])
+}
+
+enum ServiceBookingStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum FoodOrderStatus {
+  OPEN
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
+}
+
+enum EnrollmentStatus {
+  INTERESTED
+  ENROLLED
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  PAUSED
+  CANCELLED
+}
+
+enum ListingStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  RENTED
+  WITHDRAWN
+}
+
+enum RepairJobStatus {
+  INTAKE
+  DIAGNOSING
+  WAITING_PARTS
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+model BeautyAppointment {
+  id             String               @id @default(cuid())
+  organizationId String
+  customerId     String
+  stylistName    String?
+  serviceName    String
+  status         ServiceBookingStatus @default(SCHEDULED)
+  scheduledAt    DateTime
+  durationMin    Int                  @default(60)
+  price          Decimal?             @db.Decimal(18, 0)
+  notes          String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, scheduledAt])
+  @@index([customerId])
+}
+
+model MenuItem {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  category       String?
+  price          Decimal  @db.Decimal(18, 0)
+  isAvailable    Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model FoodOrder {
+  id             String          @id @default(cuid())
+  organizationId String
+  customerId     String?
+  tableLabel     String?
+  status         FoodOrderStatus @default(OPEN)
+  totalAmount    Decimal         @db.Decimal(18, 0)
+  itemsSummary   String?
+  orderedAt      DateTime        @default(now())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+}
+
+model Course {
+  id             String    @id @default(cuid())
+  organizationId String
+  title          String
+  instructor     String?
+  capacity       Int       @default(20)
+  price          Decimal?  @db.Decimal(18, 0)
+  startDate      DateTime?
+  endDate        DateTime?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  enrollments  CourseEnrollment[]
+
+  @@index([organizationId])
+}
+
+model CourseEnrollment {
+  id             String           @id @default(cuid())
+  organizationId String
+  courseId       String
+  customerId     String
+  status         EnrollmentStatus @default(ENROLLED)
+  enrolledAt     DateTime         @default(now())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, customerId])
+  @@index([organizationId])
+}
+
+model GymMembership {
+  id             String           @id @default(cuid())
+  organizationId String
+  customerId     String
+  planName       String
+  status         MembershipStatus @default(ACTIVE)
+  startsAt       DateTime
+  endsAt         DateTime
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([customerId])
+}
+
+model GymClass {
+  id             String   @id @default(cuid())
+  organizationId String
+  title          String
+  coach          String?
+  scheduledAt    DateTime
+  capacity       Int      @default(15)
+  enrolledCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, scheduledAt])
+}
+
+model PropertyListing {
+  id             String        @id @default(cuid())
+  organizationId String
+  title          String
+  address        String?
+  listingType    String        @default("SALE")
+  status         ListingStatus @default(AVAILABLE)
+  price          Decimal       @db.Decimal(18, 0)
+  areaSqm        Float?
+  bedrooms       Int?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  showings     PropertyShowing[]
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+}
+
+model PropertyShowing {
+  id             String   @id @default(cuid())
+  organizationId String
+  listingId      String
+  customerId     String
+  scheduledAt    DateTime
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  listing      PropertyListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  customer     Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([listingId])
+}
+
+model RepairJob {
+  id             String          @id @default(cuid())
+  organizationId String
+  customerId     String
+  deviceLabel    String
+  issue          String
+  status         RepairJobStatus @default(INTAKE)
+  quotedAmount   Decimal?        @db.Decimal(18, 0)
+  intakeAt       DateTime        @default(now())
+  readyAt        DateTime?
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([customerId])
 }
 
 // ─── Billing & Subscriptions ─────────────────────────────────────────────────

@@ -263,3 +263,316 @@ export async function seedRetailPackData(
     ],
   });
 }
+
+export async function seedBeautyPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.beautyAppointment.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        stylistName: 'مینا رضایی',
+        serviceName: 'رنگ و کوتاهی',
+        status: 'CONFIRMED',
+        scheduledAt: atHour(startOfToday(), 11),
+        durationMin: 90,
+        price: 2800000,
+        notes: 'مشتری VIP — پکیج عروس',
+      },
+      {
+        organizationId,
+        customerId: c2,
+        stylistName: 'سارا کریمی',
+        serviceName: 'مانیکور و پدیکور',
+        status: 'SCHEDULED',
+        scheduledAt: atHour(daysFromNow(1), 15),
+        durationMin: 60,
+        price: 950000,
+      },
+      {
+        organizationId,
+        customerId: c1,
+        serviceName: 'ابرو و اصلاح صورت',
+        status: 'COMPLETED',
+        scheduledAt: daysAgo(4),
+        durationMin: 45,
+        price: 450000,
+      },
+    ],
+  });
+}
+
+export async function seedFoodPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.menuItem.createMany({
+    data: [
+      {
+        organizationId,
+        name: 'چلوکباب کوبیده',
+        category: 'غذای اصلی',
+        price: 1850000,
+        isAvailable: true,
+      },
+      {
+        organizationId,
+        name: 'سالاد سزار',
+        category: 'پیش‌غذا',
+        price: 420000,
+        isAvailable: true,
+      },
+      {
+        organizationId,
+        name: 'لاته دبل',
+        category: 'نوشیدنی',
+        price: 285000,
+        isAvailable: true,
+      },
+    ],
+  });
+
+  await prisma.foodOrder.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        tableLabel: 'میز ۵',
+        status: 'PREPARING',
+        totalAmount: 2270000,
+        itemsSummary: 'چلوکباب کوبیده ×۱، سالاد سزار ×۱',
+        orderedAt: atHour(startOfToday(), 12),
+      },
+      {
+        organizationId,
+        customerId: c2,
+        tableLabel: 'میز ۲',
+        status: 'OPEN',
+        totalAmount: 570000,
+        itemsSummary: 'لاته دبل ×۲',
+        orderedAt: atHour(startOfToday(), 13),
+      },
+      {
+        organizationId,
+        customerId: c1,
+        status: 'SERVED',
+        totalAmount: 1850000,
+        itemsSummary: 'چلوکباب کوبیده ×۱',
+        orderedAt: daysAgo(1),
+      },
+    ],
+  });
+}
+
+export async function seedEducationPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  const course = await prisma.course.create({
+    data: {
+      organizationId,
+      title: 'دوره مهارت‌افزایی دیجیتال مارکتینگ',
+      instructor: 'مهندس نوری',
+      capacity: 25,
+      price: 8500000,
+      startDate: daysFromNow(7),
+      endDate: daysFromNow(60),
+      isActive: true,
+    },
+  });
+
+  await prisma.course.create({
+    data: {
+      organizationId,
+      title: 'کلاس زبان انگلیسی سطح متوسط',
+      instructor: 'خانم احمدی',
+      capacity: 15,
+      price: 4200000,
+      startDate: daysFromNow(3),
+      endDate: daysFromNow(90),
+      isActive: true,
+    },
+  });
+
+  await prisma.courseEnrollment.createMany({
+    data: [
+      {
+        organizationId,
+        courseId: course.id,
+        customerId: c1,
+        status: 'ENROLLED',
+        enrolledAt: daysAgo(5),
+      },
+      {
+        organizationId,
+        courseId: course.id,
+        customerId: c2,
+        status: 'ACTIVE',
+        enrolledAt: daysAgo(2),
+      },
+    ],
+  });
+}
+
+export async function seedFitnessPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.gymMembership.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        planName: 'عضویت سه ماهه طلایی',
+        status: 'ACTIVE',
+        startsAt: daysAgo(20),
+        endsAt: daysFromNow(70),
+      },
+      {
+        organizationId,
+        customerId: c2,
+        planName: 'عضویت یک ماهه',
+        status: 'ACTIVE',
+        startsAt: daysAgo(5),
+        endsAt: daysFromNow(25),
+      },
+    ],
+  });
+
+  await prisma.gymClass.createMany({
+    data: [
+      {
+        organizationId,
+        title: 'یوگا صبحگاهی',
+        coach: 'مریم حسینی',
+        scheduledAt: atHour(startOfToday(), 8),
+        capacity: 20,
+        enrolledCount: 12,
+      },
+      {
+        organizationId,
+        title: 'کراس‌فیت',
+        coach: 'علی مرادی',
+        scheduledAt: atHour(daysFromNow(1), 18),
+        capacity: 15,
+        enrolledCount: 8,
+      },
+    ],
+  });
+}
+
+export async function seedRealEstatePackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  const listing = await prisma.propertyListing.create({
+    data: {
+      organizationId,
+      title: 'آپارتمان ۱۲۰ متری سعادت‌آباد',
+      address: 'تهران، سعادت‌آباد، میدان کاج',
+      listingType: 'SALE',
+      status: 'AVAILABLE',
+      price: 18500000000,
+      areaSqm: 120,
+      bedrooms: 3,
+      notes: 'نورگیر جنوبی — پارکینگ و انباری',
+    },
+  });
+
+  await prisma.propertyListing.create({
+    data: {
+      organizationId,
+      title: 'دفتر اداری ۷۵ متری ونک',
+      address: 'تهران، ونک، خیابان گاندی',
+      listingType: 'RENT',
+      status: 'AVAILABLE',
+      price: 450000000,
+      areaSqm: 75,
+      bedrooms: 0,
+    },
+  });
+
+  await prisma.propertyShowing.createMany({
+    data: [
+      {
+        organizationId,
+        listingId: listing.id,
+        customerId: c1,
+        scheduledAt: atHour(daysFromNow(2), 16),
+        notes: 'بازدید با خانوادگی',
+      },
+      {
+        organizationId,
+        listingId: listing.id,
+        customerId: c2,
+        scheduledAt: atHour(startOfToday(), 11),
+        notes: 'بازدید دوم — تصمیم‌گیری',
+      },
+    ],
+  });
+}
+
+export async function seedWorkshopPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.repairJob.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        deviceLabel: 'پژو ۲۰۶ — موتور',
+        issue: 'روغن‌سوزی و صدای غیرعادی موتور',
+        status: 'IN_PROGRESS',
+        quotedAmount: 8500000,
+        intakeAt: daysAgo(3),
+        notes: 'در انتظار قطعه پیستون',
+      },
+      {
+        organizationId,
+        customerId: c2,
+        deviceLabel: 'لپ‌تاپ ایسوس',
+        issue: 'روشن نمی‌شود — احتمالاً پاور',
+        status: 'DIAGNOSING',
+        quotedAmount: 2200000,
+        intakeAt: daysAgo(1),
+      },
+      {
+        organizationId,
+        customerId: c1,
+        deviceLabel: 'یخچال سامسونگ',
+        issue: 'خنک نمی‌کند',
+        status: 'READY',
+        quotedAmount: 3800000,
+        intakeAt: daysAgo(7),
+        readyAt: startOfToday(),
+      },
+    ],
+  });
+}
