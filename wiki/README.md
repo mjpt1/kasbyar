@@ -2,8 +2,9 @@
 
 مرجع فارسی محصول و مهندسی کسب‌یار.
 
-> این پوشه منبع ویکی است و روی GitHub در مسیر [`wiki/`](https://github.com/mjpt1/kasbyar/tree/main/wiki) در دسترس است.  
-> آدرس رسمی Wiki پس از فعال‌سازی صفحهٔ اول: https://github.com/mjpt1/kasbyar/wiki
+> این پوشه **منبع** صفحات ویکی است (برای مرور در درخت مخزن).  
+> **ویکی منتشرشده روی GitHub:** https://github.com/mjpt1/kasbyar/wiki  
+> همگام‌سازی با ریموت `kasbyar.wiki.git` انجام می‌شود؛ صفحهٔ خانه: https://github.com/mjpt1/kasbyar/wiki/Home
 
 ## فهرست صفحات
 

@@ -11,7 +11,7 @@
 |------|------|
 | نسخه آنلاین | https://kasbyar.vercel.app |
 | مخزن کد | https://github.com/mjpt1/kasbyar |
-| فهرست ویکی | [README](./README.md) |
+| ویکی GitHub | https://github.com/mjpt1/kasbyar/wiki |
 
 ---
 
