@@ -28,7 +28,9 @@ export async function POST(request: Request) {
     );
 
     const workspaces = await listUserWorkspaces(user.id);
-    if (workspaces.length === 0) {
+    const isSuperAdmin = user.platformRole === 'SUPER_ADMIN';
+
+    if (workspaces.length === 0 && !isSuperAdmin) {
       return NextResponse.json(
         apiError(
           'حساب شما به هیچ فضای کاری متصل نیست. دوباره ثبت‌نام کنید یا با پشتیبانی تماس بگیرید.',
@@ -38,16 +40,22 @@ export async function POST(request: Request) {
       );
     }
 
+    const activeOrgId = workspaces[0]?.organizationId ?? null;
+    const redirectTo =
+      workspaces.length === 0 && isSuperAdmin ? '/admin' : '/dashboard';
+
     const response = NextResponse.json(
       apiSuccess({
         id: user.id,
         name: user.name,
         email: user.email,
-        organizationId: workspaces[0]!.organizationId,
+        organizationId: activeOrgId,
+        isSuperAdmin,
+        redirectTo,
       }),
     );
 
-    applyAuthCookies(response, token, expiresAt, workspaces[0]!.organizationId);
+    applyAuthCookies(response, token, expiresAt, activeOrgId);
     return response;
   } catch (err) {
     const message = err instanceof Error ? err.message : 'خطای سرور';

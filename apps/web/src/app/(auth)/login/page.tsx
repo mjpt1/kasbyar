@@ -35,7 +35,9 @@ export default function LoginPage() {
       }
       toast.success('خوش آمدید');
       // Full navigation so the session cookie is always sent on the next request.
-      window.location.assign('/dashboard');
+      const redirectTo =
+        typeof data.data?.redirectTo === 'string' ? data.data.redirectTo : '/dashboard';
+      window.location.assign(redirectTo);
     } catch {
       toast.error('خطا در ارتباط با سرور');
     } finally {

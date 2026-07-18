@@ -28,8 +28,26 @@ export async function getSession(): Promise<SessionContext | null> {
     return null;
   }
 
+  const isSuperAdmin = session.user.platformRole === 'SUPER_ADMIN';
   const workspaces = await listUserWorkspaces(session.user.id);
-  if (workspaces.length === 0) return null;
+
+  if (workspaces.length === 0) {
+    if (!isSuperAdmin) return null;
+    return {
+      user: {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+      },
+      organizationId: '',
+      organizationName: 'پلتفرم',
+      role: 'OWNER',
+      workspaceId: '',
+      industryPack: 'GENERAL',
+      platformRole: 'SUPER_ADMIN',
+      isSuperAdmin: true,
+    };
+  }
 
   const preferredOrgId = cookieStore.get(ORG_COOKIE)?.value;
   const active =
@@ -49,7 +67,7 @@ export async function getSession(): Promise<SessionContext | null> {
     workspaceId: active.workspaceId,
     industryPack: active.industryPack,
     platformRole: session.user.platformRole,
-    isSuperAdmin: session.user.platformRole === 'SUPER_ADMIN',
+    isSuperAdmin,
   };
 }
 
