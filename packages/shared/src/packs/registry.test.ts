@@ -43,4 +43,33 @@ describe('pack registry', () => {
     expect(getPackDefinition('REAL_ESTATE').homeRoute).toBe('/real-estate');
     expect(getPackDefinition('WORKSHOP').homeRoute).toBe('/workshop');
   });
+
+  it('exposes wave 3 vertical packs', () => {
+    expect(isVerticalPack('LAW_FIRM')).toBe(true);
+    expect(isVerticalPack('ACCOUNTING_FIRM')).toBe(true);
+    expect(isVerticalPack('INSURANCE_AGENCY')).toBe(true);
+    expect(isVerticalPack('MARKETING_AGENCY')).toBe(true);
+    expect(isVerticalPack('CONTRACTING')).toBe(true);
+    expect(isVerticalPack('PHOTOGRAPHY')).toBe(true);
+    expect(isVerticalPack('CLEANING')).toBe(true);
+    expect(isVerticalPack('PRINTING')).toBe(true);
+
+    expect(getPackNavItems('LAW_FIRM').some((n) => n.href === '/law/cases')).toBe(true);
+    expect(getPackNavItems('ACCOUNTING_FIRM').some((n) => n.href === '/accounting/matters')).toBe(true);
+    expect(getPackNavItems('INSURANCE_AGENCY').some((n) => n.href === '/insurance/policies')).toBe(true);
+    expect(getPackNavItems('MARKETING_AGENCY').some((n) => n.href === '/agency/campaigns')).toBe(true);
+    expect(getPackNavItems('CONTRACTING').some((n) => n.href === '/contracting/projects')).toBe(true);
+    expect(getPackNavItems('PHOTOGRAPHY').some((n) => n.href === '/photography/sessions')).toBe(true);
+    expect(getPackNavItems('CLEANING').some((n) => n.href === '/cleaning/jobs')).toBe(true);
+    expect(getPackNavItems('PRINTING').some((n) => n.href === '/printing/orders')).toBe(true);
+
+    expect(getPackDefinition('LAW_FIRM').homeRoute).toBe('/law');
+    expect(getPackDefinition('ACCOUNTING_FIRM').homeRoute).toBe('/accounting');
+    expect(getPackDefinition('INSURANCE_AGENCY').homeRoute).toBe('/insurance');
+    expect(getPackDefinition('MARKETING_AGENCY').homeRoute).toBe('/agency');
+    expect(getPackDefinition('CONTRACTING').homeRoute).toBe('/contracting');
+    expect(getPackDefinition('PHOTOGRAPHY').homeRoute).toBe('/photography');
+    expect(getPackDefinition('CLEANING').homeRoute).toBe('/cleaning');
+    expect(getPackDefinition('PRINTING').homeRoute).toBe('/printing');
+  });
 });

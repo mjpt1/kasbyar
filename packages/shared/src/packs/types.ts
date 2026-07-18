@@ -9,7 +9,15 @@ export type IndustryPackId =
   | 'EDUCATION'
   | 'FITNESS'
   | 'REAL_ESTATE'
-  | 'WORKSHOP';
+  | 'WORKSHOP'
+  | 'LAW_FIRM'
+  | 'ACCOUNTING_FIRM'
+  | 'INSURANCE_AGENCY'
+  | 'MARKETING_AGENCY'
+  | 'CONTRACTING'
+  | 'PHOTOGRAPHY'
+  | 'CLEANING'
+  | 'PRINTING';
 
 export interface PackNavItemDef {
   href: string;

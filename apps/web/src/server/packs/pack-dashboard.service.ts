@@ -10,6 +10,14 @@ import { getRealEstateDashboardSignals } from '@/server/packs/real-estate/real-e
 import { getRetailDashboardSignals } from '@/server/packs/retail/retail.service';
 import { getTravelDashboardSignals } from '@/server/packs/travel/travel.service';
 import { getWorkshopDashboardSignals } from '@/server/packs/workshop/workshop.service';
+import { getLawDashboardSignals } from '@/server/packs/law/law.service';
+import { getAccountingDashboardSignals } from '@/server/packs/accounting/accounting.service';
+import { getInsuranceDashboardSignals } from '@/server/packs/insurance/insurance.service';
+import { getAgencyDashboardSignals } from '@/server/packs/agency/agency.service';
+import { getContractingDashboardSignals } from '@/server/packs/contracting/contracting.service';
+import { getPhotographyDashboardSignals } from '@/server/packs/photography/photography.service';
+import { getCleaningDashboardSignals } from '@/server/packs/cleaning/cleaning.service';
+import { getPrintingDashboardSignals } from '@/server/packs/printing/printing.service';
 
 export async function getPackDashboardWidgets(
   organizationId: string,
@@ -170,6 +178,114 @@ export async function getPackDashboardWidgets(
         variant: s.readyCount > 0 ? 'warning' : 'default',
       },
       { key: 'inprogress', title: 'در حال تعمیر', value: s.inProgressCount, href: '/workshop/jobs' },
+    ];
+  }
+
+  if (ctx.industryPack === 'LAW_FIRM') {
+    const s = await getLawDashboardSignals(organizationId);
+    return [
+      { key: 'open', title: 'پرونده باز', value: s.openCount, href: '/law/cases' },
+      { key: 'active', title: 'فعال', value: s.activeCount, href: '/law/cases' },
+      {
+        key: 'waiting',
+        title: 'در انتظار',
+        value: s.waitingCount,
+        href: '/law/cases',
+        variant: s.waitingCount > 0 ? 'warning' : 'default',
+      },
+    ];
+  }
+
+  if (ctx.industryPack === 'ACCOUNTING_FIRM') {
+    const s = await getAccountingDashboardSignals(organizationId);
+    return [
+      { key: 'open', title: 'پرونده باز', value: s.openCount, href: '/accounting/matters' },
+      { key: 'active', title: 'فعال', value: s.activeCount, href: '/accounting/matters' },
+      {
+        key: 'due',
+        title: 'سررسید ۷ روز',
+        value: s.dueSoonCount,
+        href: '/accounting/matters',
+        variant: s.dueSoonCount > 0 ? 'warning' : 'default',
+      },
+    ];
+  }
+
+  if (ctx.industryPack === 'INSURANCE_AGENCY') {
+    const s = await getInsuranceDashboardSignals(organizationId);
+    return [
+      { key: 'active', title: 'فعال', value: s.activeCount, href: '/insurance/policies' },
+      {
+        key: 'pending',
+        title: 'در انتظار',
+        value: s.pendingCount,
+        href: '/insurance/policies',
+        variant: s.pendingCount > 0 ? 'warning' : 'default',
+      },
+      { key: 'expiring', title: 'نزدیک تمدید', value: s.expiringCount, href: '/insurance/policies' },
+    ];
+  }
+
+  if (ctx.industryPack === 'MARKETING_AGENCY') {
+    const s = await getAgencyDashboardSignals(organizationId);
+    return [
+      { key: 'active', title: 'فعال', value: s.activeCount, href: '/agency/campaigns' },
+      { key: 'planned', title: 'برنامه‌ریزی', value: s.plannedCount, href: '/agency/campaigns' },
+      {
+        key: 'hold',
+        title: 'متوقف',
+        value: s.onHoldCount,
+        href: '/agency/campaigns',
+        variant: s.onHoldCount > 0 ? 'warning' : 'default',
+      },
+    ];
+  }
+
+  if (ctx.industryPack === 'CONTRACTING') {
+    const s = await getContractingDashboardSignals(organizationId);
+    return [
+      { key: 'active', title: 'فعال', value: s.activeCount, href: '/contracting/projects' },
+      { key: 'planned', title: 'برنامه‌ریزی', value: s.plannedCount, href: '/contracting/projects' },
+      {
+        key: 'hold',
+        title: 'متوقف',
+        value: s.onHoldCount,
+        href: '/contracting/projects',
+        variant: s.onHoldCount > 0 ? 'warning' : 'default',
+      },
+    ];
+  }
+
+  if (ctx.industryPack === 'PHOTOGRAPHY') {
+    const s = await getPhotographyDashboardSignals(organizationId);
+    return [
+      { key: 'today', title: 'امروز', value: s.todayCount, href: '/photography/sessions' },
+      { key: 'upcoming', title: '۷ روز آینده', value: s.upcomingCount, href: '/photography/sessions' },
+      { key: 'confirmed', title: 'تأیید‌شده', value: s.confirmedCount, href: '/photography/sessions' },
+    ];
+  }
+
+  if (ctx.industryPack === 'CLEANING') {
+    const s = await getCleaningDashboardSignals(organizationId);
+    return [
+      { key: 'today', title: 'امروز', value: s.todayCount, href: '/cleaning/jobs' },
+      { key: 'upcoming', title: '۷ روز آینده', value: s.upcomingCount, href: '/cleaning/jobs' },
+      { key: 'confirmed', title: 'تأیید‌شده', value: s.confirmedCount, href: '/cleaning/jobs' },
+    ];
+  }
+
+  if (ctx.industryPack === 'PRINTING') {
+    const s = await getPrintingDashboardSignals(organizationId);
+    return [
+      { key: 'active', title: 'فعال', value: s.activeCount, href: '/printing/orders' },
+      { key: 'planned', title: 'برنامه‌ریزی', value: s.plannedCount, href: '/printing/orders' },
+      {
+        key: 'due',
+        title: 'سررسید ۷ روز',
+        value: s.dueSoonCount,
+        href: '/printing/orders',
+        variant: s.dueSoonCount > 0 ? 'warning' : 'default',
+      },
     ];
   }
 

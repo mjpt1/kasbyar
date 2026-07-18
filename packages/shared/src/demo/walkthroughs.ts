@@ -223,6 +223,166 @@ const DEFAULT_STEPS_BY_PACK: Record<IndustryPackId, DemoWalkthroughStep[]> = {
       href: '/invoices',
     },
   ],
+  LAW_FIRM: [
+    {
+      id: 'law-default-1',
+      title: 'نمای حقوقی',
+      description: 'پرونده‌های باز و وضعیت موکلان',
+      href: '/law',
+    },
+    {
+      id: 'law-default-2',
+      title: 'پرونده‌ها',
+      description: 'ثبت و پیگیری پرونده حقوقی',
+      href: '/law/cases',
+    },
+    {
+      id: 'law-default-3',
+      title: 'حق‌الوکاله',
+      description: 'فاکتور خدمات و وصول مطالبات',
+      href: '/invoices',
+    },
+  ],
+  ACCOUNTING_FIRM: [
+    {
+      id: 'acc-default-1',
+      title: 'نمای حسابداری',
+      description: 'پرونده‌های مشتری و سررسید خدمات',
+      href: '/accounting',
+    },
+    {
+      id: 'acc-default-2',
+      title: 'پرونده‌ها',
+      description: 'پیگیری خدمات دوره‌ای مشتریان',
+      href: '/accounting/matters',
+    },
+    {
+      id: 'acc-default-3',
+      title: 'حق‌الزحمه',
+      description: 'فاکتور ماهانه و وصول',
+      href: '/invoices',
+    },
+  ],
+  INSURANCE_AGENCY: [
+    {
+      id: 'ins-default-1',
+      title: 'نمای بیمه',
+      description: 'بیمه‌نامه‌های فعال و نزدیک تمدید',
+      href: '/insurance',
+    },
+    {
+      id: 'ins-default-2',
+      title: 'بیمه‌نامه‌ها',
+      description: 'ثبت و پیگیری حق‌بیمه',
+      href: '/insurance/policies',
+    },
+    {
+      id: 'ins-default-3',
+      title: 'وصول حق‌بیمه',
+      description: 'فاکتور و مطالبات',
+      href: '/invoices',
+    },
+  ],
+  MARKETING_AGENCY: [
+    {
+      id: 'mkt-default-1',
+      title: 'نمای آژانس',
+      description: 'کمپین‌های فعال و در انتظار',
+      href: '/agency',
+    },
+    {
+      id: 'mkt-default-2',
+      title: 'کمپین‌ها',
+      description: 'پیگیری پروژه و بودجه',
+      href: '/agency/campaigns',
+    },
+    {
+      id: 'mkt-default-3',
+      title: 'صورتحساب ماهانه',
+      description: 'فاکتور ریتینری و وصول',
+      href: '/invoices',
+    },
+  ],
+  CONTRACTING: [
+    {
+      id: 'con-default-1',
+      title: 'نمای پیمانکاری',
+      description: 'پروژه‌های فعال و در حال اجرا',
+      href: '/contracting',
+    },
+    {
+      id: 'con-default-2',
+      title: 'پروژه‌ها',
+      description: 'پیگیری پیشرفت و صورت‌وضعیت',
+      href: '/contracting/projects',
+    },
+    {
+      id: 'con-default-3',
+      title: 'صورت‌وضعیت',
+      description: 'فاکتور مرحله‌ای و وصول',
+      href: '/invoices',
+    },
+  ],
+  PHOTOGRAPHY: [
+    {
+      id: 'pho-default-1',
+      title: 'نمای آتلیه',
+      description: 'جلسات امروز و رزروهای پیشِ رو',
+      href: '/photography',
+    },
+    {
+      id: 'pho-default-2',
+      title: 'جلسات',
+      description: 'ثبت و پیگیری رزرو عکاسی',
+      href: '/photography/sessions',
+    },
+    {
+      id: 'pho-default-3',
+      title: 'بیعانه و مانده',
+      description: 'فاکتور خدمات و وصول',
+      href: '/invoices',
+    },
+  ],
+  CLEANING: [
+    {
+      id: 'cln-default-1',
+      title: 'نمای نظافت',
+      description: 'سفارش‌های امروز و هفته',
+      href: '/cleaning',
+    },
+    {
+      id: 'cln-default-2',
+      title: 'سفارش‌ها',
+      description: 'زمان‌بندی و اعزام تیم',
+      href: '/cleaning/jobs',
+    },
+    {
+      id: 'cln-default-3',
+      title: 'وصول خدمات',
+      description: 'فاکتور و مطالبات',
+      href: '/invoices',
+    },
+  ],
+  PRINTING: [
+    {
+      id: 'prt-default-1',
+      title: 'نمای چاپخانه',
+      description: 'سفارش‌های فعال و سررسید تحویل',
+      href: '/printing',
+    },
+    {
+      id: 'prt-default-2',
+      title: 'سفارش‌ها',
+      description: 'پیگیری چاپ و تیراژ',
+      href: '/printing/orders',
+    },
+    {
+      id: 'prt-default-3',
+      title: 'تسویه پروژه',
+      description: 'فاکتور و وصول',
+      href: '/invoices',
+    },
+  ],
 };
 
 const SCENARIO_STEPS: Partial<Record<DemoScenarioId, DemoWalkthroughStep[]>> = {

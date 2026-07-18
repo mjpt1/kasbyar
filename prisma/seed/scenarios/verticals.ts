@@ -17,6 +17,14 @@ import {
   seedRetailPackData,
   seedTravelPackData,
   seedWorkshopPackData,
+  seedLawPackData,
+  seedAccountingPackData,
+  seedInsurancePackData,
+  seedMarketingPackData,
+  seedContractingPackData,
+  seedPhotographyPackData,
+  seedCleaningPackData,
+  seedPrintingPackData,
 } from './pack-extensions';
 import {
   atHour,
@@ -77,6 +85,14 @@ const DEFAULT_SUBSCRIPTION_BY_PACK: Record<IndustryPack, { planCode: 'FREE' | 'S
   FITNESS: { planCode: 'STARTER', status: 'ACTIVE' },
   REAL_ESTATE: { planCode: 'STARTER', status: 'ACTIVE' },
   WORKSHOP: { planCode: 'STARTER', status: 'ACTIVE' },
+  LAW_FIRM: { planCode: 'BUSINESS', status: 'ACTIVE' },
+  ACCOUNTING_FIRM: { planCode: 'BUSINESS', status: 'ACTIVE' },
+  INSURANCE_AGENCY: { planCode: 'BUSINESS', status: 'ACTIVE' },
+  MARKETING_AGENCY: { planCode: 'BUSINESS', status: 'ACTIVE' },
+  CONTRACTING: { planCode: 'BUSINESS', status: 'ACTIVE' },
+  PHOTOGRAPHY: { planCode: 'STARTER', status: 'ACTIVE' },
+  CLEANING: { planCode: 'STARTER', status: 'ACTIVE' },
+  PRINTING: { planCode: 'STARTER', status: 'ACTIVE' },
 };
 
 const VERTICALS: VerticalConfig[] = [
@@ -147,7 +163,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-contracting',
     name: 'پیمانکاری سازه-گستر',
-    industryPack: 'GENERAL',
+    industryPack: 'CONTRACTING',
     phone: '02177778899',
     email: 'info@sazegostar-co.ir',
     address: 'تهران، شهرک غرب، بلوار دادمان، پلاک ۱۰۳',
@@ -235,7 +251,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-law-office',
     name: 'دفتر حقوقی دادآور',
-    industryPack: 'GENERAL',
+    industryPack: 'LAW_FIRM',
     phone: '02177991122',
     email: 'office@dadavar-law.ir',
     address: 'تهران، ونک، خیابان برزیل غربی، پلاک ۱۲',
@@ -243,7 +259,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-accounting-office',
     name: 'حساب\u200cیاران تراز',
-    industryPack: 'GENERAL',
+    industryPack: 'ACCOUNTING_FIRM',
     phone: '02178112233',
     email: 'info@taraz-accounting.ir',
     address: 'تهران، مطهری، خیابان سرافراز، پلاک ۲۲',
@@ -323,7 +339,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-cleaning-services',
     name: 'پاک‌خانه',
-    industryPack: 'GENERAL',
+    industryPack: 'CLEANING',
     phone: '02179123343',
     email: 'ops@pakkhaneh.ir',
     address: 'تهران، صادقیه، بلوار فردوس، پلاک ۵۵',
@@ -331,7 +347,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-marketing-agency',
     name: 'رشدنو',
-    industryPack: 'GENERAL',
+    industryPack: 'MARKETING_AGENCY',
     phone: '02179234454',
     email: 'hello@roshdno.ir',
     address: 'تهران، میرداماد، خیابان نفت شمالی، پلاک ۲۴',
@@ -339,7 +355,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-printing-shop',
     name: 'چاپ‌خانه رنگین',
-    industryPack: 'GENERAL',
+    industryPack: 'PRINTING',
     phone: '02179345565',
     email: 'print@ranginprint.ir',
     address: 'تهران، جمهوری، خیابان رازی، پلاک ۷۰',
@@ -347,7 +363,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-insurance-agency',
     name: 'بیمه‌یار',
-    industryPack: 'GENERAL',
+    industryPack: 'INSURANCE_AGENCY',
     phone: '02179456676',
     email: 'info@bimehyar.ir',
     address: 'تهران، سیدخندان، خیابان دبستان، پلاک ۳۶',
@@ -363,7 +379,7 @@ const VERTICALS: VerticalConfig[] = [
   {
     slug: 'demo-photography-studio',
     name: 'آتلیه نور',
-    industryPack: 'GENERAL',
+    industryPack: 'PHOTOGRAPHY',
     phone: '02179678898',
     email: 'booking@noor-studio.ir',
     address: 'تهران، بلوار فردوس شرق، پلاک ۲۸',
@@ -923,6 +939,14 @@ async function seedVertical(
     'FITNESS',
     'REAL_ESTATE',
     'WORKSHOP',
+    'LAW_FIRM',
+    'ACCOUNTING_FIRM',
+    'INSURANCE_AGENCY',
+    'MARKETING_AGENCY',
+    'CONTRACTING',
+    'PHOTOGRAPHY',
+    'CLEANING',
+    'PRINTING',
   ];
 
   if (GENERAL_CORE_PACKS.includes(config.industryPack)) {
@@ -1032,6 +1056,22 @@ async function seedVertical(
       await seedRealEstatePackData(prisma, orgId, customerIds);
     } else if (config.industryPack === 'WORKSHOP') {
       await seedWorkshopPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'LAW_FIRM') {
+      await seedLawPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'ACCOUNTING_FIRM') {
+      await seedAccountingPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'INSURANCE_AGENCY') {
+      await seedInsurancePackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'MARKETING_AGENCY') {
+      await seedMarketingPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'CONTRACTING') {
+      await seedContractingPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'PHOTOGRAPHY') {
+      await seedPhotographyPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'CLEANING') {
+      await seedCleaningPackData(prisma, orgId, customerIds);
+    } else if (config.industryPack === 'PRINTING') {
+      await seedPrintingPackData(prisma, orgId, customerIds);
     }
   }
 

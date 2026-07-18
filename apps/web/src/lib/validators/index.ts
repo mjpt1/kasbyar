@@ -24,6 +24,14 @@ export const registerSchema = z.object({
       'FITNESS',
       'REAL_ESTATE',
       'WORKSHOP',
+      'LAW_FIRM',
+      'ACCOUNTING_FIRM',
+      'INSURANCE_AGENCY',
+      'MARKETING_AGENCY',
+      'CONTRACTING',
+      'PHOTOGRAPHY',
+      'CLEANING',
+      'PRINTING',
     ])
     .optional(),
 });

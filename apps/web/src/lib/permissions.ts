@@ -35,6 +35,14 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/fitness': 'STAFF',
   '/real-estate': 'STAFF',
   '/workshop': 'STAFF',
+  '/law': 'STAFF',
+  '/accounting': 'STAFF',
+  '/insurance': 'STAFF',
+  '/agency': 'STAFF',
+  '/contracting': 'STAFF',
+  '/photography': 'STAFF',
+  '/cleaning': 'STAFF',
+  '/printing': 'STAFF',
   '/demo': 'STAFF',
   '/workspace': 'VIEWER',
 };
@@ -94,6 +102,14 @@ export function getDefaultHomePath(
     FITNESS: '/fitness',
     REAL_ESTATE: '/real-estate',
     WORKSHOP: '/workshop',
+    LAW_FIRM: '/law',
+    ACCOUNTING_FIRM: '/accounting',
+    INSURANCE_AGENCY: '/insurance',
+    MARKETING_AGENCY: '/agency',
+    CONTRACTING: '/contracting',
+    PHOTOGRAPHY: '/photography',
+    CLEANING: '/cleaning',
+    PRINTING: '/printing',
   };
   return packHome[industryPack] ?? '/dashboard';
 }

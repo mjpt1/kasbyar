@@ -115,6 +115,94 @@ export const PACK_REGISTRY: Record<IndustryPackId, PackDefinition> = {
     ],
     labels: { customer: 'مشتری', customers: 'مشتریان' },
   },
+  LAW_FIRM: {
+    id: 'LAW_FIRM',
+    label: 'دفتر حقوقی',
+    description: 'پرونده، موکل و پیگیری جلسات',
+    homeRoute: '/law',
+    navItems: [
+      { href: '/law', label: 'حقوقی', icon: 'Scale' },
+      { href: '/law/cases', label: 'پرونده‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'موکل', customers: 'موکلان' },
+  },
+  ACCOUNTING_FIRM: {
+    id: 'ACCOUNTING_FIRM',
+    label: 'دفتر حسابداری',
+    description: 'پرونده مشتری، سررسید و خدمات دوره‌ای',
+    homeRoute: '/accounting',
+    navItems: [
+      { href: '/accounting', label: 'حسابداری', icon: 'Calculator' },
+      { href: '/accounting/matters', label: 'پرونده‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'مشتری', customers: 'مشتریان' },
+  },
+  INSURANCE_AGENCY: {
+    id: 'INSURANCE_AGENCY',
+    label: 'نمایندگی بیمه',
+    description: 'بیمه‌نامه، تمدید و پیگیری حق‌بیمه',
+    homeRoute: '/insurance',
+    navItems: [
+      { href: '/insurance', label: 'بیمه', icon: 'Shield' },
+      { href: '/insurance/policies', label: 'بیمه‌نامه‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'بیمه‌گذار', customers: 'بیمه‌گذاران' },
+  },
+  MARKETING_AGENCY: {
+    id: 'MARKETING_AGENCY',
+    label: 'آژانس بازاریابی',
+    description: 'کمپین، بودجه و تحویل پروژه',
+    homeRoute: '/agency',
+    navItems: [
+      { href: '/agency', label: 'بازاریابی', icon: 'Megaphone' },
+      { href: '/agency/campaigns', label: 'کمپین‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'کارفرما', customers: 'کارفرمایان' },
+  },
+  CONTRACTING: {
+    id: 'CONTRACTING',
+    label: 'پیمانکاری',
+    description: 'پروژه، صورت‌وضعیت و پیشرفت کار',
+    homeRoute: '/contracting',
+    navItems: [
+      { href: '/contracting', label: 'پیمانکاری', icon: 'HardHat' },
+      { href: '/contracting/projects', label: 'پروژه‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'کارفرما', customers: 'کارفرمایان' },
+  },
+  PHOTOGRAPHY: {
+    id: 'PHOTOGRAPHY',
+    label: 'آتلیه عکاسی',
+    description: 'رزرو جلسه، پکیج و تحویل',
+    homeRoute: '/photography',
+    navItems: [
+      { href: '/photography', label: 'عکاسی', icon: 'Camera' },
+      { href: '/photography/sessions', label: 'جلسات', icon: 'Calendar' },
+    ],
+    labels: { customer: 'مشتری', customers: 'مشتریان' },
+  },
+  CLEANING: {
+    id: 'CLEANING',
+    label: 'خدمات نظافتی',
+    description: 'سفارش نظافت، زمان‌بندی و اعزام',
+    homeRoute: '/cleaning',
+    navItems: [
+      { href: '/cleaning', label: 'نظافت', icon: 'SprayCan' },
+      { href: '/cleaning/jobs', label: 'سفارش‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'مشتری', customers: 'مشتریان' },
+  },
+  PRINTING: {
+    id: 'PRINTING',
+    label: 'چاپ و تبلیغات',
+    description: 'سفارش چاپ، تیراژ و تحویل',
+    homeRoute: '/printing',
+    navItems: [
+      { href: '/printing', label: 'چاپ', icon: 'Printer' },
+      { href: '/printing/orders', label: 'سفارش‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'مشتری', customers: 'مشتریان' },
+  },
 };
 
 export function getPackDefinition(packId: string): PackDefinition {

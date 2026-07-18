@@ -95,6 +95,14 @@ export const INDUSTRY_PACK_LABELS: Record<string, string> = {
   FITNESS: 'باشگاه ورزشی',
   REAL_ESTATE: 'املاک',
   WORKSHOP: 'تعمیرگاه / خدمات فنی',
+  LAW_FIRM: 'دفتر حقوقی',
+  ACCOUNTING_FIRM: 'دفتر حسابداری',
+  INSURANCE_AGENCY: 'نمایندگی بیمه',
+  MARKETING_AGENCY: 'آژانس بازاریابی',
+  CONTRACTING: 'پیمانکاری',
+  PHOTOGRAPHY: 'آتلیه عکاسی',
+  CLEANING: 'خدمات نظافتی',
+  PRINTING: 'چاپ و تبلیغات',
 };
 
 export const LEAD_SOURCE_LABELS: Record<string, string> = {

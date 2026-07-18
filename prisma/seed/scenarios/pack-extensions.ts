@@ -576,3 +576,321 @@ export async function seedWorkshopPackData(
     ],
   });
 }
+
+export async function seedLawPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.legalCase.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        title: 'دعوای مطالبه چک',
+        caseNumber: '1403-102',
+        status: 'ACTIVE',
+        nextHearingAt: daysFromNow(5),
+        notes: 'جلسه اول رسیدگی',
+      },
+      {
+        organizationId,
+        customerId: c2,
+        title: 'قرارداد اجاره تجاری',
+        caseNumber: '1403-087',
+        status: 'WAITING',
+        nextHearingAt: daysFromNow(14),
+      },
+      {
+        organizationId,
+        customerId: c1,
+        title: 'پرونده طلاق توافقی',
+        status: 'OPEN',
+      },
+    ],
+  });
+}
+
+export async function seedAccountingPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.accountingMatter.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        title: 'اظهارنامه مالیاتی ۱۴۰۳',
+        status: 'ACTIVE',
+        dueDate: daysFromNow(10),
+      },
+      {
+        organizationId,
+        customerId: c2,
+        title: 'حسابرسی سالانه',
+        status: 'OPEN',
+        dueDate: daysFromNow(21),
+      },
+      {
+        organizationId,
+        customerId: c1,
+        title: 'ثبت دفاتر قانونی',
+        status: 'WAITING',
+        dueDate: daysFromNow(3),
+      },
+    ],
+  });
+}
+
+export async function seedInsurancePackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.insurancePolicy.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        policyNumber: 'B-1403-5541',
+        policyType: 'شخص ثالث',
+        status: 'ACTIVE',
+        premium: 12500000,
+        startsAt: daysAgo(180),
+        expiresAt: daysFromNow(20),
+      },
+      {
+        organizationId,
+        customerId: c2,
+        policyNumber: 'B-1403-8892',
+        policyType: 'بدنه',
+        status: 'PENDING',
+        premium: 28000000,
+      },
+      {
+        organizationId,
+        customerId: c1,
+        policyNumber: 'B-1402-3310',
+        policyType: 'آتش‌سوزی',
+        status: 'ACTIVE',
+        premium: 8900000,
+        expiresAt: daysFromNow(45),
+      },
+    ],
+  });
+}
+
+export async function seedMarketingPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.marketingCampaign.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        title: 'کمپین اینستاگرام بهار',
+        channel: 'اینستاگرام',
+        status: 'ACTIVE',
+        budget: 45000000,
+        startDate: daysAgo(7),
+        endDate: daysFromNow(21),
+      },
+      {
+        organizationId,
+        customerId: c2,
+        title: 'تولید محتوای لینکدین',
+        channel: 'لینکدین',
+        status: 'PLANNED',
+        budget: 18000000,
+        startDate: daysFromNow(5),
+      },
+      {
+        organizationId,
+        customerId: c1,
+        title: 'بازطراحی برند',
+        channel: 'چندکاناله',
+        status: 'ON_HOLD',
+        budget: 95000000,
+      },
+    ],
+  });
+}
+
+export async function seedContractingPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.contractProject.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        title: 'بازسازی واحد مسکونی',
+        siteAddress: 'تهران، سعادت‌آباد',
+        status: 'ACTIVE',
+        contractAmount: 850000000,
+        startDate: daysAgo(30),
+        endDate: daysFromNow(60),
+      },
+      {
+        organizationId,
+        customerId: c2,
+        title: 'نمای ساختمان اداری',
+        siteAddress: 'تهران، ونک',
+        status: 'PLANNED',
+        contractAmount: 420000000,
+        startDate: daysFromNow(10),
+      },
+      {
+        organizationId,
+        customerId: c1,
+        title: 'تأسیسات برقی انبار',
+        siteAddress: 'کرج، مهرشهر',
+        status: 'ON_HOLD',
+        contractAmount: 180000000,
+      },
+    ],
+  });
+}
+
+export async function seedPhotographyPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.photoSession.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        title: 'عکاسی عروسی',
+        packageName: 'پکیج طلایی',
+        status: 'CONFIRMED',
+        scheduledAt: atHour(daysFromNow(3), 16),
+        price: 35000000,
+      },
+      {
+        organizationId,
+        customerId: c2,
+        title: 'عکاسی پرتره خانوادگی',
+        packageName: 'پکیج نقره‌ای',
+        status: 'SCHEDULED',
+        scheduledAt: atHour(daysFromNow(7), 11),
+        price: 8500000,
+      },
+      {
+        organizationId,
+        customerId: c1,
+        title: 'عکاسی نوزاد',
+        packageName: 'پکیج برنزی',
+        status: 'SCHEDULED',
+        scheduledAt: atHour(startOfToday(), 14),
+        price: 6200000,
+      },
+    ],
+  });
+}
+
+export async function seedCleaningPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.cleaningJob.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        address: 'تهران، پاسداران، خیابان دولت',
+        serviceType: 'نظافت منزل',
+        status: 'CONFIRMED',
+        scheduledAt: atHour(startOfToday(), 10),
+        price: 2800000,
+      },
+      {
+        organizationId,
+        customerId: c2,
+        address: 'تهران، ستارخان، کوچه ۱۲',
+        serviceType: 'نظافت اداری',
+        status: 'SCHEDULED',
+        scheduledAt: atHour(daysFromNow(2), 9),
+        price: 4500000,
+      },
+      {
+        organizationId,
+        customerId: c1,
+        address: 'تهران، نیاوران، خیابان باهنر',
+        serviceType: 'نظافت عمیق',
+        status: 'SCHEDULED',
+        scheduledAt: atHour(daysFromNow(5), 8),
+        price: 5200000,
+      },
+    ],
+  });
+}
+
+export async function seedPrintingPackData(
+  prisma: PrismaClient,
+  organizationId: string,
+  customerIds: string[],
+) {
+  const [c1, c2] = customerIds;
+  if (!c1 || !c2) return;
+
+  await prisma.printOrder.createMany({
+    data: [
+      {
+        organizationId,
+        customerId: c1,
+        title: 'کارت ویزیت مات',
+        quantity: 1000,
+        status: 'ACTIVE',
+        dueAt: daysFromNow(3),
+        totalAmount: 4200000,
+      },
+      {
+        organizationId,
+        customerId: c2,
+        title: 'بنر تبلیغاتی ۳×۶',
+        quantity: 2,
+        status: 'PLANNED',
+        dueAt: daysFromNow(7),
+        totalAmount: 8900000,
+      },
+      {
+        organizationId,
+        customerId: c1,
+        title: 'بروشور A4',
+        quantity: 500,
+        status: 'ACTIVE',
+        dueAt: daysFromNow(2),
+        totalAmount: 6500000,
+      },
+    ],
+  });
+}

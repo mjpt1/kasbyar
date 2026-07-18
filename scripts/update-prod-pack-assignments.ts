@@ -12,6 +12,14 @@ import {
   seedFoodPackData,
   seedRealEstatePackData,
   seedWorkshopPackData,
+  seedLawPackData,
+  seedAccountingPackData,
+  seedInsurancePackData,
+  seedMarketingPackData,
+  seedContractingPackData,
+  seedPhotographyPackData,
+  seedCleaningPackData,
+  seedPrintingPackData,
 } from '../prisma/seed/scenarios/pack-extensions';
 
 // Load prod URL only if not already set (never log the value).
@@ -37,6 +45,14 @@ const SLUG_TO_PACK: Record<string, IndustryPack> = {
   'demo-appliance-repair': 'WORKSHOP',
   'demo-computer-service': 'WORKSHOP',
   'demo-tailor-shop': 'WORKSHOP',
+  'demo-law-office': 'LAW_FIRM',
+  'demo-accounting-office': 'ACCOUNTING_FIRM',
+  'demo-insurance-agency': 'INSURANCE_AGENCY',
+  'demo-marketing-agency': 'MARKETING_AGENCY',
+  'demo-contracting': 'CONTRACTING',
+  'demo-photography-studio': 'PHOTOGRAPHY',
+  'demo-cleaning-services': 'CLEANING',
+  'demo-printing-shop': 'PRINTING',
 };
 
 type SeedFn = (
@@ -82,6 +98,46 @@ const PACK_SEED: Record<
     seed: seedWorkshopPackData,
     isEmpty: async (prisma, orgId) =>
       (await prisma.repairJob.count({ where: { organizationId: orgId } })) === 0,
+  },
+  LAW_FIRM: {
+    seed: seedLawPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.legalCase.count({ where: { organizationId: orgId } })) === 0,
+  },
+  ACCOUNTING_FIRM: {
+    seed: seedAccountingPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.accountingMatter.count({ where: { organizationId: orgId } })) === 0,
+  },
+  INSURANCE_AGENCY: {
+    seed: seedInsurancePackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.insurancePolicy.count({ where: { organizationId: orgId } })) === 0,
+  },
+  MARKETING_AGENCY: {
+    seed: seedMarketingPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.marketingCampaign.count({ where: { organizationId: orgId } })) === 0,
+  },
+  CONTRACTING: {
+    seed: seedContractingPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.contractProject.count({ where: { organizationId: orgId } })) === 0,
+  },
+  PHOTOGRAPHY: {
+    seed: seedPhotographyPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.photoSession.count({ where: { organizationId: orgId } })) === 0,
+  },
+  CLEANING: {
+    seed: seedCleaningPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.cleaningJob.count({ where: { organizationId: orgId } })) === 0,
+  },
+  PRINTING: {
+    seed: seedPrintingPackData,
+    isEmpty: async (prisma, orgId) =>
+      (await prisma.printOrder.count({ where: { organizationId: orgId } })) === 0,
   },
 };
 
