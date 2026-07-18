@@ -1,3 +1,4 @@
+import { getSpecialty } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 const ROLE_HIERARCHY: Record<MembershipRole, number> = {
@@ -43,6 +44,7 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/photography': 'STAFF',
   '/cleaning': 'STAFF',
   '/printing': 'STAFF',
+  '/v': 'STAFF',
   '/demo': 'STAFF',
   '/workspace': 'VIEWER',
 };
@@ -88,7 +90,13 @@ export function filterNavHrefs(role: MembershipRole, hrefs: string[]): string[] 
 export function getDefaultHomePath(
   role: MembershipRole,
   industryPack: string,
+  industrySpecialty?: string | null,
 ): string {
+  const specialty = getSpecialty(industrySpecialty);
+  if (specialty && role !== 'VIEWER' && role !== 'STAFF') {
+    return specialty.homePath;
+  }
+
   if (role === 'VIEWER') return '/dashboard';
   if (role === 'STAFF') return '/tasks';
 

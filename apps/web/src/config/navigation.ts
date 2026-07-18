@@ -41,7 +41,7 @@ import {
   Wrench,
 } from 'lucide-react';
 
-import { getPackDefinition, getPackNavItems, type IndustryPackId } from '@kesbyar/shared';
+import { getPackDefinition, getPackNavItems, getSpecialty, type IndustryPackId } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 import { canAccessPath } from '@/lib/permissions';
@@ -104,7 +104,23 @@ const CORE_NAV_ITEMS: NavItem[] = [
 /** @deprecated Use getNavItems(industryPack) */
 export const APP_NAV_ITEMS = CORE_NAV_ITEMS;
 
-export function getNavItems(industryPack: string, role?: string): NavItem[] {
+export function getNavItems(
+  industryPack: string,
+  role?: string,
+  industrySpecialty?: string | null,
+): NavItem[] {
+  const specialty = getSpecialty(industrySpecialty);
+  const specialtyItem: NavItem[] = specialty
+    ? [
+        {
+          href: specialty.homePath,
+          label: specialty.label,
+          icon: PACK_ICON_MAP[specialty.icon] ?? LayoutDashboard,
+          packOnly: true,
+        },
+      ]
+    : [];
+
   const packItems = getPackNavItems(industryPack).map((item) => ({
     href: item.href,
     label: item.label,
@@ -113,11 +129,11 @@ export function getNavItems(industryPack: string, role?: string): NavItem[] {
   }));
 
   let items: NavItem[];
-  if (packItems.length === 0) {
+  if (packItems.length === 0 && specialtyItem.length === 0) {
     items = CORE_NAV_ITEMS;
   } else {
     const [dashboard, ...rest] = CORE_NAV_ITEMS;
-    items = [dashboard!, ...packItems, ...rest];
+    items = [dashboard!, ...specialtyItem, ...packItems, ...rest];
   }
 
   if (!role) return items;

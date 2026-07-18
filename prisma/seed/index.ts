@@ -20,6 +20,10 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
   console.log('📦 سناریوهای عمودی و صنفی: پزشکی، فروشگاهی، پیمانکاری و ...');
   await seedVerticalWorkspaces(prisma, users);
 
+  console.log('🎯 داشبوردهای تخصصی (100+ صنف)...');
+  const { seedSpecialtyOrganizations } = await import('./scenarios/specialty-orgs');
+  await seedSpecialtyOrganizations(prisma, users);
+
   const [
     customerCount,
     leadCount,

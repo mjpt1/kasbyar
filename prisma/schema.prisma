@@ -219,7 +219,8 @@ model Organization {
   id           String       @id @default(cuid())
   name         String
   slug         String       @unique
-  industryPack IndustryPack @default(GENERAL)
+  industryPack      IndustryPack @default(GENERAL)
+  industrySpecialty String?
   phone        String?
   email        String?
   address      String?

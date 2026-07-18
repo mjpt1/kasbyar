@@ -27,6 +27,7 @@ export interface SessionContext {
   role: string;
   workspaceId: string;
   industryPack: string;
+  industrySpecialty: string | null;
   platformRole: 'USER' | 'SUPER_ADMIN';
   isSuperAdmin: boolean;
 }

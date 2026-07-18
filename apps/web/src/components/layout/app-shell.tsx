@@ -21,6 +21,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
         organizationName={session.organizationName}
         userName={session.user.name}
         industryPack={session.industryPack}
+        industrySpecialty={session.industrySpecialty}
         role={session.role}
         isSuperAdmin={session.isSuperAdmin}
         header={

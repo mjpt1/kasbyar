@@ -66,7 +66,14 @@ export async function listAllOrganizations(search?: string) {
           ],
         }
       : undefined,
-    include: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      industryPack: true,
+      industrySpecialty: true,
+      isDemo: true,
+      createdAt: true,
       _count: { select: { memberships: true, customers: true } },
       subscription: { select: { planCode: true, status: true } },
     },
@@ -228,11 +235,17 @@ export async function removeMembershipByAdmin(input: {
 export async function updateOrganizationPackByAdmin(input: {
   organizationId: string;
   industryPack: IndustryPack;
+  industrySpecialty?: string | null;
   actorUserId: string;
 }) {
   const org = await prisma.organization.update({
     where: { id: input.organizationId },
-    data: { industryPack: input.industryPack },
+    data: {
+      industryPack: input.industryPack,
+      ...(input.industrySpecialty !== undefined
+        ? { industrySpecialty: input.industrySpecialty }
+        : {}),
+    },
   });
 
   await logAudit({
@@ -241,7 +254,10 @@ export async function updateOrganizationPackByAdmin(input: {
     action: AUDIT_ACTIONS.ADMIN_ORG_UPDATE,
     entityType: AUDIT_ENTITY_TYPES.ORGANIZATION,
     entityId: org.id,
-    metadata: { industryPack: input.industryPack },
+    metadata: {
+      industryPack: input.industryPack,
+      industrySpecialty: input.industrySpecialty ?? null,
+    },
   });
 
   return org;

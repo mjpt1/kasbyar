@@ -1,4 +1,5 @@
 import type { PackDashboardWidget } from '@kesbyar/shared';
+import { getSpecialty } from '@kesbyar/shared';
 
 import { getBeautyDashboardSignals } from '@/server/packs/beauty/beauty.service';
 import { getClinicDashboardSignals } from '@/server/packs/clinic/clinic.service';
@@ -18,13 +19,37 @@ import { getContractingDashboardSignals } from '@/server/packs/contracting/contr
 import { getPhotographyDashboardSignals } from '@/server/packs/photography/photography.service';
 import { getCleaningDashboardSignals } from '@/server/packs/cleaning/cleaning.service';
 import { getPrintingDashboardSignals } from '@/server/packs/printing/printing.service';
+import { getSpecialtyDashboardWidgets } from '@/server/packs/specialty-dashboard.service';
 
 export async function getPackDashboardWidgets(
   organizationId: string,
 ): Promise<PackDashboardWidget[]> {
   const ctx = await getPackContext(organizationId);
 
-  if (ctx.industryPack === 'CLINIC') {
+  if (ctx.industrySpecialty) {
+    const specialty = getSpecialty(ctx.industrySpecialty);
+    if (specialty) {
+      const widgets = await getSpecialtyDashboardWidgets(organizationId, specialty);
+      return widgets.map((w) => ({
+        key: w.key,
+        title: w.title,
+        value: w.value,
+        href: w.href,
+        variant: w.variant,
+      }));
+    }
+  }
+
+  return getBasePackDashboardWidgets(organizationId, ctx.industryPack);
+}
+
+export async function getBasePackDashboardWidgets(
+  organizationId: string,
+  industryPack: string,
+): Promise<PackDashboardWidget[]> {
+  const pack = industryPack;
+
+  if (pack === 'CLINIC') {
     const s = await getClinicDashboardSignals(organizationId);
     return [
       { key: 'today', title: 'نوبت‌های امروز', value: s.todayCount, href: '/clinic/appointments' },
@@ -40,7 +65,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'TRAVEL_AGENCY') {
+  if (pack === 'TRAVEL_AGENCY') {
     const s = await getTravelDashboardSignals(organizationId);
     return [
       {
@@ -66,7 +91,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'RETAIL') {
+  if (pack === 'RETAIL') {
     const s = await getRetailDashboardSignals(organizationId);
     return [
       {
@@ -91,7 +116,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'BEAUTY_SALON') {
+  if (pack === 'BEAUTY_SALON') {
     const s = await getBeautyDashboardSignals(organizationId);
     return [
       { key: 'today', title: 'نوبت‌های امروز', value: s.todayCount, href: '/beauty/appointments' },
@@ -106,7 +131,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'FOOD_SERVICE') {
+  if (pack === 'FOOD_SERVICE') {
     const s = await getFoodDashboardSignals(organizationId);
     return [
       {
@@ -121,7 +146,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'EDUCATION') {
+  if (pack === 'EDUCATION') {
     const s = await getEducationDashboardSignals(organizationId);
     return [
       { key: 'courses', title: 'دوره فعال', value: s.activeCourseCount, href: '/education/courses' },
@@ -136,7 +161,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'FITNESS') {
+  if (pack === 'FITNESS') {
     const s = await getFitnessDashboardSignals(organizationId);
     return [
       { key: 'active', title: 'عضویت فعال', value: s.activeCount, href: '/fitness/memberships' },
@@ -151,7 +176,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'REAL_ESTATE') {
+  if (pack === 'REAL_ESTATE') {
     const s = await getRealEstateDashboardSignals(organizationId);
     return [
       { key: 'available', title: 'فایل موجود', value: s.availableCount, href: '/real-estate/listings' },
@@ -166,7 +191,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'WORKSHOP') {
+  if (pack === 'WORKSHOP') {
     const s = await getWorkshopDashboardSignals(organizationId);
     return [
       { key: 'open', title: 'پذیرش باز', value: s.openCount, href: '/workshop/jobs' },
@@ -181,7 +206,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'LAW_FIRM') {
+  if (pack === 'LAW_FIRM') {
     const s = await getLawDashboardSignals(organizationId);
     return [
       { key: 'open', title: 'پرونده باز', value: s.openCount, href: '/law/cases' },
@@ -196,7 +221,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'ACCOUNTING_FIRM') {
+  if (pack === 'ACCOUNTING_FIRM') {
     const s = await getAccountingDashboardSignals(organizationId);
     return [
       { key: 'open', title: 'پرونده باز', value: s.openCount, href: '/accounting/matters' },
@@ -211,7 +236,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'INSURANCE_AGENCY') {
+  if (pack === 'INSURANCE_AGENCY') {
     const s = await getInsuranceDashboardSignals(organizationId);
     return [
       { key: 'active', title: 'فعال', value: s.activeCount, href: '/insurance/policies' },
@@ -226,7 +251,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'MARKETING_AGENCY') {
+  if (pack === 'MARKETING_AGENCY') {
     const s = await getAgencyDashboardSignals(organizationId);
     return [
       { key: 'active', title: 'فعال', value: s.activeCount, href: '/agency/campaigns' },
@@ -241,7 +266,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'CONTRACTING') {
+  if (pack === 'CONTRACTING') {
     const s = await getContractingDashboardSignals(organizationId);
     return [
       { key: 'active', title: 'فعال', value: s.activeCount, href: '/contracting/projects' },
@@ -256,7 +281,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'PHOTOGRAPHY') {
+  if (pack === 'PHOTOGRAPHY') {
     const s = await getPhotographyDashboardSignals(organizationId);
     return [
       { key: 'today', title: 'امروز', value: s.todayCount, href: '/photography/sessions' },
@@ -265,7 +290,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'CLEANING') {
+  if (pack === 'CLEANING') {
     const s = await getCleaningDashboardSignals(organizationId);
     return [
       { key: 'today', title: 'امروز', value: s.todayCount, href: '/cleaning/jobs' },
@@ -274,7 +299,7 @@ export async function getPackDashboardWidgets(
     ];
   }
 
-  if (ctx.industryPack === 'PRINTING') {
+  if (pack === 'PRINTING') {
     const s = await getPrintingDashboardSignals(organizationId);
     return [
       { key: 'active', title: 'فعال', value: s.activeCount, href: '/printing/orders' },

@@ -9,6 +9,7 @@ import { prisma } from '@/lib/prisma';
 export interface PackContext {
   organizationId: string;
   industryPack: IndustryPack;
+  industrySpecialty: string | null;
   pack: PackDefinition;
   isVertical: boolean;
 }
@@ -16,7 +17,7 @@ export interface PackContext {
 export async function getPackContext(organizationId: string): Promise<PackContext> {
   const org = await prisma.organization.findUnique({
     where: { id: organizationId },
-    select: { industryPack: true },
+    select: { industryPack: true, industrySpecialty: true },
   });
 
   const industryPack = org?.industryPack ?? 'GENERAL';
@@ -24,6 +25,7 @@ export async function getPackContext(organizationId: string): Promise<PackContex
   return {
     organizationId,
     industryPack,
+    industrySpecialty: org?.industrySpecialty ?? null,
     pack: getPackDefinition(industryPack),
     isVertical: isVerticalPack(industryPack),
   };

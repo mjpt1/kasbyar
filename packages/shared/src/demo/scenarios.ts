@@ -1,6 +1,7 @@
 import type { DemoScenario, DemoScenarioId } from './types';
+import { listSpecialties } from '../packs/specialties';
 
-export const DEMO_SCENARIOS: Record<DemoScenarioId, DemoScenario> = {
+const BASE_DEMO_SCENARIOS: Record<string, DemoScenario> = {
   general: {
     id: 'general',
     orgSlug: 'demo-general',
@@ -860,6 +861,37 @@ export const DEMO_SCENARIOS: Record<DemoScenarioId, DemoScenario> = {
     ],
   },
 };
+
+const SPECIALTY_DEMO_SCENARIOS: Record<string, DemoScenario> = Object.fromEntries(
+  listSpecialties().map((specialty, index) => [
+    specialty.id,
+    {
+      id: specialty.id as DemoScenarioId,
+      orgSlug: `demo-spec-${specialty.id}`,
+      title: specialty.label,
+      subtitle: `دمو ${specialty.label}`,
+      industryPack: specialty.basePack,
+      planCode: 'STARTER',
+      planLabel: 'استارتر',
+      personaTitle: `مدیر ${specialty.label}`,
+      valueProposition: specialty.description,
+      highlights: specialty.tips.slice(0, 3),
+      salesWalkthroughOrder: 100 + index,
+      investorWalkthroughOrder: 100 + index,
+      firstStopHref: specialty.homePath,
+      showcaseLinks: [
+        { label: specialty.label, href: specialty.homePath },
+        { label: specialty.labels.customers, href: '/customers' },
+        { label: 'فاکتورها', href: '/invoices' },
+      ],
+    } satisfies DemoScenario,
+  ]),
+);
+
+export const DEMO_SCENARIOS = {
+  ...BASE_DEMO_SCENARIOS,
+  ...SPECIALTY_DEMO_SCENARIOS,
+} as Record<DemoScenarioId, DemoScenario>;
 
 export const DEMO_SCENARIO_LIST = Object.values(DEMO_SCENARIOS).sort(
   (a, b) => a.salesWalkthroughOrder - b.salesWalkthroughOrder,

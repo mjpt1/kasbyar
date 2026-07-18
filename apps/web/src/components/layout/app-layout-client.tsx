@@ -12,6 +12,7 @@ interface AppLayoutClientProps {
   organizationName: string;
   userName: string;
   industryPack: string;
+  industrySpecialty?: string | null;
   role: string;
   isSuperAdmin?: boolean;
   header: ReactNode;
@@ -22,6 +23,7 @@ export function AppLayoutClient({
   organizationName,
   userName,
   industryPack,
+  industrySpecialty = null,
   role,
   isSuperAdmin = false,
   header,
@@ -36,6 +38,7 @@ export function AppLayoutClient({
           organizationName={organizationName}
           userName={userName}
           industryPack={industryPack}
+          industrySpecialty={industrySpecialty}
           role={role}
           isSuperAdmin={isSuperAdmin}
         />

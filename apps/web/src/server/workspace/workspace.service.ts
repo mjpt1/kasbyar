@@ -6,6 +6,7 @@ export interface WorkspaceOption {
   organizationSlug: string;
   role: string;
   industryPack: string;
+  industrySpecialty: string | null;
   workspaceId: string;
   isDemo: boolean;
 }
@@ -40,6 +41,7 @@ export async function listUserWorkspaces(userId: string): Promise<WorkspaceOptio
       organizationSlug: membership.organization.slug,
       role: membership.role,
       industryPack: membership.organization.industryPack,
+      industrySpecialty: membership.organization.industrySpecialty,
       workspaceId: workspace.id,
       isDemo: membership.organization.isDemo,
     });

@@ -35,6 +35,7 @@ interface SidebarNavProps {
   organizationName: string;
   userName: string;
   industryPack: string;
+  industrySpecialty?: string | null;
   role: string;
   isSuperAdmin?: boolean;
   onNavigate?: () => void;
@@ -45,13 +46,14 @@ export function SidebarNav({
   organizationName,
   userName,
   industryPack,
+  industrySpecialty = null,
   role,
   isSuperAdmin = false,
   onNavigate,
   className,
 }: SidebarNavProps) {
   const pathname = usePathname();
-  const navItems = getNavItems(industryPack, role);
+  const navItems = getNavItems(industryPack, role, industrySpecialty);
   const showDemoNav = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 
   return (

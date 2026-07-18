@@ -44,6 +44,7 @@ export async function getSession(): Promise<SessionContext | null> {
       role: 'OWNER',
       workspaceId: '',
       industryPack: 'GENERAL',
+      industrySpecialty: null,
       platformRole: 'SUPER_ADMIN',
       isSuperAdmin: true,
     };
@@ -66,6 +67,7 @@ export async function getSession(): Promise<SessionContext | null> {
     role: active.role,
     workspaceId: active.workspaceId,
     industryPack: active.industryPack,
+    industrySpecialty: active.industrySpecialty,
     platformRole: session.user.platformRole,
     isSuperAdmin,
   };

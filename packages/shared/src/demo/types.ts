@@ -1,4 +1,5 @@
 import type { IndustryPackId } from '../packs/types';
+import type { SpecialtyId } from '../packs/specialties';
 import type { PlanCode } from '../billing/types';
 
 export const DEMO_SCENARIO_IDS = [
@@ -44,7 +45,7 @@ export const DEMO_SCENARIO_IDS = [
   'veterinary-clinic',
 ] as const;
 
-export type DemoScenarioId = (typeof DEMO_SCENARIO_IDS)[number];
+export type DemoScenarioId = (typeof DEMO_SCENARIO_IDS)[number] | SpecialtyId;
 
 export interface DemoShowcaseLink {
   label: string;
