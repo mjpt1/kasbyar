@@ -6,7 +6,7 @@ import {
   clearAuthCookiesOnResponse,
 } from '@/lib/auth/cookie-options';
 
-const publicPaths = ['/', '/login', '/register'];
+const publicPaths = ['/', '/login', '/register', '/offline'];
 const workspacePaths = ['/workspace/select'];
 const authPaths = ['/login', '/register'];
 
@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
   // Always serve the marketing landing at "/".
   // Do not redirect based on cookie *presence* alone — stale cookies caused
   // "/" → /dashboard → /login?expired=1 loops and hid the landing page.
-  if (pathname === '/') {
+  if (pathname === '/' || pathname === '/offline') {
     return NextResponse.next();
   }
 
@@ -44,5 +44,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|landing).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|landing|icons|sw\\.js|manifest\\.webmanifest).*)',
+  ],
 };

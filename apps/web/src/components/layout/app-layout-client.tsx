@@ -69,6 +69,7 @@ export function AppLayoutClient({
               organizationName={organizationName}
               userName={userName}
               industryPack={industryPack}
+              industrySpecialty={industrySpecialty}
               role={role}
               isSuperAdmin={isSuperAdmin}
               onNavigate={() => setMobileOpen(false)}
@@ -94,7 +95,14 @@ export function AppLayoutClient({
             <div className="min-w-0 flex-1">{header}</div>
           </div>
         </div>
-        <main className={cn('flex-1 overflow-y-auto bg-muted/20 p-4 sm:p-6')}>{children}</main>
+        <main
+          className={cn(
+            'flex-1 overflow-y-auto overflow-x-hidden bg-muted/20 p-4 sm:p-6',
+            'pb-[max(1rem,env(safe-area-inset-bottom))]',
+          )}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );
