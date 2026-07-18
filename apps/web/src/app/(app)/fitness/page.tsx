@@ -74,7 +74,7 @@ export default async function FitnessHomePage() {
             <p className="text-sm text-muted-foreground">کلاسی در ۷ روز آینده ثبت نشده است.</p>
           ) : (
             upcomingClasses.map((gymClass) => (
-              <div key={gymClass.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={gymClass.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{gymClass.title}</div>
                   <div className="text-sm text-muted-foreground">

@@ -55,7 +55,7 @@ export default async function DemoHubPage() {
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           {SALES_WALKTHROUGH_INTRO.map((step, i) => (
-            <div key={step.id} className="flex items-center justify-between rounded-md border p-3">
+            <div key={step.id} className="ky-list-row p-3">
               <span>
                 {i + 1}. {step.title} — {step.description}
               </span>

@@ -67,7 +67,7 @@ export default async function BeautyHomePage() {
             <p className="text-sm text-muted-foreground">نوبتی برای امروز ثبت نشده است.</p>
           ) : (
             todayAppointments.map((appt) => (
-              <div key={appt.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={appt.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{appt.customer.name}</div>
                   <div className="text-sm text-muted-foreground">

@@ -131,7 +131,7 @@ export function DemoScenarioSwitcher({
 
 export function DemoToolbarActions() {
   return (
-    <div className="flex items-center gap-1">
+    <div className="hidden items-center gap-1 sm:flex">
       <Button asChild variant="ghost" size="sm" className="h-8">
         <Link href="/demo">نمایش</Link>
       </Button>

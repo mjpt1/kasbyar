@@ -72,7 +72,7 @@ export default async function ClinicPatientFilePage({
           visits.map((visit) => (
             <div
               key={visit.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="font-medium">{visit.chiefComplaint ?? 'ویزیت'}</div>
@@ -102,7 +102,7 @@ export default async function ClinicPatientFilePage({
           appointments.map((appt) => (
             <div
               key={appt.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="font-medium">{appt.reason ?? 'نوبت'}</div>

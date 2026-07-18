@@ -5,6 +5,7 @@ import { FilesUploadForm } from '@/components/features/files/files-upload-form';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
 import { JalaliDate } from '@/components/shared/jalali-date';
+import { ResponsiveTable } from '@/components/shared/responsive-table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { requireSession } from '@/lib/auth/session';
@@ -22,10 +23,7 @@ export default async function FilesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="فایل‌ها"
-        description="پیوست‌های آپلودشده در سیستم"
-      />
+      <PageHeader title="فایل‌ها" description="پیوست‌های آپلودشده در سیستم" />
 
       <FilesUploadForm
         defaultEntityType="ORGANIZATION"
@@ -40,41 +38,34 @@ export default async function FilesPage() {
         />
       ) : (
         <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="p-3 text-right font-medium">نام فایل</th>
-                    <th className="p-3 text-right font-medium">نوع</th>
-                    <th className="p-3 text-right font-medium">حجم</th>
-                    <th className="p-3 text-right font-medium">موجودیت</th>
-                    <th className="p-3 text-right font-medium">تاریخ</th>
-                    <th className="p-3 text-right font-medium">عملیات</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {files.map((file) => (
-                    <tr key={file.id} className="border-b hover:bg-muted/30">
-                      <td className="p-3 font-medium">{file.fileName}</td>
-                      <td className="p-3 text-muted-foreground">{file.mimeType}</td>
-                      <td className="p-3">{formatFileSize(file.sizeBytes)}</td>
-                      <td className="p-3 text-muted-foreground">{file.entityType}</td>
-                      <td className="p-3 text-muted-foreground">
-                        <JalaliDate date={file.createdAt} />
-                      </td>
-                      <td className="p-3">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/api/files/${file.id}`} target="_blank">
-                            دانلود
-                          </Link>
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <CardContent className="p-3 md:p-0">
+            <ResponsiveTable
+              columns={[
+                { key: 'name', header: 'نام فایل' },
+                { key: 'type', header: 'نوع', hideOnMobile: true },
+                { key: 'size', header: 'حجم' },
+                { key: 'entity', header: 'موجودیت', hideOnMobile: true },
+                { key: 'date', header: 'تاریخ' },
+                { key: 'actions', header: 'عملیات' },
+              ]}
+              rows={files.map((file) => ({
+                id: file.id,
+                cells: {
+                  name: <span className="font-medium break-all">{file.fileName}</span>,
+                  type: <span className="text-muted-foreground">{file.mimeType}</span>,
+                  size: formatFileSize(file.sizeBytes),
+                  entity: <span className="text-muted-foreground">{file.entityType}</span>,
+                  date: <JalaliDate date={file.createdAt} />,
+                  actions: (
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/api/files/${file.id}`} target="_blank">
+                        دانلود
+                      </Link>
+                    </Button>
+                  ),
+                },
+              }))}
+            />
           </CardContent>
         </Card>
       )}

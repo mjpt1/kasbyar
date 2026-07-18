@@ -67,7 +67,7 @@ export default async function TravelHomePage() {
             <p className="text-sm text-muted-foreground">اعزامی در ۳۰ روز آینده ثبت نشده.</p>
           ) : (
             upcoming.map((booking) => (
-              <div key={booking.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={booking.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{booking.title}</div>
                   <div className="text-sm text-muted-foreground">

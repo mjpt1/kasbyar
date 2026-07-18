@@ -75,7 +75,7 @@ export default async function InsuranceHomePage() {
             <p className="text-sm text-muted-foreground">بیمه‌نامه‌ای ثبت نشده است.</p>
           ) : (
             policies.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={item.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{item.policyNumber}</div>
                   <div className="text-sm text-muted-foreground">

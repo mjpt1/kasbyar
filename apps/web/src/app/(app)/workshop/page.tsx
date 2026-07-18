@@ -77,7 +77,7 @@ export default async function WorkshopHomePage() {
             <p className="text-sm text-muted-foreground">پذیرش بازی ثبت نشده است.</p>
           ) : (
             openJobs.map((job) => (
-              <div key={job.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={job.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{job.deviceLabel}</div>
                   <div className="text-sm text-muted-foreground">

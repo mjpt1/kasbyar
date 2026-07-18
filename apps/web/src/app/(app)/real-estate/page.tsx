@@ -74,7 +74,7 @@ export default async function RealEstateHomePage() {
             <p className="text-sm text-muted-foreground">بازدیدی در ۷ روز آینده ثبت نشده است.</p>
           ) : (
             upcomingShowings.map((showing) => (
-              <div key={showing.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={showing.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{showing.listing.title}</div>
                   <div className="text-sm text-muted-foreground">

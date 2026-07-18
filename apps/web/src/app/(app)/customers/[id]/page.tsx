@@ -118,7 +118,7 @@ export default async function CustomerDetailPage({
                     <Link
                       key={invoice.id}
                       href={`/invoices/${invoice.id}`}
-                      className="flex items-center justify-between rounded-md border p-3 hover:bg-muted/50"
+                      className="ky-list-row p-3 hover:bg-muted/50"
                     >
                       <div>
                         <div className="font-medium">{invoice.number}</div>

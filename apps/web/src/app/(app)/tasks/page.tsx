@@ -6,6 +6,7 @@ import { TaskRowActions } from '@/components/features/tasks/task-row-actions';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
 import { JalaliDate } from '@/components/shared/jalali-date';
+import { ResponsiveTable } from '@/components/shared/responsive-table';
 import { TaskPriorityBadge } from '@/components/shared/status-badges';
 import { Card, CardContent } from '@/components/ui/card';
 import { requireSession } from '@/lib/auth/session';
@@ -41,44 +42,35 @@ export default async function TasksPage() {
             />
           ) : (
             <Card>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="p-3 text-right font-medium">عنوان</th>
-                        <th className="p-3 text-right font-medium">مسئول</th>
-                        <th className="p-3 text-right font-medium">وضعیت</th>
-                        <th className="p-3 text-right font-medium">اولویت</th>
-                        <th className="p-3 text-right font-medium">سررسید</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((task) => (
-                        <tr key={task.id} className="border-b hover:bg-muted/30">
-                          <td className="p-3">
-                            <div className="font-medium">{task.title}</div>
-                            {task.description ? (
-                              <div className="text-xs text-muted-foreground line-clamp-1">
-                                {task.description}
-                              </div>
-                            ) : null}
-                          </td>
-                          <td className="p-3">{task.assignee?.name ?? '—'}</td>
-                          <td className="p-3">
-                            <TaskRowActions taskId={task.id} status={task.status} />
-                          </td>
-                          <td className="p-3">
-                            <TaskPriorityBadge priority={task.priority} />
-                          </td>
-                          <td className="p-3 text-muted-foreground">
-                            {task.dueDate ? <JalaliDate date={task.dueDate} /> : '—'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              <CardContent className="p-3 md:p-0">
+                <ResponsiveTable
+                  columns={[
+                    { key: 'title', header: 'عنوان' },
+                    { key: 'assignee', header: 'مسئول', hideOnMobile: true },
+                    { key: 'status', header: 'وضعیت' },
+                    { key: 'priority', header: 'اولویت' },
+                    { key: 'due', header: 'سررسید' },
+                  ]}
+                  rows={items.map((task) => ({
+                    id: task.id,
+                    cells: {
+                      title: (
+                        <div>
+                          <div className="font-medium">{task.title}</div>
+                          {task.description ? (
+                            <div className="line-clamp-1 text-xs text-muted-foreground">
+                              {task.description}
+                            </div>
+                          ) : null}
+                        </div>
+                      ),
+                      assignee: task.assignee?.name ?? '—',
+                      status: <TaskRowActions taskId={task.id} status={task.status} />,
+                      priority: <TaskPriorityBadge priority={task.priority} />,
+                      due: task.dueDate ? <JalaliDate date={task.dueDate} /> : '—',
+                    },
+                  }))}
+                />
               </CardContent>
             </Card>
           )}

@@ -39,7 +39,7 @@ export default async function ClinicVisitsPage({
             <Link
               key={visit.id}
               href={`/clinic/patients/${visit.customer.id}`}
-              className="flex items-center justify-between rounded-md border bg-card p-4 hover:bg-muted/50"
+              className="ky-list-row bg-card p-4 hover:bg-muted/50"
             >
               <div>
                 <div className="font-medium">{visit.customer.name}</div>

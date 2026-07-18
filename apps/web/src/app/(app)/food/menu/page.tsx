@@ -26,7 +26,7 @@ export default async function FoodMenuPage({
           items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="flex items-center gap-2">

@@ -74,7 +74,7 @@ export default async function SpecialtyDashboardPage({
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
         {widgets.map((widget) => (
           <Card
             key={widget.key}

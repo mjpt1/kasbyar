@@ -75,7 +75,7 @@ export default async function AgencyHomePage() {
             <p className="text-sm text-muted-foreground">کمپینی ثبت نشده است.</p>
           ) : (
             campaigns.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={item.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{item.title}</div>
                   <div className="text-sm text-muted-foreground">

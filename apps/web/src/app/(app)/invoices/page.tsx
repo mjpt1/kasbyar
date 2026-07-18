@@ -10,6 +10,7 @@ import { JalaliDate } from '@/components/shared/jalali-date';
 import { ListPagination } from '@/components/shared/list-pagination';
 import { ListSearch } from '@/components/shared/list-search';
 import { LoadingState } from '@/components/shared/loading-state';
+import { ResponsiveTable } from '@/components/shared/responsive-table';
 import { InvoiceStatusBadge } from '@/components/shared/status-badges';
 import { Card, CardContent } from '@/components/ui/card';
 import { requireSession } from '@/lib/auth/session';
@@ -74,45 +75,36 @@ export default async function InvoicesPage({
       ) : (
         <>
           <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="p-3 text-right font-medium">شماره</th>
-                      <th className="p-3 text-right font-medium">مشتری</th>
-                      <th className="p-3 text-right font-medium">وضعیت</th>
-                      <th className="p-3 text-right font-medium">مبلغ</th>
-                      <th className="p-3 text-right font-medium">سررسید</th>
-                      <th className="p-3 text-right font-medium">تاریخ صدور</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((invoice) => (
-                      <tr key={invoice.id} className="border-b hover:bg-muted/30">
-                        <td className="p-3">
-                          <Link
-                            href={`/invoices/${invoice.id}`}
-                            className="font-medium text-primary hover:underline"
-                          >
-                            {invoice.number}
-                          </Link>
-                        </td>
-                        <td className="p-3">{invoice.customer.name}</td>
-                        <td className="p-3">
-                          <InvoiceStatusBadge status={invoice.status} />
-                        </td>
-                        <td className="p-3">{formatCurrency(Number(invoice.total))}</td>
-                        <td className="p-3 text-muted-foreground">
-                          {invoice.dueDate ? <JalaliDate date={invoice.dueDate} /> : '—'}
-                        </td>
-                        <td className="p-3 text-muted-foreground">
-                          <JalaliDate date={invoice.issueDate} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <CardContent className="p-0 md:p-0">
+              <div className="p-3 md:p-0">
+                <ResponsiveTable
+                  columns={[
+                    { key: 'number', header: 'شماره' },
+                    { key: 'customer', header: 'مشتری' },
+                    { key: 'status', header: 'وضعیت' },
+                    { key: 'total', header: 'مبلغ' },
+                    { key: 'due', header: 'سررسید', hideOnMobile: true },
+                    { key: 'issued', header: 'تاریخ صدور' },
+                  ]}
+                  rows={items.map((invoice) => ({
+                    id: invoice.id,
+                    cells: {
+                      number: (
+                        <Link
+                          href={`/invoices/${invoice.id}`}
+                          className="font-medium text-primary hover:underline"
+                        >
+                          {invoice.number}
+                        </Link>
+                      ),
+                      customer: invoice.customer.name,
+                      status: <InvoiceStatusBadge status={invoice.status} />,
+                      total: formatCurrency(Number(invoice.total)),
+                      due: invoice.dueDate ? <JalaliDate date={invoice.dueDate} /> : '—',
+                      issued: <JalaliDate date={invoice.issueDate} />,
+                    },
+                  }))}
+                />
               </div>
             </CardContent>
           </Card>

@@ -117,13 +117,13 @@ export default async function DashboardPage() {
                     <Link
                       key={inv.id}
                       href={`/invoices/${inv.id}`}
-                      className="flex items-center justify-between rounded-md border p-3 hover:bg-muted/50"
+                      className="ky-list-row p-3 hover:bg-muted/50"
                     >
                       <div>
                         <div className="font-medium">{inv.customer.name}</div>
                         <div className="text-sm text-muted-foreground">{inv.number}</div>
                       </div>
-                      <div className="text-left">
+                      <div className="text-start sm:text-left">
                         <InvoiceStatusBadge status={inv.status} />
                         <div className="mt-1 text-sm">{formatCurrency(Number(inv.total))}</div>
                       </div>

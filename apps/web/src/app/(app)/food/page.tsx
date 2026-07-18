@@ -81,7 +81,7 @@ export default async function FoodHomePage() {
             <p className="text-sm text-muted-foreground">سفارشی ثبت نشده است.</p>
           ) : (
             recentOrders.map((order) => (
-              <div key={order.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={order.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">
                     {order.tableLabel ?? order.customer?.name ?? 'سفارش سالن'}

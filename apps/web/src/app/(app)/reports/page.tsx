@@ -131,7 +131,7 @@ export default async function ReportsPage() {
               overview.invoiceByStatus.map((row) => (
                 <div
                   key={row.status}
-                  className="flex items-center justify-between rounded-md border p-3"
+                  className="ky-list-row p-3"
                 >
                   <div className="flex items-center gap-2">
                     <InvoiceStatusBadge status={row.status} />
@@ -162,7 +162,7 @@ export default async function ReportsPage() {
               overview.topCustomers.map((customer, index) => (
                 <div
                   key={customer.customerId}
-                  className="flex items-center justify-between rounded-md border p-3"
+                  className="ky-list-row p-3"
                 >
                   <div className="flex items-center gap-3">
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">

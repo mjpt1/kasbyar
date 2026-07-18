@@ -148,7 +148,7 @@ export default async function InvoiceDetailPage({
               invoice.payments.map((payment) => (
                 <div
                   key={payment.id}
-                  className="flex items-center justify-between rounded-md border p-3"
+                  className="ky-list-row p-3"
                 >
                   <div>
                     <div className="font-medium">

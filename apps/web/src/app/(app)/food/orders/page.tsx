@@ -35,7 +35,7 @@ export default async function FoodOrdersPage({
           items.map((order) => (
             <div
               key={order.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="font-medium">

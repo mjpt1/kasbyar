@@ -32,7 +32,7 @@ export default async function RetailInventoryPage() {
           movements.items.map((m) => (
             <div
               key={m.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="font-medium">{m.product.name}</div>

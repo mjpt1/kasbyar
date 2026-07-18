@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { LoadingState } from '@/components/shared/loading-state';
+import { ResponsiveTable } from '@/components/shared/responsive-table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { requireSession } from '@/lib/auth/session';
@@ -70,61 +71,50 @@ export default async function PaymentsPage({
         />
       ) : (
         <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="p-3 text-right font-medium">مشتری</th>
-                    <th className="p-3 text-right font-medium">فاکتور</th>
-                    <th className="p-3 text-right font-medium">مبلغ</th>
-                    <th className="p-3 text-right font-medium">روش</th>
-                    <th className="p-3 text-right font-medium">وضعیت</th>
-                    <th className="p-3 text-right font-medium">تاریخ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paymentsResult.items.map((payment) => (
-                    <tr key={payment.id} className="border-b hover:bg-muted/30">
-                      <td className="p-3">
-                        <Link
-                          href={`/customers/${payment.customer.id}`}
-                          className="text-primary hover:underline"
-                        >
-                          {payment.customer.name}
-                        </Link>
-                      </td>
-                      <td className="p-3">
-                        {payment.invoice ? (
-                          <Link
-                            href={`/invoices/${payment.invoice.id}`}
-                            className="text-primary hover:underline"
-                          >
-                            {payment.invoice.number}
-                          </Link>
-                        ) : (
-                          '—'
-                        )}
-                      </td>
-                      <td className="p-3 font-medium">
-                        {formatCurrency(Number(payment.amount))}
-                      </td>
-                      <td className="p-3">
-                        {PAYMENT_METHOD_LABELS[payment.method] ?? payment.method}
-                      </td>
-                      <td className="p-3">
-                        <Badge variant={payment.status === 'COMPLETED' ? 'success' : 'secondary'}>
-                          {payment.status === 'COMPLETED' ? 'تکمیل‌شده' : payment.status}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-muted-foreground">
-                        <JalaliDate date={payment.paidAt} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <CardContent className="p-3 md:p-0">
+            <ResponsiveTable
+              columns={[
+                { key: 'customer', header: 'مشتری' },
+                { key: 'invoice', header: 'فاکتور' },
+                { key: 'amount', header: 'مبلغ' },
+                { key: 'method', header: 'روش', hideOnMobile: true },
+                { key: 'status', header: 'وضعیت' },
+                { key: 'date', header: 'تاریخ' },
+              ]}
+              rows={paymentsResult.items.map((payment) => ({
+                id: payment.id,
+                cells: {
+                  customer: (
+                    <Link
+                      href={`/customers/${payment.customer.id}`}
+                      className="text-primary hover:underline"
+                    >
+                      {payment.customer.name}
+                    </Link>
+                  ),
+                  invoice: payment.invoice ? (
+                    <Link
+                      href={`/invoices/${payment.invoice.id}`}
+                      className="text-primary hover:underline"
+                    >
+                      {payment.invoice.number}
+                    </Link>
+                  ) : (
+                    '—'
+                  ),
+                  amount: (
+                    <span className="font-medium">{formatCurrency(Number(payment.amount))}</span>
+                  ),
+                  method: PAYMENT_METHOD_LABELS[payment.method] ?? payment.method,
+                  status: (
+                    <Badge variant={payment.status === 'COMPLETED' ? 'success' : 'secondary'}>
+                      {payment.status === 'COMPLETED' ? 'تکمیل‌شده' : payment.status}
+                    </Badge>
+                  ),
+                  date: <JalaliDate date={payment.paidAt} />,
+                },
+              }))}
+            />
           </CardContent>
         </Card>
       )}

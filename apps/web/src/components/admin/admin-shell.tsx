@@ -102,8 +102,8 @@ export function AdminShell({
               aria-label="بستن منو"
               onClick={() => setMobileOpen(false)}
             />
-            <aside className="admin-rail absolute inset-y-0 right-0 flex w-[min(100%,18rem)] flex-col gap-6 p-4 shadow-xl">
-              <div className="flex items-center justify-between gap-2">
+            <aside className="admin-rail absolute inset-y-0 right-0 flex w-[min(100%,18rem)] flex-col gap-4 overflow-hidden p-4 shadow-xl">
+              <div className="flex shrink-0 items-center justify-between gap-2">
                 <AdminBrand />
                 <Button
                   type="button"
@@ -115,8 +115,10 @@ export function AdminShell({
                   <X className="h-5 w-5" />
                 </Button>
               </div>
-              <AdminNav pathname={pathname} onNavigate={() => setMobileOpen(false)} />
-              <div className="mt-auto space-y-3 rounded-2xl border border-white/70 bg-white/50 p-3.5 text-xs">
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                <AdminNav pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+              </div>
+              <div className="mt-auto shrink-0 space-y-3 rounded-2xl border border-white/70 bg-white/50 p-3.5 text-xs">
                 <p className="truncate text-[11px] text-foreground/50" title={email}>
                   {email}
                 </p>

@@ -32,8 +32,8 @@ export function AppLayoutClient({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-0 flex-1">
-      <aside className="hidden h-screen w-64 shrink-0 border-e bg-card md:flex md:flex-col">
+    <div className="flex min-h-0 flex-1 overflow-hidden">
+      <aside className="hidden h-full w-64 shrink-0 flex-col overflow-hidden border-e bg-card md:flex">
         <SidebarNav
           organizationName={organizationName}
           userName={userName}
@@ -52,8 +52,8 @@ export function AppLayoutClient({
             aria-label="بستن منو"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute inset-y-0 right-0 w-[min(100%,18rem)] bg-card shadow-xl">
-            <div className="flex items-center justify-between border-b p-3">
+          <aside className="absolute inset-y-0 right-0 flex w-[min(100%,18rem)] flex-col bg-card shadow-xl">
+            <div className="flex shrink-0 items-center justify-between border-b p-3">
               <span className="text-sm font-medium">منو</span>
               <Button
                 type="button"
@@ -65,27 +65,29 @@ export function AppLayoutClient({
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <SidebarNav
-              organizationName={organizationName}
-              userName={userName}
-              industryPack={industryPack}
-              industrySpecialty={industrySpecialty}
-              role={role}
-              isSuperAdmin={isSuperAdmin}
-              onNavigate={() => setMobileOpen(false)}
-            />
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <SidebarNav
+                organizationName={organizationName}
+                userName={userName}
+                industryPack={industryPack}
+                industrySpecialty={industrySpecialty}
+                role={role}
+                isSuperAdmin={isSuperAdmin}
+                onNavigate={() => setMobileOpen(false)}
+              />
+            </div>
           </aside>
         </div>
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="border-b bg-background px-4 py-3 sm:px-6 sm:py-4">
-          <div className="flex items-start gap-3">
+        <div className="shrink-0 border-b bg-background px-3 py-3 sm:px-6 sm:py-4">
+          <div className="flex items-start gap-2 sm:gap-3">
             <Button
               type="button"
               variant="outline"
               size="icon"
-              className="shrink-0 md:hidden"
+              className="mt-0.5 shrink-0 md:hidden"
               aria-label="باز کردن منو"
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen(true)}
@@ -97,7 +99,7 @@ export function AppLayoutClient({
         </div>
         <main
           className={cn(
-            'flex-1 overflow-y-auto overflow-x-hidden bg-muted/20 p-4 sm:p-6',
+            'min-h-0 flex-1 overflow-y-auto overflow-x-hidden bg-muted/20 p-3 sm:p-6',
             'pb-[max(1rem,env(safe-area-inset-bottom))]',
           )}
         >

@@ -36,37 +36,64 @@ export function DataTable<TData>({
     );
   }
 
+  const headerLabels = table.getHeaderGroups()[0]?.headers.map((header) => {
+    if (header.isPlaceholder) return '';
+    const def = header.column.columnDef.header;
+    return typeof def === 'string' ? def : header.column.id;
+  }) ?? [];
+
   return (
-    <div className={cn('overflow-x-auto rounded-md border', className)}>
-      <table className="w-full text-sm">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="border-b bg-muted/50">
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="p-3 text-right font-medium text-foreground"
+    <div className={cn(className)}>
+      {/* Mobile: stacked cards */}
+      <div className="space-y-3 md:hidden">
+        {table.getRowModel().rows.map((row) => (
+          <div key={row.id} className="rounded-xl border bg-card p-3 shadow-sm">
+            <dl className="space-y-2.5">
+              {row.getVisibleCells().map((cell, index) => (
+                <div
+                  key={cell.id}
+                  className="flex items-start justify-between gap-3 border-b border-border/60 pb-2 last:border-0 last:pb-0"
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
+                  <dt className="shrink-0 text-xs text-muted-foreground">
+                    {headerLabels[index] || cell.column.id}
+                  </dt>
+                  <dd className="min-w-0 text-end text-sm">{flexRender(cell.column.columnDef.cell, cell.getContext())}</dd>
+                </div>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="border-b transition-colors hover:bg-muted/30">
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-3 align-middle">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </dl>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop / tablet: classic table */}
+      <div className="hidden overflow-x-auto rounded-md border md:block">
+        <table className="w-full text-sm">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="border-b bg-muted/50">
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="p-3 text-right font-medium text-foreground">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="border-b transition-colors hover:bg-muted/30">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="p-3 align-middle">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

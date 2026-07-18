@@ -80,7 +80,7 @@ export default async function EducationHomePage() {
             <p className="text-sm text-muted-foreground">ثبت‌نامی ثبت نشده است.</p>
           ) : (
             recentEnrollments.map((enrollment) => (
-              <div key={enrollment.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={enrollment.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{enrollment.customer.name}</div>
                   <div className="text-sm text-muted-foreground">{enrollment.course.title}</div>

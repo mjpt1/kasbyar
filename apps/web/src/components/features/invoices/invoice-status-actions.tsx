@@ -60,7 +60,7 @@ export function InvoiceStatusActions({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full min-w-0 sm:w-[180px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

@@ -42,7 +42,7 @@ export default async function ClinicHomePage() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">نوبت‌های امروز</CardTitle>
@@ -80,7 +80,7 @@ export default async function ClinicHomePage() {
             todayAppointments.map((appt) => (
               <div
                 key={appt.id}
-                className="flex items-center justify-between rounded-md border p-3"
+                className="ky-list-row p-3"
               >
                 <div>
                   <div className="font-medium">{appt.customer.name}</div>

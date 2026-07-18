@@ -28,7 +28,7 @@ export default async function RealEstateShowingsPage({
             <Link
               key={showing.id}
               href={`/customers/${showing.customer.id}`}
-              className="flex items-center justify-between rounded-md border bg-card p-4 hover:bg-muted/50"
+              className="ky-list-row bg-card p-4 hover:bg-muted/50"
             >
               <div>
                 <div className="font-medium">{showing.listing.title}</div>

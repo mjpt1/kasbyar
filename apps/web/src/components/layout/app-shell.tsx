@@ -15,7 +15,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
   const showDemo = canShowDemoControls();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-[100dvh] flex-col overflow-hidden">
       {showDemo ? <DemoBanner /> : null}
       <AppLayoutClient
         organizationName={session.organizationName}

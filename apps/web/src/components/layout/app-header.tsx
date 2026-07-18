@@ -20,21 +20,21 @@ export function AppHeader({
   demoToolbar,
 }: AppHeaderProps) {
   return (
-    <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
+    <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <div className="min-w-0">
         {title ? (
-          <h1 className="text-xl font-bold">{title}</h1>
+          <h1 className="truncate text-lg font-bold sm:text-xl">{title}</h1>
         ) : (
-          <h1 className="text-xl font-bold">{organizationName}</h1>
+          <h1 className="truncate text-lg font-bold sm:text-xl">{organizationName}</h1>
         )}
         {description ? (
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{description}</p>
         ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {demoToolbar}
         <ConversationNavLink />
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" size="sm" className="shrink-0" asChild>
           <Link href={AUTH_NAV.workspaceSelect.href}>تغییر فضا</Link>
         </Button>
       </div>

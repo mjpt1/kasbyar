@@ -48,7 +48,7 @@ export default async function RetailProductsPage({
           items.map((product) => (
             <div
               key={product.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="flex items-center gap-2">

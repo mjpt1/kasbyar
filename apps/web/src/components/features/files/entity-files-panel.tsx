@@ -98,7 +98,7 @@ export function EntityFilesPanel({
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={onUpload} className="flex flex-wrap items-end gap-3">
-          <div className="min-w-[200px] flex-1 space-y-2">
+          <div className="min-w-0 flex-1 basis-full space-y-2 sm:basis-auto sm:min-w-[12rem]">
             <Label htmlFor={`file-${entityId}`}>آپلود فایل</Label>
             <Input id={`file-${entityId}`} name="file" type="file" required />
           </div>

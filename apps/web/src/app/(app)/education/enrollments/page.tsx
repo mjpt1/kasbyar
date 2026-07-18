@@ -37,7 +37,7 @@ export default async function EducationEnrollmentsPage({
             <Link
               key={enrollment.id}
               href={`/customers/${enrollment.customer.id}`}
-              className="flex items-center justify-between rounded-md border bg-card p-4 hover:bg-muted/50"
+              className="ky-list-row bg-card p-4 hover:bg-muted/50"
             >
               <div>
                 <div className="font-medium">{enrollment.customer.name}</div>

@@ -40,7 +40,7 @@ export default async function WorkshopJobsPage({
             <Link
               key={job.id}
               href={`/customers/${job.customer.id}`}
-              className="flex items-center justify-between rounded-md border bg-card p-4 hover:bg-muted/50"
+              className="ky-list-row bg-card p-4 hover:bg-muted/50"
             >
               <div>
                 <div className="font-medium">{job.deviceLabel}</div>

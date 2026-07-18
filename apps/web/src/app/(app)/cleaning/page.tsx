@@ -76,7 +76,7 @@ export default async function CleaningHomePage() {
             <p className="text-sm text-muted-foreground">سفارشی ثبت نشده است.</p>
           ) : (
             jobs.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-md border p-3">
+              <div key={item.id} className="ky-list-row p-3">
                 <div>
                   <div className="font-medium">{item.address}</div>
                   <div className="text-sm text-muted-foreground">

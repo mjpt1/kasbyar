@@ -25,7 +25,7 @@ export default async function FitnessClassesPage({
           items.map((gymClass) => (
             <div
               key={gymClass.id}
-              className="flex items-center justify-between rounded-md border bg-card p-4"
+              className="ky-list-row bg-card p-4"
             >
               <div>
                 <div className="font-medium">{gymClass.title}</div>
