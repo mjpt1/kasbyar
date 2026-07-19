@@ -8,9 +8,8 @@ export const metadata = {
 export default function OfflinePage() {
   return (
     <main className="flex min-h-[100dvh] flex-col items-center justify-center gap-4 px-6 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-2xl bg-primary/15 text-2xl font-bold text-primary">
-        ک
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/logo.svg" alt="" width={64} height={64} className="h-16 w-16 rounded-2xl" />
       <h1 className="text-xl font-bold">اتصال برقرار نیست</h1>
       <p className="max-w-sm text-sm leading-7 text-muted-foreground">
         فعلاً آفلاین هستید. پس از وصل شدن اینترنت، صفحه را تازه‌سازی کنید یا به داشبورد برگردید.

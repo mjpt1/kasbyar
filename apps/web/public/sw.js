@@ -7,6 +7,7 @@ const PRECACHE = [
   '/offline',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/brand/logo.svg',
   '/manifest.webmanifest',
 ];
 

@@ -59,8 +59,20 @@ export function SidebarNav({
   return (
     <div className={cn('flex h-full flex-col', className)}>
       <div className="border-b p-4">
-        <div className="text-lg font-bold text-primary">کسب‌یار</div>
-        <div className="mt-1 truncate text-sm text-muted-foreground">{organizationName}</div>
+        <div className="flex items-center gap-2.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo.svg"
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 rounded-[10px]"
+          />
+          <div className="min-w-0">
+            <div className="text-lg font-bold text-primary">کسب‌یار</div>
+            <div className="truncate text-sm text-muted-foreground">{organizationName}</div>
+          </div>
+        </div>
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="منوی اصلی">

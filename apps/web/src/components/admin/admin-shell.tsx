@@ -53,13 +53,18 @@ function AdminNav({
 
 function AdminBrand() {
   return (
-    <div className="flex items-center gap-3 px-2">
-      <div className="admin-brand-mark grid h-11 w-11 place-items-center rounded-[14px] text-lg font-extrabold">
-        ک
-      </div>
-      <div>
+    <div className="flex min-w-0 items-center gap-3 px-2">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/brand/logo.svg"
+        alt=""
+        width={44}
+        height={44}
+        className="h-11 w-11 shrink-0 rounded-[14px] shadow-[0_0_0_4px_rgba(245,198,194,0.35)]"
+      />
+      <div className="min-w-0">
         <p className="text-[11px] tracking-wide text-foreground/55">CONTROL TOWER</p>
-        <p className="text-[15px] font-bold">سوپرادمین کسب‌یار</p>
+        <p className="truncate text-[15px] font-bold">سوپرادمین کسب‌یار</p>
       </div>
     </div>
   );

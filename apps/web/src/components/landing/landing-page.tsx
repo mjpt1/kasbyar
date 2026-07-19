@@ -265,7 +265,7 @@ export function LandingPage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className="landing-nav-logo"
-            src="/landing/logo.svg"
+            src="/brand/logo.svg"
             alt="لوگوی کسب‌یار"
             width={34}
             height={34}

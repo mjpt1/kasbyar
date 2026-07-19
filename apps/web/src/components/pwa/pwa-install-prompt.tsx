@@ -189,7 +189,7 @@ export function PwaInstallPrompt() {
       <div className="flex items-start gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-primary/15">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/icon-96.png" alt="" width={48} height={48} className="h-12 w-12" />
+          <img src="/brand/logo.svg" alt="" width={48} height={48} className="h-12 w-12 rounded-xl" />
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="text-sm font-bold">کسب‌یار را نصب کنید</p>
