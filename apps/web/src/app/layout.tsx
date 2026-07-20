@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from 'next';
-import { Vazirmatn } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { PwaProvider } from '@/components/pwa/pwa-provider';
 import { Toaster } from '@/components/ui/sonner';
 
 import './globals.css';
 
-const vazirmatn = Vazirmatn({
-  subsets: ['arabic'],
+const vazirmatn = localFont({
+  src: '../../public/fonts/vazirmatn/Vazirmatn-Variable.woff2',
   variable: '--font-vazirmatn',
   display: 'swap',
+  weight: '100 900',
 });
 
 export const metadata: Metadata = {
@@ -57,8 +58,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl">
-      <body className={`${vazirmatn.variable} font-sans`}>
+    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
+      <body className={`${vazirmatn.className} font-sans`}>
         <PwaProvider>
           {children}
           <Toaster position="top-center" dir="rtl" />

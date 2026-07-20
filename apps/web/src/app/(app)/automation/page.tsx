@@ -7,6 +7,7 @@ import { Workflow } from 'lucide-react';
 import { AutomationCreateForm } from '@/components/features/automation/automation-create-form';
 import { AutomationRunButton } from '@/components/features/automation/automation-run-button';
 import { AutomationToggle } from '@/components/features/automation/automation-toggle';
+import { HelpLink } from '@/components/help/help-link';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
 import { JalaliDate } from '@/components/shared/jalali-date';
@@ -15,7 +16,7 @@ import { requireRole } from '@/lib/auth/session';
 import { listAutomationRules } from '@/server/reports/reports.service';
 
 export default async function AutomationPage() {
-  const session = await requireRole('MANAGER');
+  const session = await requireRole('STAFF');
   const rules = await listAutomationRules(session.organizationId);
 
   return (
@@ -23,7 +24,12 @@ export default async function AutomationPage() {
       <PageHeader
         title="اتوماسیون"
         description={`${rules.length} قانون تعریف‌شده`}
-        actions={<AutomationRunButton />}
+        actions={
+          <>
+            <HelpLink section="automation" />
+            <AutomationRunButton />
+          </>
+        }
       />
 
       <AutomationCreateForm />

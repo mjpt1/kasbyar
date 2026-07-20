@@ -2,30 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  Activity,
-  BarChart3,
-  Boxes,
-  Calendar,
-  CheckSquare,
-  FolderOpen,
-  HeartPulse,
-  HelpCircle,
-  LayoutDashboard,
-  Luggage,
-  MessageSquare,
-  Package,
-  Plane,
-  Presentation,
-  Receipt,
-  Settings,
-  Stethoscope,
-  Store,
-  Target,
-  Users,
-  Wallet,
-  Workflow,
-} from 'lucide-react';
+import { Presentation, Settings } from 'lucide-react';
 
 import { AUTH_NAV, getNavItems } from '@/config/navigation';
 import { LogoutButton } from '@/components/layout/logout-button';
@@ -79,14 +56,22 @@ export function SidebarNav({
         {navItems.map((item, index) => {
           const Icon = item.icon;
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const prev = navItems[index - 1];
           const showPackDivider =
-            item.packOnly && (index === 0 || !navItems[index - 1]?.packOnly);
+            item.packOnly && (index === 0 || !prev?.packOnly);
+          const showSectionDivider =
+            Boolean(item.section) && item.section !== prev?.section;
 
           return (
             <div key={item.href}>
               {showPackDivider ? (
                 <p className="mb-1 mt-3 px-3 text-xs font-medium text-muted-foreground">
                   بسته تخصصی
+                </p>
+              ) : null}
+              {showSectionDivider ? (
+                <p className="mb-1 mt-3 px-3 text-xs font-medium text-muted-foreground">
+                  {item.section}
                 </p>
               ) : null}
               <Link

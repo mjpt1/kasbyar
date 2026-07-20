@@ -41,9 +41,29 @@ describe('capability helpers', () => {
 });
 
 describe('route access', () => {
-  it('STAFF cannot access automation', () => {
-    expect(canAccessPath('STAFF', '/automation')).toBe(false);
-    expect(getMinRoleForPath('/automation')).toBe('MANAGER');
+  it('STAFF can access AI, automation, and help routes', () => {
+    for (const path of [
+      '/command',
+      '/conversation',
+      '/memory',
+      '/forecast',
+      '/strategy',
+      '/simulation',
+      '/meetings',
+      '/growth',
+      '/twin',
+      '/platform',
+      '/automation',
+      '/help',
+    ]) {
+      expect(canAccessPath('STAFF', path)).toBe(true);
+      expect(getMinRoleForPath(path)).toBe('STAFF');
+    }
+  });
+
+  it('OWNER can access all AI routes', () => {
+    expect(canAccessPath('OWNER', '/platform')).toBe(true);
+    expect(canAccessPath('OWNER', '/forecast')).toBe(true);
   });
 
   it('MANAGER can access reports', () => {

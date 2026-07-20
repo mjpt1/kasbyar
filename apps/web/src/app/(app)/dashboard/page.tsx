@@ -16,6 +16,7 @@ import { StatCard } from '@/components/dashboard/stat-card';
 import { ConversationPanel } from '@/components/conversation/conversation-panel';
 import { OperationalInsightCard } from '@/components/dashboard/operational-insight-card';
 import { SalesTrendChart } from '@/components/dashboard/sales-trend-chart';
+import { HelpLink } from '@/components/help/help-link';
 import { PageHeader } from '@/components/layout/page-header';
 import { InlineEmpty } from '@/components/shared/inline-empty';
 import { JalaliDate } from '@/components/shared/jalali-date';
@@ -37,6 +38,7 @@ export default async function DashboardPage() {
       <PageHeader
         title="داشبورد"
         description={`وضعیت عملیات ${session.organizationName}`}
+        actions={<HelpLink section="dashboard" />}
       />
 
       <DemoDashboardWalkthrough organizationId={session.organizationId} />

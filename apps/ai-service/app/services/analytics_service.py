@@ -65,11 +65,26 @@ class AnalyticsService:
                 status="ok",
             )
 
-        # sales_trend placeholder — trend data supplied by web in future
-        amount = f"{ctx.today_sales:,.0f}".replace(",", "٬")
+        # sales_trend — uses v2 context when available
+        week_sales = ctx.week_sales if ctx.week_sales is not None else ctx.today_sales
+        change = ctx.week_sales_change_pct
+        amount = f"{week_sales:,.0f}".replace(",", "٬")
+        if change is not None:
+            direction = "افزایش" if change >= 0 else "کاهش"
+            summary = (
+                f"فروش هفتگی {amount} ریال — {direction} {abs(change):.1f}٪ نسبت به هفته قبل"
+            )
+        else:
+            today = f"{ctx.today_sales:,.0f}".replace(",", "٬")
+            summary = f"فروش امروز {today} ریال؛ فروش هفتگی {amount} ریال"
         return AnalyticsHelperResponse(
             metric=metric,
-            summary=f"فروش امروز {amount} ریال — روند {days} روزه از وب ارسال می‌شود",
-            data_points={"today_sales": ctx.today_sales, "days": days},
-            status="placeholder",
+            summary=summary,
+            data_points={
+                "today_sales": ctx.today_sales,
+                "week_sales": week_sales,
+                "week_sales_change_pct": change,
+                "days": days,
+            },
+            status="ok",
         )

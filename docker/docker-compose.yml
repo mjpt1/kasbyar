@@ -26,6 +26,10 @@ services:
     environment:
       AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?AI_SERVICE_TOKEN required}
       DATABASE_URL: postgresql://kesbyar:kesbyar@postgres:5432/kesbyar
+      # LLM/embeddings are optional at runtime — if not configured the web app will
+      # fall back to local-fallback answers.
+      LLM_API_URL: ${LLM_API_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
       DEBUG: "true"
       LOG_LEVEL: debug
     ports:

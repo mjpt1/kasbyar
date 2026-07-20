@@ -5,26 +5,31 @@ import {
   BarChart3,
   BookOpen,
   Boxes,
+  Brain,
   Building2,
   Calculator,
   Calendar,
   Camera,
   CheckSquare,
   ClipboardList,
+  Compass,
   Dumbbell,
   FolderOpen,
   GraduationCap,
   HardHat,
   HeartPulse,
-  HelpCircle,
   Home,
   LayoutDashboard,
+  LineChart,
   Luggage,
   Megaphone,
   MessageSquare,
   Package,
   Plane,
+  Presentation,
   Printer,
+  Puzzle,
+  Radio,
   Receipt,
   Scale,
   Settings,
@@ -34,6 +39,7 @@ import {
   Stethoscope,
   Store,
   Target,
+  TrendingUp,
   Users,
   UtensilsCrossed,
   Wallet,
@@ -52,6 +58,8 @@ export interface NavItem {
   icon: LucideIcon;
   /** Pack-only items are visually grouped */
   packOnly?: boolean;
+  /** Optional sidebar section heading (shown before first item in the section) */
+  section?: string;
 }
 
 const PACK_ICON_MAP: Record<string, LucideIcon> = {
@@ -85,20 +93,40 @@ const PACK_ICON_MAP: Record<string, LucideIcon> = {
   Printer,
 };
 
-const CORE_NAV_ITEMS: NavItem[] = [
-  { href: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
+const AI_SECTION = 'هوشمند';
+
+/** AI OS pages — kept near top of sidebar so they are not buried under pack/CRM links */
+const AI_NAV_ITEMS: NavItem[] = [
+  { href: '/command', label: 'اتاق فرمان', icon: Radio, section: AI_SECTION },
+  { href: '/conversation', label: 'دستیار', icon: MessageSquare, section: AI_SECTION },
+  { href: '/memory', label: 'حافظه شرکت', icon: Brain, section: AI_SECTION },
+  { href: '/forecast', label: 'پیش‌بینی', icon: LineChart, section: AI_SECTION },
+  { href: '/strategy', label: 'استراتژی', icon: Compass, section: AI_SECTION },
+  { href: '/simulation', label: 'شبیه‌سازی', icon: Calculator, section: AI_SECTION },
+  { href: '/meetings', label: 'جلسات', icon: Presentation, section: AI_SECTION },
+  { href: '/growth', label: 'رشد و بازار', icon: TrendingUp, section: AI_SECTION },
+  { href: '/twin', label: 'دوقلوی دیجیتال', icon: Building2, section: AI_SECTION },
+  { href: '/platform', label: 'پلتفرم و افزونه‌ها', icon: Puzzle, section: AI_SECTION },
+  { href: '/automation', label: 'اتوماسیون', icon: Workflow, section: AI_SECTION },
+  { href: '/help', label: 'راهنما', icon: BookOpen, section: AI_SECTION },
+];
+
+const CORE_OPS_ITEMS: NavItem[] = [
   { href: '/customers', label: 'مشتریان', icon: Users },
   { href: '/leads', label: 'لیدها', icon: Target },
   { href: '/invoices', label: 'فاکتورها', icon: Receipt },
   { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
   { href: '/tasks', label: 'وظایف', icon: CheckSquare },
-  { href: '/conversation', label: 'دستیار', icon: MessageSquare },
   { href: '/reports', label: 'گزارش‌ها', icon: BarChart3 },
   { href: '/activity', label: 'فعالیت‌ها', icon: Activity },
-  { href: '/automation', label: 'اتوماسیون', icon: Workflow },
   { href: '/files', label: 'فایل‌ها', icon: FolderOpen },
-  { href: '/help', label: 'راهنما', icon: HelpCircle },
   { href: '/settings', label: 'تنظیمات', icon: Settings },
+];
+
+const CORE_NAV_ITEMS: NavItem[] = [
+  { href: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
+  ...AI_NAV_ITEMS,
+  ...CORE_OPS_ITEMS,
 ];
 
 /** @deprecated Use getNavItems(industryPack) */
@@ -128,13 +156,14 @@ export function getNavItems(
     packOnly: true,
   }));
 
-  let items: NavItem[];
-  if (packItems.length === 0 && specialtyItem.length === 0) {
-    items = CORE_NAV_ITEMS;
-  } else {
-    const [dashboard, ...rest] = CORE_NAV_ITEMS;
-    items = [dashboard!, ...specialtyItem, ...packItems, ...rest];
-  }
+  // Dashboard + AI first (always visible), then specialty/pack, then CRM/ops
+  let items: NavItem[] = [
+    CORE_NAV_ITEMS[0]!,
+    ...AI_NAV_ITEMS,
+    ...specialtyItem,
+    ...packItems,
+    ...CORE_OPS_ITEMS,
+  ];
 
   if (!role) return items;
 

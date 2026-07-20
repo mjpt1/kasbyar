@@ -10,9 +10,19 @@ export async function buildOperationalContext(
 ): Promise<OperationalContextSnapshot> {
   const dayStart = startOfDay(new Date());
   const dayEnd = endOfDay(new Date());
+  const weekAgo = new Date(dayStart);
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const twoWeeksAgo = new Date(dayStart);
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+  const monthAgo = new Date(dayStart);
+  monthAgo.setDate(monthAgo.getDate() - 30);
 
   const [
     todayPayments,
+    weekPayments,
+    prevWeekPayments,
+    monthPayments,
+    newCustomersMonth,
     openInvoices,
     overdueInvoices,
     activeLeads,
@@ -29,6 +39,33 @@ export async function buildOperationalContext(
         paidAt: { gte: dayStart },
       },
       _sum: { amount: true },
+    }),
+    prisma.payment.aggregate({
+      where: {
+        organizationId,
+        status: 'COMPLETED',
+        paidAt: { gte: weekAgo },
+      },
+      _sum: { amount: true },
+    }),
+    prisma.payment.aggregate({
+      where: {
+        organizationId,
+        status: 'COMPLETED',
+        paidAt: { gte: twoWeeksAgo, lt: weekAgo },
+      },
+      _sum: { amount: true },
+    }),
+    prisma.payment.aggregate({
+      where: {
+        organizationId,
+        status: 'COMPLETED',
+        paidAt: { gte: monthAgo },
+      },
+      _sum: { amount: true },
+    }),
+    prisma.customer.count({
+      where: { organizationId, createdAt: { gte: monthAgo }, deletedAt: null },
     }),
     prisma.invoice.count({
       where: {
@@ -89,6 +126,11 @@ export async function buildOperationalContext(
     })),
   );
 
+  const weekSales = Number(weekPayments._sum.amount ?? 0);
+  const prevWeekSales = Number(prevWeekPayments._sum.amount ?? 0);
+  const weekSalesChangePct =
+    prevWeekSales > 0 ? ((weekSales - prevWeekSales) / prevWeekSales) * 100 : weekSales > 0 ? 100 : 0;
+
   return {
     today_sales: Number(todayPayments._sum.amount ?? 0),
     open_invoices: openInvoices,
@@ -101,5 +143,10 @@ export async function buildOperationalContext(
     top_overdue_customers: overdueWithCustomer.map((i) => i.customer.name),
     top_stale_leads: staleLeads.slice(0, 5).map((l) => l.title),
     tasks_due_today_titles: tasksDueTodayRows.map((t) => t.title),
+    week_sales: weekSales,
+    month_sales: Number(monthPayments._sum.amount ?? 0),
+    week_sales_change_pct: weekSalesChangePct,
+    new_customers_month: newCustomersMonth,
+    cash_received_month: Number(monthPayments._sum.amount ?? 0),
   };
 }

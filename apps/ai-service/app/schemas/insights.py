@@ -23,6 +23,11 @@ class OperationalContextSnapshot(BaseModel):
     top_overdue_customers: list[str] = Field(default_factory=list)
     top_stale_leads: list[str] = Field(default_factory=list)
     tasks_due_today_titles: list[str] = Field(default_factory=list)
+    week_sales: float | None = None
+    month_sales: float | None = None
+    week_sales_change_pct: float | None = None
+    new_customers_month: int | None = None
+    cash_received_month: float | None = None
 
 
 class OperationalSummaryRequest(BaseModel):
@@ -61,8 +66,8 @@ class DocumentParseResponse(BaseModel):
     extracted_text: str = ""
     fields: dict = Field(default_factory=dict)
     document_type: str | None = None
-    status: str = "placeholder"
-    message: str | None = "تحلیل سند در نسخه‌های بعدی فعال می‌شود"
+    status: str = "ready"
+    message: str | None = None
 
 
 class AnalyticsHelperRequest(BaseModel):

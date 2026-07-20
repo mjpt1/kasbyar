@@ -146,9 +146,46 @@ async function executeRule(
       break;
     }
 
-    case 'PAYMENT_RECEIVED':
-    case 'CUSTOMER_CREATED':
+    case 'PAYMENT_RECEIVED': {
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const payments = await prisma.payment.findMany({
+        where: { organizationId, status: 'COMPLETED', paidAt: { gte: since } },
+        include: { customer: true },
+        take: 20,
+      });
+      for (const payment of payments) {
+        const done = await applyAction(organizationId, rule.action, {
+          title: `پرداخت دریافت شد: ${payment.customer.name}`,
+          description: `مبلغ ${payment.amount} — قانون: ${rule.name}`,
+          userId,
+        });
+        if (done) {
+          affected += 1;
+          details.push(payment.customer.name);
+        }
+      }
       break;
+    }
+
+    case 'CUSTOMER_CREATED': {
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const customers = await prisma.customer.findMany({
+        where: { organizationId, createdAt: { gte: since }, deletedAt: null },
+        take: 20,
+      });
+      for (const customer of customers) {
+        const done = await applyAction(organizationId, rule.action, {
+          title: `مشتری جدید: ${customer.name}`,
+          description: rule.description ?? rule.name,
+          userId,
+        });
+        if (done) {
+          affected += 1;
+          details.push(customer.name);
+        }
+      }
+      break;
+    }
   }
 
   return {
@@ -220,7 +257,19 @@ async function applyAction(
       return true;
     }
 
-    case 'NOTIFY_USER':
+    case 'NOTIFY_USER': {
+      await prisma.reminder.create({
+        data: {
+          organizationId,
+          title: payload.title,
+          message: payload.description,
+          remindAt: new Date(Date.now() + 30 * 60 * 1000),
+          userId: payload.userId,
+        },
+      });
+      return true;
+    }
+
     case 'UPDATE_STATUS':
       return false;
   }

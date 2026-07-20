@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@kesbyar/shared": "*",
+    "@kasbyar/agent-sdk": "*",
     "@kesbyar/ui": "*",
     "@prisma/client": "^6.1.0",
     "@radix-ui/react-avatar": "^1.1.2",

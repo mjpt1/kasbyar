@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     ai_service_token: str = "dev-token"
     database_url: str | None = None
     cors_origins: str = "http://localhost:3000"
+    llm_api_url: str = ""
+    llm_api_key: str = ""
+    llm_model: str = "gpt-4o-mini"
+    embedding_model: str = "text-embedding-3-small"
 
     @field_validator("debug", mode="before")
     @classmethod

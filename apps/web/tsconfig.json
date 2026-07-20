@@ -7,7 +7,8 @@
     "moduleResolution": "bundler",
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@kasbyar/agent-sdk": ["../../packages/agent-sdk/src/index.ts"]
     },
     "allowJs": true,
     "noEmit": true,

@@ -26,6 +26,35 @@ export interface OperationalContextSnapshot {
   top_overdue_customers: string[];
   top_stale_leads: string[];
   tasks_due_today_titles: string[];
+  /** v2 extended metrics */
+  week_sales?: number;
+  month_sales?: number;
+  week_sales_change_pct?: number;
+  new_customers_month?: number;
+  cash_received_month?: number;
+}
+
+export interface LlmChatRequest {
+  messages: Array<{ role: string; content: string }>;
+  system_prompt?: string;
+  temperature?: number;
+  max_tokens?: number;
+}
+
+export interface LlmChatResponse {
+  content: string;
+  model: string;
+  usage?: Record<string, number>;
+}
+
+export interface LlmEmbedRequest {
+  texts: string[];
+}
+
+export interface LlmEmbedResponse {
+  embeddings: number[][];
+  model: string;
+  dimensions: number;
 }
 
 export interface OperationalSummaryRequest {
@@ -50,6 +79,10 @@ export interface AssistantAskResponse {
   answer: string;
   confidence: number;
   sources: string[];
+  citations?: import('./agents').AgentCitation[];
+  recommendedActions?: import('./agents').RecommendedAction[];
+  sessionId?: string;
+  agentType?: import('./agents').AgentTypeName;
   degraded?: boolean;
 }
 
@@ -77,7 +110,7 @@ export interface DocumentParseResponse {
   extracted_text: string;
   fields: Record<string, unknown>;
   document_type: string | null;
-  status: 'ready' | 'placeholder' | 'error';
+  status: 'ready' | 'error';
   message?: string;
 }
 
@@ -92,7 +125,7 @@ export interface AnalyticsHelperResponse {
   metric: string;
   summary: string;
   data_points: Record<string, unknown>;
-  status: 'ok' | 'placeholder';
+  status: 'ok' | 'unavailable';
 }
 
 export interface AiServiceErrorBody {

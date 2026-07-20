@@ -44,7 +44,19 @@ export async function getOperationalInsight(organizationId: string) {
 export async function askBusinessAssistant(
   organizationId: string,
   question: string,
+  options?: { userId?: string; sessionId?: string; agentType?: import('@kesbyar/shared').AgentTypeName },
 ): Promise<AssistantAskResponse> {
+  if (options?.userId) {
+    const { runAgentOrchestrator } = await import('./agent-orchestrator');
+    return runAgentOrchestrator({
+      organizationId,
+      userId: options.userId,
+      question,
+      sessionId: options.sessionId,
+      agentType: options.agentType,
+    });
+  }
+
   const context = await buildOperationalContext(organizationId);
   const aiResult = await askAssistant({
     organization_id: organizationId,

@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>سیستم‌عامل کسب‌وکار برای بازار ایران</strong><br />
+  <strong>سیستم‌عامل کسب‌وکار + هوش مصنوعی برای بازار ایران</strong><br />
   فارسی‌اول · راست‌به‌چپ · تقویم شمسی · چندمستأجری
 </p>
 
@@ -43,9 +43,16 @@
 | نقش و دسترسی (مالک / مدیر / کارمند) | ✅ |
 | پنل سوپرادمین پلتفرم | ✅ |
 | بسته‌های عمودی (کلینیک، خرده‌فروشی، سفر) | ✅ |
-| دستیار عملیاتی (سرویس جدا) | ✅ (آفلاین در قطعی) |
+| دستیار عملیاتی + تأیید اقدام | ✅ |
 | طرح اشتراک و محدودیت | ✅ |
 | حالت نمایش (دمو) | ✅ |
+| اتاق فرمان (بریفینگ / سلامت) | ✅ |
+| حافظه شرکت (جستجو معنایی) | ✅ |
+| پیش‌بینی درآمد و نقدینگی | ✅ |
+| استراتژی و شبیه‌سازی | ✅ |
+| جلسات، رشد، دوقلوی دیجیتال | ✅ |
+| پلتفرم ایجنت و اتوماسیون | ✅ |
+| راهنمای داخل اپ (/help) | ✅ |
 | درگاه پرداخت آنلاین | 📋 فاز بعد |
 
 ---
@@ -53,12 +60,13 @@
 ## ساختار مخزن
 
 ```
-apps/web          اپ اصلی — Next.js 15 + لندینگ
-apps/ai-service   سرویس دستیار — FastAPI (استقرار جدا)
-packages/shared   جلالی، فرمت، billing، observability
-packages/ui       اجزای UI مشترک
-prisma/           طرحواره، migration و seed
-docs/             معماری، استقرار، پایلوت
+apps/web             اپ اصلی — Next.js 15 + AI Business OS
+apps/ai-service      سرویس AI/LLM — FastAPI (استقرار جدا)
+packages/shared      جلالی، فرمت، billing، تایپ‌های AI
+packages/agent-sdk   قرارداد ایجنت و ابزارها
+packages/ui          اجزای UI مشترک
+prisma/              طرح‌واره، migration و seed
+docs/                معماری، استقرار، ویکی پشتیبان (docs/wiki)
 ```
 
 ---
@@ -79,8 +87,57 @@ npm run dev
 | ورود | [http://localhost:3000/login](http://localhost:3000/login) |
 | دستیار (اختیاری) | `npm run dev:ai` → پورت `8000` |
 
-### حساب‌های نمونه
 
+---
+
+## AI Business OS (هوشمند)
+
+کسب‌یار علاوه بر CRM و عملیات، یک **سیستم‌عامل هوشمند** داخل همان اپ دارد. بخش‌ها در سایدبار زیر عنوان **هوشمند** دیده می‌شوند:
+
+| بخش | مسیر | کاربرد |
+|------|------|--------|
+| اتاق فرمان | /command | بریفینگ روزانه، اولویت‌ها، نمره سلامت |
+| دستیار | /conversation | چت عملیاتی با تأیید قبل از اقدام |
+| حافظه شرکت | /memory | ingest، جستجوی معنایی، خط زمانی |
+| پیش‌بینی | /forecast | درآمد و نقدینگی |
+| استراتژی | /strategy | اهداف و اولویت‌های استراتژیک |
+| شبیه‌سازی | /simulation | سناریوهای what-if |
+| جلسات | /meetings | خلاصه، تصمیمات، اقدامات |
+| رشد و بازار | /growth | فرصت‌های رشد |
+| دوقلوی دیجیتال | /twin | پروفایل هوشمند مشتری |
+| پلتفرم | /platform | Agent SDK و افزونه‌ها |
+| اتوماسیون | /automation | قوانین و جریان خودکار |
+| راهنما | /help | راهنمای داخل محصول |
+
+مستندات کاربری: [ویکی GitHub](https://github.com/mjpt1/kasbyar/wiki) · نسخه پشتیبان در مخزن: [docs/wiki/](./docs/wiki/)
+
+معماری عمیق‌تر: [docs/architecture/](./docs/architecture/) · یکپارچه‌سازی AI: [docs/AI_INTEGRATION.md](./docs/AI_INTEGRATION.md)
+
+### پیکربندی LLM و دیتابیس
+
+در .env (از روی .env.example):
+
+`env
+DATABASE_URL="postgresql://kesbyar:kesbyar@localhost:5432/kesbyar?schema=public"
+AI_SERVICE_URL="http://localhost:8000"
+AI_SERVICE_TOKEN="internal-dev-token-change-in-production"
+LLM_API_URL="https://api.openai.com/v1"
+LLM_API_KEY=""
+LLM_MODEL="gpt-4o-mini"
+`
+`
+پیشنهاد محلی:
+`
+``ash
+npm run docker:up   # Postgres (+ سرویس‌های compose)
+npm run setup
+npm run dev:ai      # اختیاری — پورت 8000
+npm run dev
+`
+`
+`
+### حساب‌های نمونه
+`
 | ایمیل | رمز | نقش |
 |-------|-----|-----|
 | `demo@kesbyar.ir` | `demo1234` | مالک / دمو |
@@ -115,13 +172,13 @@ npm run db:reseed
 | `npm run db:push` | همگام‌سازی schema |
 | `npm run db:seed` | داده نمونه |
 | `npm run docker:up` | PostgreSQL محلی + سرویس دستیار |
-
+`
 ---
-
+`
 ## استقرار روی Vercel
-
+`
 نسخهٔ فعلی: **[kasbyar.vercel.app](https://kasbyar.vercel.app)**
-
+`
 1. Import مخزن `mjpt1/kasbyar` از GitHub
 2. تنظیمات پروژه:
 
@@ -139,9 +196,9 @@ npm run db:reseed
 | `NEXT_PUBLIC_APP_URL` | `https://kasbyar.vercel.app` |
 | `APP_ENV` | `production` |
 | `ALLOW_SEED` | `false` |
-
+`
 راهنمای کامل: [docs/DEPLOY_VERCEL.md](./docs/DEPLOY_VERCEL.md)
-
+`
 > سرویس FastAPI روی Vercel اجرا نمی‌شود؛ اپ بدون آن هم کار می‌کند. برای دستیار کامل، سرویس را جدا deploy کنید.
 
 ### Docker / VPS
@@ -167,7 +224,11 @@ npm run db:reseed
 
 ## مستندات اصلی
 
+- [ویکی محصول (GitHub Wiki)](https://github.com/mjpt1/kasbyar/wiki) — راهنمای بخش‌های AI
+- [docs/wiki/](./docs/wiki/) — همان محتوا داخل مخزن
 - [ARCHITECTURE.md](./docs/ARCHITECTURE.md) — معماری
+- [AI_INTEGRATION.md](./docs/AI_INTEGRATION.md) — یکپارچه‌سازی AI/LLM
+- [docs/architecture/](./docs/architecture/) — AI CEO، حافظه، ایجنت، workflow
 - [ENVIRONMENT.md](./docs/ENVIRONMENT.md) — متغیرهای محیط
 - [LOCAL_DEV.md](./docs/LOCAL_DEV.md) — عیب‌یابی محلی
 - [OPERATIONS.md](./docs/OPERATIONS.md) — عملیات
@@ -180,7 +241,7 @@ npm run db:reseed
   <img src="apps/web/public/landing/poster-start.jpg" alt="شروع با کسب‌یار" width="100%" />
 </p>
 
-<p align="center"><em>کسب‌یار — سیستم‌عاملِ رشد کسب‌وکار شما</em></p>
+<p align="center"><em>کسب‌یار — سیستم‌عامل کسب‌وکار و هوش مصنوعی شما</em></p>
 
 ---
 

@@ -214,6 +214,130 @@ export const automationRuleSchema = z.object({
 
 export const conversationSchema = z.object({
   question: z.string().min(2, 'سؤال خود را بنویسید').max(2000),
+  sessionId: z.string().optional(),
+  agentType: z
+    .enum([
+      'CEO',
+      'SALES',
+      'FINANCE',
+      'HR',
+      'OPERATIONS',
+      'MARKETING',
+      'SUPPORT',
+      'INVENTORY',
+      'LEGAL',
+    ])
+    .optional(),
+});
+
+export const memoryIngestSchema = z.object({
+  title: z.string().min(2, 'عنوان الزامی است'),
+  rawText: z.string().min(5, 'متن حداقل ۵ کاراکتر باشد'),
+  sourceType: z
+    .enum(['FILE', 'NOTE', 'INVOICE', 'CONTRACT', 'MEETING', 'MESSAGE', 'MANUAL'])
+    .optional()
+    .default('NOTE'),
+  sourceId: z.string().optional(),
+  mimeType: z.string().optional(),
+});
+
+export const memorySearchSchema = z.object({
+  query: z.string().min(2, 'عبارت جستجو الزامی است'),
+  limit: z.coerce.number().int().min(1).max(20).optional(),
+});
+
+export const strategySchema = z.object({
+  goal: z.string().min(3, 'هدف حداقل ۳ کاراکتر باشد').max(500),
+});
+
+export const simulationSchema = z.object({
+  scenario: z.string().min(3, 'سناریو الزامی است'),
+  variables: z.object({
+    priceChangePct: z.coerce.number().optional(),
+    headcountDelta: z.coerce.number().optional(),
+    adSpendChangePct: z.coerce.number().optional(),
+  }),
+});
+
+export const meetingCreateSchema = z.object({
+  title: z.string().min(2, 'عنوان جلسه الزامی است'),
+  scheduledAt: z.coerce.date().optional(),
+  transcript: z.string().optional(),
+});
+
+export const meetingTranscriptSchema = z.object({
+  meetingId: z.string().min(1),
+  transcript: z.string().min(10, 'متن جلسه حداقل ۱۰ کاراکتر باشد'),
+});
+
+export const sentimentAnalyzeSchema = z.object({
+  customerId: z.string().min(1, 'مشتری الزامی است'),
+  content: z.string().min(2, 'متن الزامی است'),
+  sourceType: z.string().optional(),
+  sourceId: z.string().optional(),
+});
+
+export const competitorSchema = z.object({
+  type: z.literal('competitor'),
+  competitorName: z.string().min(2, 'نام رقیب الزامی است'),
+  url: z.string().url().optional().or(z.literal('')),
+  notes: z.string().optional(),
+  data: z.record(z.unknown()).optional(),
+});
+
+export const marketSignalSchema = z.object({
+  type: z.literal('market'),
+  category: z.string().min(2, 'دسته الزامی است'),
+  title: z.string().min(2, 'عنوان الزامی است'),
+  summary: z.string().min(5, 'خلاصه الزامی است'),
+  trendScore: z.coerce.number().min(-1).max(1).optional(),
+});
+
+export const contentDraftSchema = z.object({
+  type: z.literal('content'),
+  contentType: z.enum(['post', 'email', 'campaign', 'sms']),
+  brief: z.string().min(5, 'بریف الزامی است'),
+  title: z.string().optional(),
+  body: z.string().optional(),
+});
+
+export const seoTaskSchema = z.object({
+  type: z.literal('seo'),
+  keyword: z.string().min(2, 'کلمه کلیدی الزامی است'),
+  topic: z.string().optional(),
+});
+
+export const pluginRegisterSchema = z.object({
+  slug: z.string().min(2).max(64),
+  name: z.string().min(2),
+  version: z.string().min(1),
+  description: z.string().optional(),
+  manifest: z.record(z.unknown()).optional(),
+});
+
+export const pluginToggleSchema = z.object({
+  action: z.literal('toggle'),
+  pluginId: z.string().min(1),
+  enabled: z.boolean(),
+});
+
+export const agentFeedbackSchema = z.object({
+  action: z.literal('feedback'),
+  feedbackType: z.enum([
+    'ACTION_APPROVED',
+    'ACTION_REJECTED',
+    'ANSWER_HELPFUL',
+    'ANSWER_NOT_HELPFUL',
+  ]),
+  agentType: z.string().optional(),
+  referenceId: z.string().optional(),
+  metadata: z.record(z.unknown()).optional(),
+});
+
+export const conversationConfirmSchema = z.object({
+  actionId: z.string().min(1),
+  approved: z.boolean(),
+  payload: z.record(z.unknown()),
 });
 
 export const workspaceSelectSchema = z.object({

@@ -32,6 +32,10 @@ services:
       AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?AI_SERVICE_TOKEN required}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       CORS_ORIGINS: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      # Optional: when set, /api/v1/llm/{chat,embed} will work.
+      # When missing, they will return 503 and the web UI falls back gracefully.
+      LLM_API_URL: ${LLM_API_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
     healthcheck:
       test: ['CMD', 'curl', '-fsS', 'http://localhost:8000/health']
       interval: 30s

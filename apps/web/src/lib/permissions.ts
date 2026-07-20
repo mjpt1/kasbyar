@@ -17,12 +17,21 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/invoices': 'STAFF',
   '/payments': 'STAFF',
   '/tasks': 'STAFF',
+  '/command': 'STAFF',
   '/conversation': 'STAFF',
+  '/memory': 'STAFF',
+  '/forecast': 'STAFF',
+  '/strategy': 'STAFF',
+  '/simulation': 'STAFF',
+  '/meetings': 'STAFF',
+  '/growth': 'STAFF',
+  '/twin': 'STAFF',
+  '/platform': 'STAFF',
   '/reports': 'MANAGER',
   '/activity': 'STAFF',
-  '/automation': 'MANAGER',
+  '/automation': 'STAFF',
   '/files': 'STAFF',
-  '/help': 'VIEWER',
+  '/help': 'STAFF',
   '/settings': 'STAFF',
   '/settings/audit': 'ADMIN',
   '/settings/billing': 'MANAGER',
@@ -53,7 +62,10 @@ export function hasMinRole(
   userRole: MembershipRole,
   required: MembershipRole,
 ): boolean {
-  return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[required];
+  const userLevel = ROLE_HIERARCHY[userRole];
+  const requiredLevel = ROLE_HIERARCHY[required];
+  if (userLevel == null || requiredLevel == null) return false;
+  return userLevel >= requiredLevel;
 }
 
 export function canManageMembers(role: MembershipRole): boolean {

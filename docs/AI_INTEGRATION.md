@@ -96,9 +96,50 @@ import { askAssistant, fetchOperationalSummary, getAiHealth } from '@/lib/ai';
    - دستیار: `buildLocalAssistantAnswer`
 4. UI برچسب «حالت آفلاین» یا پیام پشتیبان نشان می‌دهد
 
-## توسعهٔ آینده
+## لایهٔ AI Business OS (فاز ۱+)
 
-- اتصال LLM در `OrchestrationService`
-- تحلیل سند واقعی در `DocumentService`
-- روند فروش چندروزه در `AnalyticsService`
-- ذخیرهٔ تاریخچه گفتگو (مدل Prisma)
+```
+مرورگر
+  → /api/conversation | /api/briefing | /api/memory | /api/health
+       → agent-orchestrator / briefing / memory services
+            → Prisma (structured data + MemoryChunk vectors)
+            → lib/ai/client.ts → FastAPI (LLM, embeddings, document parse)
+            ↳ fallback: local-fallback.ts
+```
+
+### متغیرهای LLM (ai-service)
+
+| متغیر | توضیح |
+|-------|--------|
+| `LLM_PROVIDER` | `openai_compatible` (پیش‌فرض) |
+| `LLM_API_URL` | آدرس API سازگار با OpenAI |
+| `LLM_API_KEY` | کلید API |
+| `LLM_MODEL` | مدل chat (مثلاً `gpt-4o-mini`) |
+| `EMBEDDING_MODEL` | مدل embedding (مثلاً `text-embedding-3-small`) |
+
+### نقاط پایانی جدید (وب BFF)
+
+| مسیر | کاربرد |
+|------|--------|
+| `POST /api/memory/ingest` | ingest سند به Business Memory |
+| `POST /api/memory/search` | جستجوی معنایی + ساختاریافته |
+| `GET /api/memory/timeline` | خط زمانی entity |
+| `GET /api/briefing/daily` | خلاصهٔ روزانه AI CEO |
+| `GET /api/health/scores` | امتیاز سلامت شرکت |
+| `GET /api/command` | اتاق فرمان (briefing + health) |
+
+### نقاط پایانی جدید (FastAPI)
+
+| مسیر | کاربرد |
+|------|--------|
+| `POST /api/v1/llm/chat` | تکمیل گفتگو با guardrails |
+| `POST /api/v1/llm/embed` | تولید embedding |
+| `POST /api/v1/documents/parse` | استخراج متن PDF/DOCX/TXT |
+
+### قراردادهای مشترک جدید
+
+- `packages/shared/src/types/memory.ts`
+- `packages/shared/src/types/agents.ts`
+- `packages/shared/src/types/briefing.ts`
+
+مرجع: [docs/roadmap/ai-business-os.md](./roadmap/ai-business-os.md)

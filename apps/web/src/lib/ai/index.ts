@@ -11,3 +11,4 @@ export {
 } from './client';
 export type { AiResult } from './client';
 export { AiServiceError, AiTimeoutError, AiUnavailableError } from './errors';
+export { chatWithLlm } from './llm';
