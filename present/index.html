@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="کسب‌یار کمک می‌کند کسب‌وکارتان را یک‌جا ببینید و تصمیم بگیرید؛ فارسی، راست‌به‌چپ، با هوش مصنوعی که پیشنهاد می‌دهد و شما تأیید می‌کنید."
+    />
+    <meta name="theme-color" content="#14131a" />
+    <meta property="og:title" content="کسب‌یار | وقتی کسب‌وکار یک تصویر دارد" />
+    <meta
+      property="og:description"
+      content="پلتفرم فارسی برای تیم‌هایی که از پراکندگی اکسل و واتساپ خسته شده‌اند."
+    />
+    <meta property="og:type" content="website" />
+    <title>کسب‌یار — وقتی کسب‌وکار یک تصویر دارد</title>
+    <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
+    <link rel="preload" href="./assets/Vazirmatn-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/vazirmatn@33.003/Vazirmatn-Variable-font-face.css"
+    />
+    <link rel="stylesheet" href="./css/tokens.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="preload" as="image" href="./assets/present-problem.jpg" />
+    <link rel="preload" as="image" href="./assets/present-solution.jpg" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">پرش به محتوا</a>
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#hero">
+          <img src="./assets/logo.svg" width="36" height="36" alt="" />
+          <span>کسب‌یار</span>
+        </a>
+        <nav class="nav" aria-label="ناوبری اصلی">
+          <a href="#problem">چرا لازم است</a>
+          <a href="#os">چه می‌کند</a>
+          <a href="#command">اتاق فرمان</a>
+          <a href="#modules">امکانات</a>
+          <a href="#flow">چطور دمو کنیم</a>
+          <a href="#cta" class="btn btn-primary" style="min-height: 40px; padding-inline: 1rem">امتحان کنید</a>
+        </nav>
+        <button class="menu-toggle" type="button" aria-label="منو" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="section-dots" aria-label="فصل‌های صفحه">
+      <a href="#hero" data-target="hero" class="is-active" aria-label="شروع"></a>
+      <a href="#problem" data-target="problem" aria-label="چرا لازم است"></a>
+      <a href="#os" data-target="os" aria-label="چه می‌کند"></a>
+      <a href="#command" data-target="command" aria-label="اتاق فرمان"></a>
+      <a href="#modules" data-target="modules" aria-label="امکانات"></a>
+      <a href="#flow" data-target="flow" aria-label="چطور دمو کنیم"></a>
+      <a href="#cta" data-target="cta" aria-label="امتحان کنید"></a>
+    </nav>
+
+    <main id="main">
+      <section class="hero" id="hero" data-section>
+        <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="hero-glow hero-glow-a" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-b" aria-hidden="true"></div>
+
+        <div class="hero-inner">
+          <div class="eyebrow reveal">
+            <span class="eyebrow-dot" aria-hidden="true"></span>
+            برای تیم‌های ایرانی که جدی کار می‌کنند
+          </div>
+          <h1 class="reveal">
+            همه چیز پخش است.
+            <em>یک جا جمعش کنید.</em>
+          </h1>
+          <p class="hero-lead reveal">
+            مشتری اینجاست، فاکتور جای دیگر، پیگیری‌ها توی واتساپ گم می‌شود.
+            کسب‌یار همان جایی است که فروش، مالی و کارهای روزانه کنار هم می‌نشینند —
+            و صبح‌ها به شما می‌گوید امروز به چه چیزی برسید.
+          </p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-primary" href="https://kasbyar.vercel.app" target="_blank" rel="noopener">ببینید چطور کار می‌کند</a>
+            <a class="btn btn-ghost" href="https://github.com/mjpt1/kasbyar" target="_blank" rel="noopener">کد روی گیت‌هاب</a>
+          </div>
+          <div class="hero-metrics reveal">
+            <div class="metric">
+              <strong>یک</strong>
+              <span>پیشخوان برای کل تیم</span>
+            </div>
+            <div class="metric">
+              <strong>فارسی</strong>
+              <span>راست‌به‌چپ و تقویم شمسی</span>
+            </div>
+            <div class="metric">
+              <strong>هوشمند</strong>
+              <span>پیشنهاد می‌دهد؛ شما تصمیم می‌گیرید</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="problem" data-section data-parallax>
+        <div class="chapter-media chapter-media--problem is-photo" aria-hidden="true"></div>
+        <div class="chapter-grid" aria-hidden="true"></div>
+        <div class="chapter-content reveal">
+          <div class="chapter-kicker">واقعیت روزمره</div>
+          <h2>کار از دست مدیر درمی‌رود؛ نه چون تنبل است — چون تصویر کامل ندارد.</h2>
+          <p>
+            لید توی اکسل است، قرارداد توی پوشه، پیگیری توی سر فروشنده.
+            آخر هفته می‌پرسید «این مشتری چی شد؟» و کسی جواب دقیق ندارد.
+            تصمیم دیر گرفته می‌شود، چون همه مشغول پیدا کردن اطلاعات‌اند.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter" id="os" data-section data-parallax>
+        <div class="chapter-media chapter-media--solution is-photo" aria-hidden="true"></div>
+        <div class="chapter-grid" aria-hidden="true"></div>
+        <div class="chapter-content reveal">
+          <div class="chapter-kicker">پاسخ ما</div>
+          <h2>کسب‌یار مثل اتاق فرمان شرکت است؛ نه یک چت‌بات جدا و نه یک اکسل قشنگ‌تر.</h2>
+          <p>
+            عددها از خود کسب‌وکار شما می‌آیند. هوش مصنوعی کمک می‌کند بفهمید و بنویسید —
+            اما کار مهم را بدون تأیید شما انجام نمی‌دهد.
+            خیال‌تان راحت باشد: کنترل دست شماست.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--command" id="command" data-section>
+        <div class="section-inner">
+          <div class="section-head reveal">
+            <div class="eyebrow"><span class="eyebrow-dot"></span> اتاق فرمان</div>
+            <h2>صبح که می‌آیید، اولویت‌ها از قبل روی میز است.</h2>
+            <p>
+              می‌بینید کجا خوبید، کجا خطرناک است، و چه کاری امروز ارزشش را دارد.
+              مثل یک چکاپ کوتاه برای شرکت — قبل از اینکه روز شروع شود.
+            </p>
+          </div>
+
+          <div class="demo-split">
+            <div class="demo-panel reveal">
+              <div class="demo-screen">
+                <div class="demo-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+                <div style="font-size: 0.85rem; color: var(--color-muted)">صبح بخیر — وضعیت امروز</div>
+                <div class="health-row">
+                  <div class="health-pill"><strong style="color: #8fb89e">۸۵</strong><span>مالی</span></div>
+                  <div class="health-pill"><strong style="color: #f5c9a8">۶۱</strong><span>فروش</span></div>
+                  <div class="health-pill"><strong style="color: #8fb89e">۷۰</strong><span>عملیات</span></div>
+                  <div class="health-pill"><strong style="color: #f2b8b8">۵۵</strong><span>رشد</span></div>
+                  <div class="health-pill"><strong style="color: #8fb89e">۹۰</strong><span>منابع انسانی</span></div>
+                </div>
+                <div class="alert">دو مشتری ناراضی‌اند؛ امروز باهاشان حرف بزنید</div>
+                <div class="alert ok">فروش سایت نسبت به هفتهٔ قبل بهتر شده</div>
+                <div class="alert">سه لید بیش از یک هفته است که کسی تماس نگرفته</div>
+              </div>
+            </div>
+            <div class="demo-panel reveal">
+              <div class="demo-screen">
+                <div class="demo-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+                <div style="font-size: 0.85rem; color: var(--color-muted); margin-bottom: 0.25rem">با کسب‌یار حرف بزنید</div>
+                <div class="chat-bubble chat-user">این هفته فروش چطور بود؟ لیدهای خوابیده را هم پیگیری کنیم.</div>
+                <div class="chat-bubble chat-ai">
+                  فروش حدود ۲۱٪ کم شده. سه نفر از تیم زیر میانگین‌اند.
+                  <br /><br />
+                  می‌توانم سه تا وظیفهٔ پیگیری برای لیدهای خوابیده بسازم — اگر موافقید، تأیید کنید.
+                </div>
+                <div style="display: flex; gap: 0.5rem; margin-top: auto">
+                  <span class="btn btn-primary" style="min-height: 40px; pointer-events: none">باشه، بساز</span>
+                  <span class="btn btn-ghost" style="min-height: 40px; pointer-events: none">نه، لازم نیست</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--modules" id="modules" data-section>
+        <div class="section-inner">
+          <div class="section-head reveal">
+            <div class="eyebrow"><span class="eyebrow-dot"></span> امکانات</div>
+            <h2>هر بخش برای یک درد واقعی ساخته شده؛ نه برای پر کردن منو.</h2>
+            <p>در اپ، زیر عنوان «هوشمند» پیدا می‌کنیدشان. یکی‌یکی باز کنید و حس کار واقعی را ببینید.</p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="card card-lg card-accent-a">
+              <div class="card-icon" aria-hidden="true">◎</div>
+              <h3>حافظه شرکت</h3>
+              <p>
+                قرارداد و فایل را یک‌بار بگذارید داخل سیستم. بعد بپرسید «قرارداد فلان کجاست؟»
+                جواب می‌دهد و نشان می‌دهد از کجا فهمیده.
+              </p>
+            </article>
+            <article class="card card-md card-accent-b">
+              <div class="card-icon" aria-hidden="true">↗</div>
+              <h3>پیش‌بینی</h3>
+              <p>
+                فقط گزارش دیروز نیست. می‌گوید نقدینگی تا کی دوام دارد،
+                کدام مشتری ممکن است برود، و کجا ممکن است جنس تمام شود.
+              </p>
+            </article>
+            <article class="card card-sm card-accent-c">
+              <div class="card-icon" aria-hidden="true">⌖</div>
+              <h3>استراتژی</h3>
+              <p>بگویید می‌خواهید درآمد بیشتر شود؛ یک برنامهٔ عملی با زمان و هزینه روی میز می‌گذارد.</p>
+            </article>
+            <article class="card card-sm">
+              <div class="card-icon" aria-hidden="true">⟳</div>
+              <h3>شبیه‌سازی</h3>
+              <p>قبل از اینکه قیمت را عوض کنید، بپرسید «اگر ده درصد گران کنیم چه می‌شود؟»</p>
+            </article>
+            <article class="card card-sm">
+              <div class="card-icon" aria-hidden="true">◎</div>
+              <h3>جلسات</h3>
+              <p>متن جلسه را بگذارید؛ تصمیم‌ها و کارها را جدا می‌کند و اگر بخواهید وظیفه می‌سازد.</p>
+            </article>
+            <article class="card card-sm">
+              <div class="card-icon" aria-hidden="true">◈</div>
+              <h3>رشد و بازار</h3>
+              <p>رقیب، روند بازار، پیش‌نویس پست و کارهای سئو — برای تیمی که می‌خواهد دیده شود.</p>
+            </article>
+            <article class="card card-md card-accent-a">
+              <div class="card-icon" aria-hidden="true">⬡</div>
+              <h3>چهرهٔ کامل مشتری</h3>
+              <p>فاکتور، پرداخت، حرف‌ها، وظیفه‌ها و فایل‌های مرتبط — یک نگاه، نه ده تا تب.</p>
+            </article>
+            <article class="card card-md card-accent-b">
+              <div class="card-icon" aria-hidden="true">⚡</div>
+              <h3>اتوماسیون و توسعه</h3>
+              <p>
+                قانون بگذارید: مشتری جدید آمد، پیام برود و وظیفه ساخته شود.
+                اگر روزی افزونه خواستید، جا برایش هست.
+              </p>
+            </article>
+          </div>
+
+          <div class="capsules reveal">
+            <span class="capsule">مشتری و لید</span>
+            <span class="capsule">فاکتور و وصول</span>
+            <span class="capsule">نقش برای مالک، مدیر و کارمند</span>
+            <span class="capsule">بسته‌های صنفی</span>
+            <span class="capsule">راهنمای داخل برنامه</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--flow" id="flow" data-section>
+        <div class="section-inner">
+          <div class="section-head reveal">
+            <div class="eyebrow"><span class="eyebrow-dot"></span> برای جلسهٔ ارائه</div>
+            <h2>سه حرکت کوتاه؛ مخاطب حس محصول را می‌گیرد.</h2>
+          </div>
+          <div class="steps">
+            <article class="step reveal">
+              <h3>وارد شوید</h3>
+              <p>
+                نسخهٔ آنلاین را باز کنید و با
+                <strong dir="ltr">demo@kesbyar.ir</strong>
+                وارد شوید. منوی «هوشمند» را درست زیر داشبورد می‌بینید.
+              </p>
+            </article>
+            <article class="step reveal">
+              <h3>اتاق فرمان، بعد حرف زدن</h3>
+              <p>
+                اول وضعیت امروز را نشان دهید. بعد یک سؤال واقعی بپرسید —
+                مثلاً دربارهٔ فروش — و بگذارید پیشنهاد وظیفه را با تأیید شما ببینند.
+              </p>
+            </article>
+            <article class="step reveal">
+              <h3>یک بخش که به مخاطب می‌چسبد</h3>
+              <p>
+                اگر فروش است، پیش‌بینی یا جلسات؛ اگر عملیات است، حافظه یا اتوماسیون.
+                گیر کردید، از «راهنما» داخل خود برنامه کمک بگیرید.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--cta" id="cta" data-section>
+        <div class="section-inner section-inner--cta">
+          <div class="cta reveal">
+            <h2>اگر بخواهید، همین امروز امتحانش کنید.</h2>
+            <p>
+              این صفحه سبک است و روی اینترنت راحت بالا می‌آید.
+              خود محصول هم آنلاین است؛ با حساب دمو وارد شوید و چند دقیقه باهاش کار کنید.
+            </p>
+            <div class="cta-actions">
+              <a class="btn btn-primary" href="https://kasbyar.vercel.app" target="_blank" rel="noopener">ورود به برنامه</a>
+              <a class="btn btn-ghost" href="https://github.com/mjpt1/kasbyar" target="_blank" rel="noopener">گیت‌هاب</a>
+              <a class="btn btn-ghost" href="https://github.com/mjpt1/kasbyar/tree/main/docs/wiki" target="_blank" rel="noopener">راهنمای مکتوب</a>
+            </div>
+          </div>
+          <footer class="site-footer">
+            <div class="footer-inner">
+              <div>کسب‌یار — وقتی کسب‌وکار یک تصویر دارد</div>
+              <div class="footer-links">
+                <a href="https://kasbyar.vercel.app" target="_blank" rel="noopener">برنامه</a>
+                <a href="https://github.com/mjpt1/kasbyar" target="_blank" rel="noopener">گیت‌هاب</a>
+                <a href="./README.md">چطور این سایت را منتشر کنیم</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+    <script src="./js/scene3d.js" defer></script>
+    <script src="./js/parallax.js" defer></script>
+  </body>
+</html>
