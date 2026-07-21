@@ -59,10 +59,10 @@
     }
   }
 
+  /* max-width on media only — exclude bare <svg> so inline icons keep size */
   img,
   video,
-  canvas,
-  svg {
+  canvas {
     max-width: 100%;
     height: auto;
   }

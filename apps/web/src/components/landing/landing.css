@@ -359,7 +359,9 @@
 
 .landing-nav-logo {
   width: 34px;
-  height: 34px;
+  height: 34px !important;
+  max-width: none;
+  object-fit: contain;
   border-radius: 9px;
   display: block;
   flex-shrink: 0;
@@ -488,7 +490,7 @@
   }
   .landing-nav-logo {
     width: 30px;
-    height: 30px;
+    height: 30px !important;
   }
   .landing-nav-links {
     display: none;

@@ -1,9 +1,6 @@
-/* KesbYar PWA service worker — network-first for navigations, cache-first for static assets */
-const CACHE_VERSION = 'kesbyar-pwa-v3';
+/* KesbYar PWA — network-first navigations; never cache-first Next.js CSS/JS */
+const CACHE_VERSION = 'kesbyar-pwa-v4';
 const PRECACHE = [
-  '/',
-  '/login',
-  '/dashboard',
   '/offline',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -31,6 +28,13 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+function putOk(request, response) {
+  if (!response || !response.ok) return response;
+  const copy = response.clone();
+  caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+  return response;
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -38,29 +42,28 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never cache authenticated API / auth mutations
+  // Never intercept APIs, HMR, or Next build assets (CSS/JS) — avoids stale unstyled pages
   if (
     url.pathname.startsWith('/api/') ||
-    url.pathname.startsWith('/_next/webpack-hmr')
+    url.pathname.startsWith('/_next/webpack-hmr') ||
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.startsWith('/_next/image')
   ) {
     return;
   }
 
   const isNavigation = request.mode === 'navigate';
   const isStatic =
-    url.pathname.startsWith('/_next/static/') ||
     url.pathname.startsWith('/icons/') ||
     url.pathname.startsWith('/landing/') ||
+    url.pathname.startsWith('/brand/') ||
+    url.pathname.startsWith('/fonts/') ||
     url.pathname.endsWith('.webmanifest');
 
   if (isNavigation) {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-          return response;
-        })
+        .then((response) => putOk(request, response))
         .catch(async () => {
           const cached = await caches.match(request);
           return cached || caches.match('/offline');
@@ -70,14 +73,13 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (isStatic) {
+    // Stale-while-revalidate for immutable public assets
     event.respondWith(
       caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-          return response;
-        });
+        const network = fetch(request)
+          .then((response) => putOk(request, response))
+          .catch(() => cached);
+        return cached || network;
       }),
     );
   }

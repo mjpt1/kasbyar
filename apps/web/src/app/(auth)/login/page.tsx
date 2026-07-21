@@ -47,8 +47,16 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-md">
         <CardHeader className="text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo.svg"
+            alt="لوگوی کسب‌یار"
+            width={56}
+            height={56}
+            className="mx-auto mb-3 h-14 w-14 rounded-2xl shadow-sm"
+          />
           <CardTitle className="text-2xl">ورود به کسب‌یار</CardTitle>
           <CardDescription>سیستم‌عامل هوشمند کسب‌وکار شما</CardDescription>
         </CardHeader>
