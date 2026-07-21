@@ -68,6 +68,24 @@ const DEFAULT_TIPS = [
 
 const BATCHES: SpecialtyBatch[] = [
   {
+    basePack: 'GENERAL',
+    icon: 'Briefcase',
+    items: [
+      ['general-business', 'کسب‌وکار عمومی', 'پیشخوان عمومی برای هر نوع فعالیت', 'مشتری', 'مشتریان'],
+      ['freelancer', 'فریلنسر', 'پروژه، کارفرما، فاکتور و پیگیری تحویل', 'کارفرما', 'کارفرمایان'],
+      [
+        'software-house',
+        'شرکت برنامه‌نویسی',
+        'پروژه‌های نرم‌افزاری، مشتری سازمانی و تحویل محصول',
+        'مشتری',
+        'مشتریان',
+      ],
+      ['consulting-firm', 'مشاوره', 'قرارداد مشاوره و پیگیری جلسات', 'مراجع', 'مراجعان'],
+      ['online-services', 'خدمات آنلاین', 'فروش و پشتیبانی خدمات اینترنتی', 'مشتری', 'مشتریان'],
+      ['content-creator', 'تولید محتوا', 'پروژه محتوایی و فاکتور کارفرما', 'کارفرما', 'کارفرمایان'],
+    ],
+  },
+  {
     basePack: 'CLINIC',
     icon: 'Stethoscope',
     items: [
@@ -287,9 +305,49 @@ function buildSpecialty(
 }
 
 let buildIndex = 0;
-export const SPECIALTY_ENTRIES: SpecialtyDefinition[] = BATCHES.flatMap((batch) =>
+const built = BATCHES.flatMap((batch) =>
   batch.items.map((seed) => buildSpecialty(batch, seed, buildIndex++)),
 );
+
+const SPECIALTY_OVERRIDES: Record<string, Partial<SpecialtyDefinition>> = {
+  freelancer: {
+    tips: [
+      'هر صبح پروژه‌ها و فاکتورهای باز را چک کنید تا هیچ کارفرمایی معطل نماند.',
+      'برای هر پروژه یک وظیفه با سررسید بسازید تا تحویل از دست نرود.',
+      'لیدهای جدید را سریع پاسخ دهید؛ فرصت‌های فریلنسری زود از بین می‌روند.',
+    ],
+    widgets: [
+      { key: 'clients', title: 'کارفرمایان فعال', metric: 'customers' },
+      { key: 'open-inv', title: 'فاکتور باز', metric: 'openInvoices' },
+      { key: 'opps', title: 'فرصت پروژه', metric: 'activeLeads' },
+      { key: 'work', title: 'کارهای باز', metric: 'pendingTasks' },
+    ],
+  },
+  'software-house': {
+    tips: [
+      'وضعیت پروژه‌ها و فاکتورهای معوق را هر روز مرور کنید.',
+      'لیدهای فروش نرم‌افزار را در قیف نگه دارید تا تیم فروش عقب نیفتد.',
+      'از اتاق فرمان برای اولویت‌های روزانه تیم استفاده کنید.',
+    ],
+    widgets: [
+      { key: 'clients', title: 'مشتریان فعال', metric: 'customers' },
+      { key: 'pipeline', title: 'لید فروش', metric: 'activeLeads' },
+      { key: 'billing', title: 'فاکتور باز', metric: 'openInvoices' },
+      { key: 'delivery', title: 'تسک تحویل', metric: 'pendingTasks' },
+    ],
+  },
+  'general-business': {
+    tips: [
+      'داشبورد را برای فروش، مطالبات و وظایف امروز باز کنید.',
+      'اگر بعداً تخصص دقیق‌تری داشتید، از تنظیمات سازمان یا سوپرادمین به‌روز کنید.',
+    ],
+  },
+};
+
+export const SPECIALTY_ENTRIES: SpecialtyDefinition[] = built.map((entry) => {
+  const override = SPECIALTY_OVERRIDES[entry.id];
+  return override ? { ...entry, ...override } : entry;
+});
 
 export const SPECIALTY_REGISTRY: Record<string, SpecialtyDefinition> = Object.fromEntries(
   SPECIALTY_ENTRIES.map((s) => [s.id, s]),

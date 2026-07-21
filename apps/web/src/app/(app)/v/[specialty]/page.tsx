@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import {
   ArrowLeft,
+  CheckSquare,
   LayoutDashboard,
+  MessageSquare,
   Receipt,
   Target,
   Users,
@@ -125,7 +127,11 @@ export default async function SpecialtyDashboardPage({
 
         <Card className="border-violet-100/80 bg-violet-50/40 dark:border-violet-900/40 dark:bg-violet-950/20">
           <CardHeader>
-            <CardTitle className="text-base">دسترسی سریع CRM</CardTitle>
+            <CardTitle className="text-base">
+              {specialtyId === 'freelancer' || specialtyId === 'software-house'
+                ? 'دسترسی سریع پروژه'
+                : 'دسترسی سریع CRM'}
+            </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
             <Button asChild variant="outline" size="sm" className="justify-start">
@@ -137,7 +143,7 @@ export default async function SpecialtyDashboardPage({
             <Button asChild variant="outline" size="sm" className="justify-start">
               <Link href="/leads">
                 <Target className="ms-2 h-4 w-4" />
-                لیدها
+                {specialtyId === 'freelancer' ? 'فرصت پروژه' : 'لیدها'}
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="justify-start">
@@ -146,6 +152,24 @@ export default async function SpecialtyDashboardPage({
                 فاکتورها
               </Link>
             </Button>
+            {(specialtyId === 'freelancer' ||
+              specialtyId === 'software-house' ||
+              specialty.basePack === 'GENERAL') && (
+              <>
+                <Button asChild variant="outline" size="sm" className="justify-start">
+                  <Link href="/tasks">
+                    <CheckSquare className="ms-2 h-4 w-4" />
+                    {specialtyId === 'software-house' ? 'تسک‌های تحویل' : 'کارها و پروژه‌ها'}
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm" className="justify-start">
+                  <Link href="/conversation">
+                    <MessageSquare className="ms-2 h-4 w-4" />
+                    اتاق فرمان
+                  </Link>
+                </Button>
+              </>
+            )}
             <Button asChild variant="ghost" size="sm" className="justify-start">
               <Link href="/dashboard">
                 <ArrowLeft className="ms-2 h-4 w-4" />

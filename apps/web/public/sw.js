@@ -1,5 +1,5 @@
 /* KesbYar PWA service worker — network-first for navigations, cache-first for static assets */
-const CACHE_VERSION = 'kesbyar-pwa-v1';
+const CACHE_VERSION = 'kesbyar-pwa-v3';
 const PRECACHE = [
   '/',
   '/login',
@@ -87,6 +87,30 @@ self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
+self.addEventListener('push', (event) => {
+  let data = { title: 'کسب‌یار', body: 'اعلان جدید', href: '/dashboard', tag: undefined };
+  try {
+    if (event.data) {
+      data = { ...data, ...event.data.json() };
+    }
+  } catch {
+    try {
+      data.body = event.data ? event.data.text() : data.body;
+    } catch {
+      /* ignore */
+    }
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'کسب‌یار', {
+      body: data.body || '',
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      tag: data.tag || 'kesbyar',
+      data: { url: data.href || '/dashboard' },
+    }),
+  );
+});
+
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const target = (event.notification.data && event.notification.data.url) || '/dashboard';
@@ -94,7 +118,7 @@ self.addEventListener('notificationclick', (event) => {
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
         if ('focus' in client) {
-          client.navigate?.(target);
+          if ('navigate' in client) client.navigate(target);
           return client.focus();
         }
       }

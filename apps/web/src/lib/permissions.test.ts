@@ -61,6 +61,13 @@ describe('route access', () => {
     }
   });
 
+  it('ADMIN+ can access onboarding; STAFF cannot', () => {
+    expect(getMinRoleForPath('/onboarding')).toBe('ADMIN');
+    expect(canAccessPath('ADMIN', '/onboarding')).toBe(true);
+    expect(canAccessPath('OWNER', '/onboarding')).toBe(true);
+    expect(canAccessPath('STAFF', '/onboarding')).toBe(false);
+  });
+
   it('OWNER can access all AI routes', () => {
     expect(canAccessPath('OWNER', '/platform')).toBe(true);
     expect(canAccessPath('OWNER', '/forecast')).toBe(true);

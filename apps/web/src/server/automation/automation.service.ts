@@ -267,6 +267,17 @@ async function applyAction(
           userId: payload.userId,
         },
       });
+      if (payload.userId) {
+        const { createNotification } = await import('@/server/notifications/notification.service');
+        await createNotification({
+          organizationId,
+          userId: payload.userId,
+          title: payload.title,
+          body: payload.description || payload.title,
+          href: '/tasks',
+          category: 'AUTOMATION',
+        });
+      }
       return true;
     }
 

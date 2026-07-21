@@ -1,6 +1,6 @@
 {
   "name": "@kesbyar/web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
-    "@kesbyar/shared": "*",
     "@kasbyar/agent-sdk": "*",
+    "@kesbyar/shared": "*",
     "@kesbyar/ui": "*",
     "@prisma/client": "^6.1.0",
     "@radix-ui/react-avatar": "^1.1.2",
@@ -24,6 +24,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.2",
     "@tanstack/react-table": "^8.20.6",
+    "@types/web-push": "^3.6.4",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -36,6 +37,7 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "web-push": "^3.6.7",
     "zod": "^3.24.1"
   },
   "devDependencies": {

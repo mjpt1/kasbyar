@@ -173,6 +173,19 @@ export async function buildDailyBriefing(
     return aBoost;
   });
 
+  const criticalAlerts = alerts.filter((a) => a.level === 'critical' || a.level === 'warning');
+  if (criticalAlerts.length > 0) {
+    const { notifyOrgAdmins } = await import('@/server/notifications/notification.service');
+    const top = criticalAlerts.slice(0, 3).map((a) => a.title).join('، ');
+    await notifyOrgAdmins(organizationId, {
+      title: 'اولویت‌های امروز کسب‌وکار',
+      body: top || summaryData.summary.slice(0, 160),
+      href: '/command',
+      category: 'BRIEFING',
+      dedupeKey: 'daily-briefing',
+    });
+  }
+
   return {
     greeting: `سلام ${userName}`,
     summary: summaryData.summary,

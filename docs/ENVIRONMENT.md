@@ -45,6 +45,17 @@ Next.js dev همچنین به `apps/web/.env.local` نیاز دارد.
 | `SMS_PROVIDER` | خیر | — | alias برای notification اگر unset |
 | `ANALYTICS_PROVIDER` | خیر | `log` | `log` \| `posthog` |
 
+### Web Push (اعلان مرورگر)
+
+| متغیر | الزامی | توضیح |
+|--------|--------|--------|
+| `VAPID_PUBLIC_KEY` | برای Push | کلید عمومی (`npx web-push generate-vapid-keys`) |
+| `VAPID_PRIVATE_KEY` | برای Push | کلید خصوصی |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | اختیاری | آینهٔ کلید عمومی برای کلاینت |
+| `VAPID_SUBJECT` | توصیه‌شده | مثلاً `mailto:ops@kesbyar.ir` |
+
+بدون VAPID، اعلان داخل اپ (زنگوله) همچنان کار می‌کند.
+
 Secrets per vendor: `BILLING_*`, `SMS_*`, `EMAIL_*`, `STORAGE_S3_*`, `ANALYTICS_POSTHOG_*` — فقط در adapter.
 
 → [docs/integrations/](../integrations/)

@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
 
   const isPublic =
     pathname === '/' || publicPaths.some((p) => p !== '/' && pathname.startsWith(p));
-  const isAuthPage = authPaths.some((p) => pathname === p);
+  const isAuthPage = authPaths.some((p) => p === pathname);
   const expired = request.nextUrl.searchParams.get('expired') === '1';
 
   // Always serve the marketing landing at "/".
@@ -40,7 +40,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  return NextResponse.next();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', pathname);
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 }
 
 export const config = {

@@ -15,6 +15,8 @@
   <a href="https://github.com/mjpt1/kasbyar">مخزن GitHub</a>
   ·
   <a href="https://github.com/mjpt1/kasbyar/wiki">ویکی</a>
+  ·
+  <strong>v0.2.0</strong>
 </p>
 
 ---
@@ -53,6 +55,9 @@
 | جلسات، رشد، دوقلوی دیجیتال | ✅ |
 | پلتفرم ایجنت و اتوماسیون | ✅ |
 | راهنمای داخل اپ (/help) | ✅ |
+| آنبوردینگ حوزه و تخصص | ✅ |
+| تخصص عمومی (فریلنسر، شرکت برنامه‌نویسی، …) | ✅ |
+| اعلان داخل اپ + Web Push | ✅ |
 | درگاه پرداخت آنلاین | 📋 فاز بعد |
 
 ---
@@ -108,8 +113,12 @@ npm run dev
 | پلتفرم | /platform | Agent SDK و افزونه‌ها |
 | اتوماسیون | /automation | قوانین و جریان خودکار |
 | راهنما | /help | راهنمای داخل محصول |
+| آنبوردینگ | /onboarding | انتخاب حوزه و تخصص (مالک/مدیر) |
+| داشبورد تخصص | /v/{specialty} | مثلاً `/v/freelancer`، `/v/software-house` |
 
-مستندات کاربری: [ویکی GitHub](https://github.com/mjpt1/kasbyar/wiki) · نسخه پشتیبان در مخزن: [docs/wiki/](./docs/wiki/)
+نسخه فعلی: **0.2.0** (`package.json` ریشه و `apps/web`).
+
+مستندات کاربری: [ویکی GitHub](https://github.com/mjpt1/kasbyar/wiki) · نسخه پشتیبان در مخزن: [docs/wiki/](./docs/wiki/) · منبع صفحات ویکی: [wiki/](./wiki/)
 
 معماری عمیق‌تر: [docs/architecture/](./docs/architecture/) · یکپارچه‌سازی AI: [docs/AI_INTEGRATION.md](./docs/AI_INTEGRATION.md)
 

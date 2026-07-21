@@ -345,6 +345,8 @@ model User {
   conversationSessions ConversationSession[]
   agentRuns            AgentRun[]
   meetings             Meeting[]
+  inAppNotifications   InAppNotification[]
+  pushSubscriptions    PushSubscription[]
 }
 
 model Session {
@@ -442,6 +444,8 @@ model Organization {
   seoTasks             SeoTask[]
   pluginManifests      PluginManifest[]
   agentFeedbacks       AgentFeedback[]
+  inAppNotifications   InAppNotification[]
+  pushSubscriptions    PushSubscription[]
 }
 
 model Workspace {
@@ -1906,4 +1910,42 @@ model SubscriptionEvent {
 
   @@index([organizationId])
   @@index([createdAt])
+}
+
+// ─── In-app notifications + Web Push ─────────────────────────────────────────
+
+model InAppNotification {
+  id             String    @id @default(cuid())
+  organizationId String
+  userId         String
+  title          String
+  body           String
+  href           String?
+  category       String    @default("SYSTEM")
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([organizationId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model PushSubscription {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  endpoint       String   @unique
+  p256dh         String
+  auth           String
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId])
 }

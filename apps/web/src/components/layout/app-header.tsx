@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { AUTH_NAV } from '@/config/navigation';
 import { ConversationNavLink } from '@/components/layout/conversation-nav-link';
+import { NotificationBell } from '@/components/notifications/notification-bell';
 import { Button } from '@/components/ui/button';
 
 interface AppHeaderProps {
@@ -11,6 +12,7 @@ interface AppHeaderProps {
   description?: string;
   organizationName: string;
   demoToolbar?: ReactNode;
+  showNotifications?: boolean;
 }
 
 export function AppHeader({
@@ -18,6 +20,7 @@ export function AppHeader({
   description,
   organizationName,
   demoToolbar,
+  showNotifications = true,
 }: AppHeaderProps) {
   return (
     <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
@@ -33,6 +36,7 @@ export function AppHeader({
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {demoToolbar}
+        {showNotifications ? <NotificationBell /> : null}
         <ConversationNavLink />
         <Button variant="outline" size="sm" className="shrink-0" asChild>
           <Link href={AUTH_NAV.workspaceSelect.href}>تغییر فضا</Link>
