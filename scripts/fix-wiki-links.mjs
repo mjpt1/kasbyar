@@ -1,69 +1,25 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'fs';
+import path from 'path';
 
-const dir = path.resolve('wiki');
-const map = {
-  Home: 'Home.md',
-  معرفی: 'معرفی.md',
-  'شروع-سریع': 'شروع-سریع.md',
-  'راهنمای-کاربر': 'راهنمای-کاربر.md',
-  'نقش‌ها-و-دسترسی': 'نقش‌ها-و-دسترسی.md',
-  'بسته‌های-صنفی': 'بسته‌های-صنفی.md',
-  'حالت-دمو': 'حالت-دمو.md',
-  'اشتراک-و-صورتحساب': 'اشتراک-و-صورتحساب.md',
-  'دستیار-هوشمند': 'دستیار-هوشمند.md',
-  معماری: 'معماری.md',
-  'توسعه-محلی': 'توسعه-محلی.md',
-  استقرار: 'استقرار.md',
-  'متغیرهای-محیط': 'متغیرهای-محیط.md',
-  'محدودیت‌های-V1': 'محدودیت‌های-V1.md',
-  'سوالات-متداول': 'سوالات-متداول.md',
-  'نقشه-مستندات': 'نقشه-مستندات.md',
-};
+const wikiDir = path.join(process.cwd(), 'wiki');
+const files = fs.readdirSync(wikiDir).filter((f) => f.endsWith('.md'));
+let changed = 0;
 
-for (const f of fs.readdirSync(dir)) {
-  if (!f.endsWith('.md') || f === 'README.md') continue;
-  const filePath = path.join(dir, f);
-  let t = fs.readFileSync(filePath, 'utf8');
-  const orig = t;
-  t = t.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, (_, page, label) => {
-    const file = map[page] || `${page}.md`;
-    return `[${label}](./${file})`;
-  });
-  t = t.replace(/\[\[([^\]]+)\]\]/g, (_, page) => {
-    const file = map[page] || `${page}.md`;
-    return `[${page.replace(/-/g, ' ')}](./${file})`;
-  });
-  if (t !== orig) {
-    fs.writeFileSync(filePath, t);
-    console.log('updated', f);
+for (const file of files) {
+  const p = path.join(wikiDir, file);
+  let text = fs.readFileSync(p, 'utf8');
+  const before = text;
+  // [label](./Page.md) or [label](Page.md) -> [label](Page)
+  // Keep http(s), mailto, absolute paths, and anchors alone.
+  text = text.replace(/\]\(\.\/([^)#]+)\.md\)/g, ']($1)');
+  text = text.replace(/\]\((?!https?:|mailto:|#|\/)([^)#]+)\.md\)/g, ']($1)');
+  if (text !== before) {
+    fs.writeFileSync(p, text, 'utf8');
+    changed += 1;
+    console.log('fixed', file);
   }
 }
 
-fs.writeFileSync(
-  path.join(dir, '_Sidebar.md'),
-  `## کسب‌یار
-
-**محصول**
-* [خانه](./Home.md)
-* [معرفی](./معرفی.md)
-* [راهنمای کاربر](./راهنمای-کاربر.md)
-* [نقش‌ها و دسترسی](./نقش‌ها-و-دسترسی.md)
-* [بسته‌های صنفی](./بسته‌های-صنفی.md)
-* [حالت دمو](./حالت-دمو.md)
-* [اشتراک و صورتحساب](./اشتراک-و-صورتحساب.md)
-* [دستیار هوشمند](./دستیار-هوشمند.md)
-* [سوالات متداول](./سوالات-متداول.md)
-
-**فنی**
-* [شروع سریع](./شروع-سریع.md)
-* [توسعه محلی](./توسعه-محلی.md)
-* [معماری](./معماری.md)
-* [استقرار](./استقرار.md)
-* [متغیرهای محیط](./متغیرهای-محیط.md)
-* [محدودیت‌های V1](./محدودیت‌های-V1.md)
-* [نقشه مستندات](./نقشه-مستندات.md)
-`,
-);
-
-console.log('done');
+console.log('files_changed', changed);
+console.log('---SIDEBAR---');
+console.log(fs.readFileSync(path.join(wikiDir, '_Sidebar.md'), 'utf8'));

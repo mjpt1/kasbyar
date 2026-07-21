@@ -1,4 +1,4 @@
-# کسب‌یار (KesbYar)
+﻿# کسب‌یار (KesbYar)
 
 <p align="center">
   <img src="apps/web/public/landing/logo.svg" alt="لوگوی کسب‌یار" width="72" height="72" />
@@ -16,7 +16,7 @@
   ·
   <a href="https://github.com/mjpt1/kasbyar/wiki">ویکی</a>
   ·
-  <strong>v0.2.0</strong>
+  <strong>v0.2.2</strong>
 </p>
 
 ---
@@ -116,7 +116,7 @@ npm run dev
 | آنبوردینگ | /onboarding | انتخاب حوزه و تخصص (مالک/مدیر) |
 | داشبورد تخصص | /v/{specialty} | مثلاً `/v/freelancer`، `/v/software-house` |
 
-نسخه فعلی: **0.2.0** (`package.json` ریشه و `apps/web`).
+نسخه فعلی: **0.2.2** (`package.json` ریشه و `apps/web`).
 
 مستندات کاربری: [ویکی GitHub](https://github.com/mjpt1/kasbyar/wiki) · نسخه پشتیبان در مخزن: [docs/wiki/](./docs/wiki/) · منبع صفحات ویکی: [wiki/](./wiki/)
 
