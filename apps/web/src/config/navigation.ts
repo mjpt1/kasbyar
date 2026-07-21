@@ -157,7 +157,7 @@ export function getNavItems(
   }));
 
   // Dashboard + AI first (always visible), then specialty/pack, then CRM/ops
-  let items: NavItem[] = [
+  const items: NavItem[] = [
     CORE_NAV_ITEMS[0]!,
     ...AI_NAV_ITEMS,
     ...specialtyItem,
