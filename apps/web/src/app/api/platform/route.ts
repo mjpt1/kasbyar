@@ -1,5 +1,5 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import {
   agentFeedbackSchema,
   pluginRegisterSchema,
@@ -19,6 +19,8 @@ export async function GET(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const view = new URL(request.url).searchParams.get('view') ?? 'plugins';
     if (view === 'learning') {
       const [insights, feedback] = await Promise.all([
@@ -41,6 +43,8 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     if (body.action === 'feedback') {
+      const staffDenied = requireApiRole(session, 'STAFF');
+      if (staffDenied) return staffDenied;
       const parsed = parseBody(agentFeedbackSchema, body);
       if (!parsed.ok) return parsed.response;
       const row = await recordAgentFeedback(session.organizationId, {
@@ -54,6 +58,8 @@ export async function POST(request: Request) {
     }
 
     if (body.action === 'toggle') {
+      const adminDenied = requireApiRole(session, 'ADMIN');
+      if (adminDenied) return adminDenied;
       const parsed = parseBody(pluginToggleSchema, body);
       if (!parsed.ok) return parsed.response;
       const row = await setPluginEnabled(
@@ -63,6 +69,9 @@ export async function POST(request: Request) {
       );
       return jsonResponse(apiSuccess(row));
     }
+
+    const adminDenied = requireApiRole(session, 'ADMIN');
+    if (adminDenied) return adminDenied;
 
     const parsed = parseBody(pluginRegisterSchema, body);
     if (!parsed.ok) return parsed.response;

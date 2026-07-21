@@ -30,7 +30,7 @@ services:
       # fall back to local-fallback answers.
       LLM_API_URL: ${LLM_API_URL:-}
       LLM_API_KEY: ${LLM_API_KEY:-}
-      DEBUG: "true"
+      DEBUG: ${DEBUG:-false}
       LOG_LEVEL: debug
     ports:
       - "8000:8000"

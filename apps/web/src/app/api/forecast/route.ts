@@ -1,5 +1,5 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import {
   computeForecasts,
   getLatestForecastsByType,
@@ -10,6 +10,8 @@ export async function GET(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const grouped = new URL(request.url).searchParams.get('grouped');
     if (grouped === '1') {
       return jsonResponse(apiSuccess(await getLatestForecastsByType(session.organizationId)));
@@ -25,6 +27,8 @@ export async function POST() {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const forecasts = await computeForecasts(session.organizationId);
     return jsonResponse(apiSuccess(forecasts));
   } catch (error) {

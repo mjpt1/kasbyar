@@ -1,12 +1,11 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
-import { z } from 'zod';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
+import { memorySearchSchema } from '@/lib/validators';
 import { parseBody } from '@/lib/validators/parse';
 import { searchMemory } from '@/server/memory/memory.search';
+import { z } from 'zod';
 
-const searchSchema = z.object({
-  query: z.string().min(1),
-  limit: z.number().int().min(1).max(20).optional(),
+const searchSchema = memorySearchSchema.extend({
   sourceType: z
     .enum(['FILE', 'NOTE', 'INVOICE', 'CONTRACT', 'MEETING', 'MESSAGE', 'MANUAL'])
     .optional(),
@@ -16,6 +15,8 @@ export async function POST(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
 
     const body = await request.json();
     const parsed = parseBody(searchSchema, body);

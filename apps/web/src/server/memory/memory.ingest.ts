@@ -1,6 +1,7 @@
 import type { MemoryIngestRequest, MemorySourceType } from '@kesbyar/shared';
 
 import { prisma } from '@/lib/prisma';
+import { NotFoundError } from '@/lib/errors';
 import { logAudit } from '@/server/audit/audit.service';
 import { publishDomainEvent } from '@/server/events/domain-event.service';
 
@@ -81,7 +82,7 @@ export async function ingestFromNote(organizationId: string, userId: string, not
   const note = await prisma.note.findFirst({
     where: { id: noteId, organizationId },
   });
-  if (!note) throw new Error('یادداشت یافت نشد');
+  if (!note) throw new NotFoundError('یادداشت یافت نشد');
 
   return ingestMemoryDocument(organizationId, userId, {
     sourceType: 'NOTE',

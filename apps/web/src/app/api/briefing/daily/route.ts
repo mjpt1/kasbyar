@@ -1,11 +1,13 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import { buildDailyBriefing } from '@/server/briefing/briefing.service';
 
 export async function GET() {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
 
     const briefing = await buildDailyBriefing(
       session.organizationId,

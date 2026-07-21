@@ -1,11 +1,13 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import { getMemoryTimeline } from '@/server/memory/memory.search';
 
 export async function GET(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
 
     const { searchParams } = new URL(request.url);
     const entityType = searchParams.get('entityType') ?? undefined;

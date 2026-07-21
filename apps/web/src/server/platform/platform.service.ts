@@ -7,6 +7,7 @@ import {
 } from '@kasbyar/agent-sdk';
 
 import { prisma } from '@/lib/prisma';
+import { AppError, NotFoundError } from '@/lib/errors';
 
 const BUILTIN_PLUGINS: Array<{
   slug: string;
@@ -97,7 +98,7 @@ export async function registerPlugin(input: {
   if (asManifest?.agents) {
     const errors = validateAgentManifest(asManifest);
     if (errors.length) {
-      throw new Error(`مانیفست نامعتبر: ${errors.join('، ')}`);
+      throw new AppError(`مانیفست نامعتبر: ${errors.join('، ')}`, 'INVALID_MANIFEST', 400);
     }
   }
 
@@ -151,7 +152,7 @@ export async function setPluginEnabled(
       OR: [{ organizationId }, { organizationId: null }],
     },
   });
-  if (!plugin) throw new Error('افزونه یافت نشد');
+  if (!plugin) throw new NotFoundError('افزونه یافت نشد');
 
   // Org-specific toggle: clone global plugin into org scope when enabling/disabling globals
   if (!plugin.organizationId) {

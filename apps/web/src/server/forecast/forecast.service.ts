@@ -3,6 +3,7 @@ import { publishDomainEvent } from '@/server/events/domain-event.service';
 
 export async function computeForecasts(organizationId: string) {
   const now = new Date();
+  const computedAt = new Date();
   const monthAgo = new Date(now);
   monthAgo.setDate(monthAgo.getDate() - 30);
   const twoMonthsAgo = new Date(now);
@@ -92,6 +93,7 @@ export async function computeForecasts(organizationId: string) {
         value: cashRunwayDays,
         confidence: monthlyCash > 0 ? 0.78 : 0.45,
         horizonDays: 90,
+        computedAt,
         factors: {
           monthlyCash,
           prevMonthlyCash,
@@ -112,6 +114,7 @@ export async function computeForecasts(organizationId: string) {
         value: projectedRevenue30,
         confidence: prevMonthlyCash > 0 ? 0.72 : 0.5,
         horizonDays: 30,
+        computedAt,
         factors: {
           monthlyCash,
           prevMonthlyCash,
@@ -143,6 +146,7 @@ export async function computeForecasts(organizationId: string) {
           value: daysToStockout,
           confidence: monthlyOut > 0 ? 0.85 : 0.55,
           horizonDays: 60,
+          computedAt,
           factors: {
             name: product.name,
             stockQty,
@@ -181,6 +185,7 @@ export async function computeForecasts(organizationId: string) {
             value: Math.round(churnRisk * 100),
             confidence: 0.74,
             horizonDays: 30,
+            computedAt,
             factors: {
               name: customer.name,
               overdueCount,
@@ -211,12 +216,24 @@ export async function listForecasts(organizationId: string) {
 }
 
 export async function getLatestForecastsByType(organizationId: string) {
-  const rows = await listForecasts(organizationId);
-  const latest = {
+  const latestRun = await prisma.forecastSnapshot.aggregate({
+    where: { organizationId },
+    _max: { computedAt: true },
+  });
+  const latestAt = latestRun._max.computedAt;
+  if (!latestAt) {
+    return { cashRunway: null, revenue: null, stockouts: [], churnRisks: [] };
+  }
+
+  const rows = await prisma.forecastSnapshot.findMany({
+    where: { organizationId, computedAt: latestAt },
+    orderBy: [{ forecastType: 'asc' }, { entityId: 'asc' }],
+  });
+
+  return {
     cashRunway: rows.find((r) => r.forecastType === 'CASH_RUNWAY') ?? null,
     revenue: rows.find((r) => r.forecastType === 'REVENUE') ?? null,
     stockouts: rows.filter((r) => r.forecastType === 'STOCKOUT').slice(0, 15),
     churnRisks: rows.filter((r) => r.forecastType === 'CHURN_RISK').slice(0, 15),
   };
-  return latest;
 }

@@ -2,6 +2,7 @@ import type { Prisma, SentimentLabel } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
 import { chatWithLlm } from '@/lib/ai';
+import { requireCustomerInOrg } from '@/server/tenant/tenant-scope';
 
 const NEGATIVE_WORDS = [
   'ناراضی',
@@ -47,6 +48,8 @@ export async function analyzeCustomerSentiment(
   sourceType?: string,
   sourceId?: string,
 ) {
+  await requireCustomerInOrg(organizationId, customerId);
+
   let result = classifyText(content);
 
   const llm = await chatWithLlm({

@@ -1,5 +1,5 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import { conversationConfirmSchema } from '@/lib/validators';
 import { parseBody } from '@/lib/validators/parse';
 import { confirmAgentAction } from '@/server/intelligence/tools/create-task';
@@ -8,6 +8,8 @@ export async function POST(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
 
     const body = await request.json();
     const parsed = parseBody(conversationConfirmSchema, body);

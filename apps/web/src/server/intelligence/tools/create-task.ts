@@ -3,6 +3,16 @@ import type { RecommendedAction } from '@kesbyar/shared';
 import { prisma } from '@/lib/prisma';
 import { logAudit } from '@/server/audit/audit.service';
 import { recordAgentFeedback } from '@/server/platform/platform.service';
+import { requireCustomerInOrg, requireLeadInOrg } from '@/server/tenant/tenant-scope';
+
+async function validateTaskForeignKeys(
+  organizationId: string,
+  customerId?: string,
+  leadId?: string,
+) {
+  if (customerId) await requireCustomerInOrg(organizationId, customerId);
+  if (leadId) await requireLeadInOrg(organizationId, leadId);
+}
 
 export async function createTaskFromAgent(params: {
   organizationId: string;
@@ -13,6 +23,8 @@ export async function createTaskFromAgent(params: {
   leadId?: string;
   dueDate?: Date;
 }): Promise<{ taskId: string; action: RecommendedAction }> {
+  await validateTaskForeignKeys(params.organizationId, params.customerId, params.leadId);
+
   const task = await prisma.task.create({
     data: {
       organizationId: params.organizationId,

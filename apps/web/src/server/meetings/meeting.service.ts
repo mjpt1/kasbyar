@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { chatWithLlm } from '@/lib/ai';
+import { NotFoundError } from '@/lib/errors';
 import { createTaskFromAgent } from '@/server/intelligence/tools/create-task';
 
 export async function createMeeting(
@@ -103,7 +104,7 @@ export async function processMeetingTranscript(
   const meeting = await prisma.meeting.findFirst({
     where: { id: meetingId, organizationId },
   });
-  if (!meeting) throw new Error('جلسه یافت نشد');
+  if (!meeting) throw new NotFoundError('جلسه یافت نشد');
 
   let summary: string;
   let decisions: string[];

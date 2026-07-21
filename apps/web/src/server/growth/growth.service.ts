@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
 import { chatWithLlm } from '@/lib/ai';
+import { NotFoundError } from '@/lib/errors';
 
 function analyzeCompetitorHeuristic(input: {
   competitorName: string;
@@ -274,7 +275,7 @@ export async function markSeoStep(
   status: 'pending' | 'done' | 'skipped' = 'done',
 ) {
   const task = await prisma.seoTask.findFirst({ where: { id: taskId, organizationId } });
-  if (!task) throw new Error('وظیفه SEO یافت نشد');
+  if (!task) throw new NotFoundError('وظیفه SEO یافت نشد');
   const actions = (Array.isArray(task.actions) ? task.actions : []) as Array<
     Record<string, unknown>
   >;

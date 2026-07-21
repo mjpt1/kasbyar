@@ -1,5 +1,5 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import { meetingCreateSchema, meetingTranscriptSchema } from '@/lib/validators';
 import { parseBody } from '@/lib/validators/parse';
 import {
@@ -13,9 +13,17 @@ export async function GET(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const id = new URL(request.url).searchParams.get('id');
     if (id) {
       const meeting = await getMeeting(session.organizationId, id);
+      if (!meeting) {
+        return jsonResponse(
+          { success: false, error: { code: 'NOT_FOUND', message: 'جلسه یافت نشد' } },
+          404,
+        );
+      }
       return jsonResponse(apiSuccess(meeting));
     }
     return jsonResponse(apiSuccess(await listMeetings(session.organizationId)));
@@ -28,6 +36,8 @@ export async function POST(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const body = await request.json();
 
     if (body.meetingId && body.transcript && !body.title) {

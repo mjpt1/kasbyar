@@ -1,5 +1,5 @@
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
-import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
+import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import {
   competitorSchema,
   contentDraftSchema,
@@ -24,6 +24,8 @@ export async function GET(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const type = new URL(request.url).searchParams.get('type') ?? 'competitors';
     if (type === 'market') {
       return jsonResponse(apiSuccess(await listMarketSignals(session.organizationId)));
@@ -44,6 +46,8 @@ export async function POST(request: Request) {
   try {
     const session = await requireApiSession();
     if (isApiError(session)) return session;
+    const denied = requireApiRole(session, 'STAFF');
+    if (denied) return denied;
     const body = await request.json();
     const type = body.type as string;
 
