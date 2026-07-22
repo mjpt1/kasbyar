@@ -1,5 +1,5 @@
 /* KesbYar PWA — network-first navigations; never cache-first Next.js CSS/JS */
-const CACHE_VERSION = 'kesbyar-pwa-v4';
+const CACHE_VERSION = 'kesbyar-pwa-v5';
 const PRECACHE = [
   '/offline',
   '/icons/icon-192.png',
@@ -61,13 +61,12 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.webmanifest');
 
   if (isNavigation) {
+    // Never cache HTML documents — stale shells + new CSS hashes = unstyled pages.
     event.respondWith(
-      fetch(request)
-        .then((response) => putOk(request, response))
-        .catch(async () => {
-          const cached = await caches.match(request);
-          return cached || caches.match('/offline');
-        }),
+      fetch(request).catch(async () => {
+        const cached = await caches.match('/offline');
+        return cached || Response.error();
+      }),
     );
     return;
   }
