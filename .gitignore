@@ -77,3 +77,14 @@ register-body.txt
 register-headers.txt
 register.json
 wrong.json
+
+# local browser automation scratch
+.tmp-chrome-profile/
+.tmp-chrome-profile*/
+.tmp-chrome-profile-cdp/
+.tmp-bin/
+tmp-login-diag.js
+tmp-chrome-shot.js
+tmp-login-reshoot.js
+
+.tmp-*.mjs

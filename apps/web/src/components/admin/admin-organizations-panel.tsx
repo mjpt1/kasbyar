@@ -87,7 +87,7 @@ export function AdminOrganizationsPanel({
                   {org.slug}
                 </p>
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {org.isDemo ? <Badge variant="secondary">دمو</Badge> : null}
+                  {org.isDemo ? <Badge variant="secondary">seed</Badge> : null}
                   {org.industrySpecialty ? (
                     <Badge variant="outline">تخصص: {org.industrySpecialty}</Badge>
                   ) : null}

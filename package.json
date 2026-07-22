@@ -1,6 +1,6 @@
 {
   "name": "kesbyar",
-  "version": "0.2.4",
+  "version": "0.3.2",
   "private": true,
   "description": "کسب‌یار — سیستم‌عامل هوشمند کسب‌وکار برای بازار ایران",
   "workspaces": [
@@ -18,7 +18,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:security": "vitest run apps/web/src/server/tenant apps/web/src/server/audit apps/web/src/lib/uploads.test.ts apps/web/src/lib/demo.test.ts packages/shared/src/ops/destructive.test.ts apps/web/src/server/billing/entitlement.policy.test.ts",
+    "test:security": "vitest run apps/web/src/server/tenant apps/web/src/server/audit apps/web/src/lib/uploads.test.ts packages/shared/src/ops/destructive.test.ts apps/web/src/server/billing/entitlement.policy.test.ts",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md}\"",
     "db:generate": "prisma generate --schema=./prisma/schema.prisma",

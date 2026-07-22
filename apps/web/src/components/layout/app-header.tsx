@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-
 import Link from 'next/link';
 
 import { AUTH_NAV } from '@/config/navigation';
@@ -11,7 +9,6 @@ interface AppHeaderProps {
   title?: string;
   description?: string;
   organizationName: string;
-  demoToolbar?: ReactNode;
   showNotifications?: boolean;
 }
 
@@ -19,7 +16,6 @@ export function AppHeader({
   title,
   description,
   organizationName,
-  demoToolbar,
   showNotifications = true,
 }: AppHeaderProps) {
   return (
@@ -35,7 +31,6 @@ export function AppHeader({
         ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        {demoToolbar}
         {showNotifications ? <NotificationBell /> : null}
         <ConversationNavLink />
         <Button variant="outline" size="sm" className="shrink-0" asChild>

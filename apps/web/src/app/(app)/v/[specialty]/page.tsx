@@ -34,13 +34,10 @@ export default async function SpecialtyDashboardPage({
 
   const org = await prisma.organization.findUnique({
     where: { id: session.organizationId },
-    select: { industrySpecialty: true, industryPack: true },
+    select: { industrySpecialty: true },
   });
 
-  const canAccess =
-    org?.industrySpecialty === specialtyId || org?.industryPack === specialty.basePack;
-
-  if (!canAccess) {
+  if (!org?.industrySpecialty || org.industrySpecialty !== specialtyId) {
     redirect('/dashboard');
   }
 

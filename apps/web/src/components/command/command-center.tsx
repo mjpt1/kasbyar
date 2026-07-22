@@ -32,7 +32,7 @@ export function CommandCenterClient() {
   async function load() {
     setLoading(true);
     try {
-      const res = await fetch('/api/briefing/daily');
+      const res = await fetch('/api/briefing/daily', { method: 'POST' });
       const data = await res.json();
       if (data.success) setBriefing(data.data);
     } finally {

@@ -26,6 +26,10 @@ interface CustomersEditFormProps {
     city: string | null;
     address: string | null;
     nationalId: string | null;
+    sheba: string | null;
+    economicCode: string | null;
+    postalCode: string | null;
+    province: string | null;
     notes: string | null;
     isActive: boolean;
   };
@@ -48,6 +52,10 @@ export function CustomersEditForm({ customer }: CustomersEditFormProps) {
       city: customer.city ?? '',
       address: customer.address ?? '',
       nationalId: customer.nationalId ?? '',
+      sheba: customer.sheba ?? '',
+      economicCode: customer.economicCode ?? '',
+      postalCode: customer.postalCode ?? '',
+      province: customer.province ?? '',
       notes: customer.notes ?? '',
       isActive: customer.isActive,
     },
@@ -104,18 +112,62 @@ export function CustomersEditForm({ customer }: CustomersEditFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-phone">تلفن</Label>
-            <Input id="edit-phone" dir="ltr" className="text-left" {...register('phone')} />
+            <Input id="edit-phone" dir="ltr" className="text-start" {...register('phone')} />
             {errors.phone ? (
               <p className="text-sm text-destructive">{errors.phone.message}</p>
             ) : null}
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-email">ایمیل</Label>
-            <Input id="edit-email" type="email" dir="ltr" className="text-left" {...register('email')} />
+            <Input id="edit-email" type="email" dir="ltr" className="text-start" {...register('email')} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-city">شهر</Label>
             <Input id="edit-city" {...register('city')} />
+          </div>
+
+          <div className="sm:col-span-2 space-y-1 border-t border-border/70 pt-4">
+            <p className="text-sm font-medium">اطلاعات هویتی و مالی ایران</p>
+            <p className="text-xs text-muted-foreground">
+              برای فاکتور رسمی، پیامک پرداخت و مؤدیان — در صورت نیاز پر کنید.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-nationalId">کد ملی</Label>
+            <Input
+              id="edit-nationalId"
+              dir="ltr"
+              className="text-start"
+              {...register('nationalId')}
+            />
+            {errors.nationalId ? (
+              <p className="text-sm text-destructive">{errors.nationalId.message}</p>
+            ) : null}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-economic">کد اقتصادی</Label>
+            <Input
+              id="edit-economic"
+              dir="ltr"
+              className="text-start"
+              {...register('economicCode')}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-sheba">شبا</Label>
+            <Input id="edit-sheba" dir="ltr" className="text-start" {...register('sheba')} />
+            {errors.sheba ? (
+              <p className="text-sm text-destructive">{errors.sheba.message}</p>
+            ) : null}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-postal">کد پستی</Label>
+            <Input id="edit-postal" dir="ltr" className="text-start" {...register('postalCode')} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-province">استان</Label>
+            <Input id="edit-province" {...register('province')} />
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="edit-address">آدرس</Label>
@@ -126,12 +178,19 @@ export function CustomersEditForm({ customer }: CustomersEditFormProps) {
             <Textarea id="edit-notes" rows={2} {...register('notes')} />
           </div>
           <div className="flex items-center gap-2 sm:col-span-2">
-            <input type="checkbox" id="edit-active" {...register('isActive')} />
-            <Label htmlFor="edit-active">مشتری فعال</Label>
+            <input
+              type="checkbox"
+              id="edit-active"
+              className="size-4 cursor-pointer rounded border-input accent-primary"
+              {...register('isActive')}
+            />
+            <Label htmlFor="edit-active" className="cursor-pointer font-normal">
+              مشتری فعال
+            </Label>
           </div>
           <div className="sm:col-span-2">
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
+              {isSubmitting ? 'در حال ذخیره…' : 'ذخیره تغییرات'}
             </Button>
           </div>
         </form>

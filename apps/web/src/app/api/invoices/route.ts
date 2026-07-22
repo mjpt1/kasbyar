@@ -47,6 +47,7 @@ export async function POST(request: Request) {
       customerId: parsed.data.customerId,
       dueDate: parsed.data.dueDate ? new Date(parsed.data.dueDate) : undefined,
       notes: parsed.data.notes,
+      kind: parsed.data.kind,
       items: parsed.data.items,
     });
 

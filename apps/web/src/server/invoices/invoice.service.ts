@@ -35,10 +35,70 @@ function recalcInvoiceTotals(items: {
   };
 }
 
-async function nextInvoiceNumber(organizationId: string): Promise<string> {
-  const count = await prisma.invoice.count({ where: { organizationId } });
+async function nextInvoiceNumber(
+  organizationId: string,
+  kind: 'PROFORMA' | 'SALE' = 'SALE',
+): Promise<string> {
   const year = new Date().getFullYear();
-  return `INV-${year}-${String(count + 1).padStart(4, '0')}`;
+  const prefix = kind === 'PROFORMA' ? 'PRF' : 'INV';
+  const count = await prisma.invoice.count({
+    where: {
+      organizationId,
+      number: { startsWith: `${prefix}-${year}-` },
+    },
+  });
+  return `${prefix}-${year}-${String(count + 1).padStart(4, '0')}`;
+}
+
+export function buildPartySnapshots(org: {
+  name: string;
+  taxId: string | null;
+  economicCode: string | null;
+  companyNationalId: string | null;
+  sheba: string | null;
+  postalCode: string | null;
+  address: string | null;
+  phone: string | null;
+  province: string | null;
+  city: string | null;
+}, customer: {
+  name: string;
+  company: string | null;
+  nationalId: string | null;
+  economicCode: string | null;
+  sheba: string | null;
+  postalCode: string | null;
+  address: string | null;
+  phone: string | null;
+  province: string | null;
+  city: string | null;
+}) {
+  return {
+    sellerSnapshot: {
+      name: org.name,
+      taxId: org.taxId,
+      economicCode: org.economicCode,
+      companyNationalId: org.companyNationalId,
+      sheba: org.sheba,
+      postalCode: org.postalCode,
+      address: org.address,
+      phone: org.phone,
+      province: org.province,
+      city: org.city,
+    },
+    buyerSnapshot: {
+      name: customer.name,
+      company: customer.company,
+      nationalId: customer.nationalId,
+      economicCode: customer.economicCode,
+      sheba: customer.sheba,
+      postalCode: customer.postalCode,
+      address: customer.address,
+      phone: customer.phone,
+      province: customer.province,
+      city: customer.city,
+    },
+  };
 }
 
 export async function listInvoices(
@@ -96,6 +156,7 @@ export async function createInvoice(
     customerId: string;
     dueDate?: Date;
     notes?: string;
+    kind?: 'PROFORMA' | 'SALE';
     items: {
       description: string;
       quantity: number;
@@ -110,19 +171,30 @@ export async function createInvoice(
   await requireCustomerInOrg(organizationId, data.customerId);
   await validateInvoiceLineCatalogRefs(organizationId, data.items);
 
-  const number = await nextInvoiceNumber(organizationId);
+  const org = await prisma.organization.findUniqueOrThrow({
+    where: { id: organizationId },
+  });
+  const customer = await prisma.customer.findFirstOrThrow({
+    where: { id: data.customerId, organizationId },
+  });
+
+  const kind = data.kind ?? 'SALE';
+  const defaultVat = Number(org.defaultVatRate ?? 9);
+  const number = await nextInvoiceNumber(organizationId, kind);
+  const snapshots = buildPartySnapshots(org, customer);
 
   const lineItems = data.items.map((item, index) => {
+    const taxRateValue = item.taxRate ?? defaultVat;
     const quantity = new Decimal(item.quantity);
     const unitPrice = new Decimal(item.unitPrice);
     const discount = new Decimal(item.discount ?? 0);
-    const taxRate = new Decimal(item.taxRate ?? 0);
+    const taxRate = new Decimal(taxRateValue);
     const lineTotal = new Decimal(
       computeLineItemTotal({
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         discount: item.discount,
-        taxRate: item.taxRate,
+        taxRate: taxRateValue,
       }),
     );
 
@@ -146,11 +218,14 @@ export async function createInvoice(
       organizationId,
       customerId: data.customerId,
       number,
+      kind,
       dueDate: data.dueDate,
       notes: data.notes,
       subtotal,
       taxAmount,
       total,
+      sellerSnapshot: snapshots.sellerSnapshot,
+      buyerSnapshot: snapshots.buyerSnapshot,
       items: { create: lineItems },
     },
     include: { customer: true, items: true },

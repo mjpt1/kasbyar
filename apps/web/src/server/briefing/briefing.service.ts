@@ -173,19 +173,6 @@ export async function buildDailyBriefing(
     return aBoost;
   });
 
-  const criticalAlerts = alerts.filter((a) => a.level === 'critical' || a.level === 'warning');
-  if (criticalAlerts.length > 0) {
-    const { notifyOrgAdmins } = await import('@/server/notifications/notification.service');
-    const top = criticalAlerts.slice(0, 3).map((a) => a.title).join('، ');
-    await notifyOrgAdmins(organizationId, {
-      title: 'اولویت‌های امروز کسب‌وکار',
-      body: top || summaryData.summary.slice(0, 160),
-      href: '/command',
-      category: 'BRIEFING',
-      dedupeKey: 'daily-briefing',
-    });
-  }
-
   return {
     greeting: `سلام ${userName}`,
     summary: summaryData.summary,
@@ -195,4 +182,28 @@ export async function buildDailyBriefing(
     generatedAt: new Date().toISOString(),
     degraded,
   };
+}
+
+/** Side-effect path only — call from POST/cron, never from GET. Dedupe is once per day. */
+export async function notifyDailyBriefingAlerts(
+  organizationId: string,
+  briefing: Pick<DailyBriefing, 'alerts' | 'summary'>,
+): Promise<void> {
+  const criticalAlerts = briefing.alerts.filter(
+    (a) => a.level === 'critical' || a.level === 'warning',
+  );
+  if (criticalAlerts.length === 0) return;
+
+  const { notifyOrgAdmins } = await import('@/server/notifications/notification.service');
+  const top = criticalAlerts
+    .slice(0, 3)
+    .map((a) => a.title)
+    .join('، ');
+  await notifyOrgAdmins(organizationId, {
+    title: 'اولویت‌های امروز کسب‌وکار',
+    body: top || briefing.summary.slice(0, 160),
+    href: '/command',
+    category: 'BRIEFING',
+    dedupeKey: 'daily-briefing',
+  });
 }

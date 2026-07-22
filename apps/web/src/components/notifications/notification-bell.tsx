@@ -40,9 +40,19 @@ export function NotificationBell() {
   }, []);
 
   useEffect(() => {
-    void load();
-    const id = window.setInterval(() => void load(), 60_000);
-    return () => window.clearInterval(id);
+    const tick = () => {
+      if (document.visibilityState === 'visible') void load();
+    };
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void load();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [load]);
 
   useEffect(() => {

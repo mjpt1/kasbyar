@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { DemoLoginShortcuts } from '@/components/demo/demo-login-shortcuts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -85,7 +84,6 @@ export default function LoginPage() {
               بازگشت به صفحهٔ اصلی
             </Link>
           </p>
-          <DemoLoginShortcuts />
         </CardContent>
       </Card>
     </div>

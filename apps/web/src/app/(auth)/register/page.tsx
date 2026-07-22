@@ -45,7 +45,9 @@ export default function RegisterPage() {
         return;
       }
       toast.success('ثبت‌نام با موفقیت انجام شد');
-      window.location.assign('/dashboard');
+      const redirectTo =
+        typeof data.data?.redirectTo === 'string' ? data.data.redirectTo : '/onboarding';
+      window.location.assign(redirectTo);
     } catch {
       toast.error('خطا در ارتباط با سرور');
     } finally {

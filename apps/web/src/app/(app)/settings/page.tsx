@@ -1,6 +1,7 @@
 import {
   INDUSTRY_PACK_LABELS,
   MEMBERSHIP_ROLE_LABELS,
+  getSpecialty,
 } from '@kesbyar/shared';
 
 import type { MembershipRole } from '@prisma/client';
@@ -8,6 +9,7 @@ import type { MembershipRole } from '@prisma/client';
 import Link from 'next/link';
 
 import { SettingsEditForm } from '@/components/features/settings/settings-edit-form';
+import { IntegrationsSettingsForm } from '@/components/features/settings/integrations-settings-form';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { JalaliDate } from '@/components/shared/jalali-date';
@@ -16,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { requireSession } from '@/lib/auth/session';
 import { hasMinRole } from '@/lib/permissions';
 import { prisma } from '@/lib/prisma';
+import { listOnboardingOptions } from '@/server/onboarding/onboarding.service';
 
 export default async function SettingsPage() {
   const session = await requireSession();
@@ -31,11 +34,14 @@ export default async function SettingsPage() {
     );
   }
 
+  const specialty = getSpecialty(org.industrySpecialty);
+  const { specialties } = listOnboardingOptions();
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="تنظیمات"
-        description="اطلاعات سازمان و ترجیحات سیستم"
+        description="اطلاعات سازمان، درگاه پرداخت، پیامک و واسط مؤدیان"
         actions={
           <div className="flex flex-wrap gap-2">
             {hasMinRole(session.role as MembershipRole, 'ADMIN') ? (
@@ -66,8 +72,22 @@ export default async function SettingsPage() {
           email: org.email,
           address: org.address,
           taxId: org.taxId,
+          sheba: org.sheba,
+          economicCode: org.economicCode,
+          companyNationalId: org.companyNationalId,
+          postalCode: org.postalCode,
+          province: org.province,
+          city: org.city,
+          taxMemoryId: org.taxMemoryId,
+          defaultVatRate: Number(org.defaultVatRate ?? 9),
+          showTomanAlongside: org.showTomanAlongside,
+          industryPack: org.industryPack,
+          industrySpecialty: org.industrySpecialty,
         }}
+        specialties={specialties}
       />
+
+      <IntegrationsSettingsForm role={session.role as MembershipRole} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -92,6 +112,12 @@ export default async function SettingsPage() {
               </Badge>
             </div>
             <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">تخصص</span>
+              <Badge variant="outline">
+                {specialty?.label ?? org.industrySpecialty ?? '—'}
+              </Badge>
+            </div>
+            <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">تلفن</span>
               <span dir="ltr" className="text-left">
                 {org.phone ?? '—'}
@@ -105,7 +131,7 @@ export default async function SettingsPage() {
             </div>
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">آدرس</span>
-              <span className="max-w-xs text-left">{org.address ?? '—'}</span>
+              <span className="max-w-xs text-end">{org.address ?? '—'}</span>
             </div>
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">شناسه مالیاتی</span>

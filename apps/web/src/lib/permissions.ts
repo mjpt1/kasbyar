@@ -55,7 +55,6 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/cleaning': 'STAFF',
   '/printing': 'STAFF',
   '/v': 'STAFF',
-  '/demo': 'STAFF',
   '/workspace': 'VIEWER',
 };
 

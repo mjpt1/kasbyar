@@ -1,5 +1,6 @@
 import { apiSuccess, errorResponse, jsonResponse } from '@/lib/api-response';
 import { isApiError, requireApiSession } from '@/lib/api-auth';
+import { AppError } from '@/lib/errors';
 import { organizationSettingsSchema } from '@/lib/validators';
 import {
   getOrganizationSettings,
@@ -33,13 +34,37 @@ export async function PATCH(request: Request) {
       session.role as MembershipRole,
       session.user.id,
       {
-        ...parsed.data,
+        name: parsed.data.name,
+        address: parsed.data.address,
+        taxId: parsed.data.taxId,
         email: parsed.data.email === '' ? null : parsed.data.email,
         phone: parsed.data.phone === '' ? null : parsed.data.phone,
+        sheba: parsed.data.sheba === '' || parsed.data.sheba === undefined ? null : parsed.data.sheba,
+        economicCode:
+          parsed.data.economicCode === '' || parsed.data.economicCode === undefined
+            ? null
+            : parsed.data.economicCode,
+        companyNationalId:
+          parsed.data.companyNationalId === '' || parsed.data.companyNationalId === undefined
+            ? null
+            : parsed.data.companyNationalId,
+        postalCode:
+          parsed.data.postalCode === '' || parsed.data.postalCode === undefined
+            ? null
+            : parsed.data.postalCode,
+        province: parsed.data.province === '' ? null : parsed.data.province,
+        city: parsed.data.city === '' ? null : parsed.data.city,
+        taxMemoryId: parsed.data.taxMemoryId === '' ? null : parsed.data.taxMemoryId,
+        defaultVatRate: parsed.data.defaultVatRate,
+        showTomanAlongside: parsed.data.showTomanAlongside,
+        industrySpecialty: parsed.data.industrySpecialty,
       },
     );
     return jsonResponse(apiSuccess(org));
   } catch (err) {
+    if (err instanceof AppError) {
+      return errorResponse(err.message, err.status, err.code);
+    }
     const message = err instanceof Error ? err.message : 'خطا در به‌روزرسانی';
     return errorResponse(message, 403, 'FORBIDDEN');
   }

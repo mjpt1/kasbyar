@@ -4,6 +4,7 @@ import { apiSuccess, apiError } from '@/lib/api-response';
 import { applyAuthCookies } from '@/lib/auth/cookie-options';
 import { loginSchema } from '@/lib/validators';
 import { loginUser } from '@/server/auth/auth.service';
+import { needsOnboarding } from '@/server/onboarding/onboarding.service';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
 
 export const dynamic = 'force-dynamic';
@@ -40,9 +41,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const activeOrgId = workspaces[0]?.organizationId ?? null;
-    const redirectTo =
+    const active = workspaces[0] ?? null;
+    const activeOrgId = active?.organizationId ?? null;
+    let redirectTo =
       workspaces.length === 0 && isSuperAdmin ? '/admin' : '/dashboard';
+    if (
+      active &&
+      needsOnboarding(active.role, active.industrySpecialty)
+    ) {
+      redirectTo = '/onboarding';
+    }
 
     const response = NextResponse.json(
       apiSuccess({

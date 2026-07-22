@@ -50,7 +50,7 @@ export async function seedOrganizationSubscription(
       subscriptionId: subscription.id,
       action: 'seed_subscription',
       toPlanCode: options.planCode,
-      metadata: { status: options.status, demo: true },
+      metadata: { status: options.status, seeded: true },
     },
   });
 

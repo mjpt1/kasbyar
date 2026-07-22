@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-import { DemoDashboardWalkthrough } from '@/components/demo/demo-dashboard-walkthrough';
 import { PackDashboardWidgets } from '@/components/dashboard/pack-dashboard-widgets';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { ConversationPanel } from '@/components/conversation/conversation-panel';
@@ -40,8 +39,6 @@ export default async function DashboardPage() {
         description={`وضعیت عملیات ${session.organizationName}`}
         actions={<HelpLink section="dashboard" />}
       />
-
-      <DemoDashboardWalkthrough organizationId={session.organizationId} />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <StatCard

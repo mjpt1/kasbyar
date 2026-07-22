@@ -1,6 +1,14 @@
 import { z } from 'zod';
 
-import { iranianMobileSchema, normalizeIranianMobile } from './iranian';
+import {
+  iranianMobileSchema,
+  normalizeIranianMobile,
+  optionalEconomicCodeSchema,
+  optionalLegalOrNationalIdSchema,
+  optionalNationalIdSchema,
+  optionalPostalCodeSchema,
+  optionalShebaSchema,
+} from './iranian';
 
 export const loginSchema = z.object({
   email: z.string().email('ایمیل معتبر وارد کنید'),
@@ -45,7 +53,11 @@ export const customerSchema = z.object({
     .transform((v) => (v ? normalizeIranianMobile(v) : v))
     .pipe(iranianMobileSchema),
   email: z.string().email('ایمیل معتبر نیست').optional().or(z.literal('')),
-  nationalId: z.string().optional(),
+  nationalId: optionalNationalIdSchema,
+  sheba: optionalShebaSchema,
+  economicCode: optionalEconomicCodeSchema,
+  postalCode: optionalPostalCodeSchema,
+  province: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
   notes: z.string().optional(),
@@ -131,6 +143,7 @@ export const invoiceSchema = z.object({
   customerId: z.string().min(1, 'انتخاب مشتری الزامی است'),
   dueDate: z.string().optional(),
   notes: z.string().optional(),
+  kind: z.enum(['PROFORMA', 'SALE']).optional(),
   items: z.array(
     invoiceItemSchema.extend({
       productId: z.string().optional(),
@@ -187,7 +200,81 @@ export const organizationSettingsSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().optional(),
   taxId: z.string().optional(),
+  sheba: optionalShebaSchema,
+  economicCode: optionalEconomicCodeSchema,
+  companyNationalId: optionalLegalOrNationalIdSchema,
+  postalCode: optionalPostalCodeSchema,
+  province: z.string().optional(),
+  city: z.string().optional(),
+  taxMemoryId: z.string().optional(),
+  defaultVatRate: z.coerce.number().min(0).max(100).optional(),
+  showTomanAlongside: z.boolean().optional(),
+  industrySpecialty: z.string().min(2).optional(),
 });
+
+export const moadianSubmitSchema = z.object({
+  manualUpload: z.boolean().optional(),
+  uid: z.string().optional(),
+  taxId: z.string().optional(),
+  outcome: z.enum(['ACCEPTED', 'REJECTED']).optional(),
+  errorMessage: z.string().optional(),
+});
+
+/** Per-org Iran integrations (Zarinpal / Idpay / Kavenegar / Moadian intermediary) */
+export const orgIntegrationsUpdateSchema = z
+  .object({
+    payment: z
+      .object({
+        preferredProvider: z
+          .enum(['manual', 'zarinpal', 'idpay'], {
+            errorMap: () => ({ message: 'درگاه پرداخت نامعتبر است' }),
+          })
+          .optional(),
+        sandbox: z.boolean().optional(),
+        zarinpalMerchantId: z
+          .string()
+          .max(64, 'شناسه پذیرنده زرین‌پال خیلی بلند است')
+          .optional()
+          .nullable(),
+        idpayApiKey: z
+          .string()
+          .max(128, 'کلید آیدی‌پی خیلی بلند است')
+          .optional()
+          .nullable(),
+        clearZarinpalMerchantId: z.boolean().optional(),
+        clearIdpayApiKey: z.boolean().optional(),
+      })
+      .optional(),
+    sms: z
+      .object({
+        apiKey: z.string().max(128, 'کلید کاوه‌نگار خیلی بلند است').optional().nullable(),
+        sender: z
+          .string()
+          .max(32, 'فرستنده پیامک خیلی بلند است')
+          .optional()
+          .nullable(),
+        clearApiKey: z.boolean().optional(),
+      })
+      .optional(),
+    moadian: z
+      .object({
+        intermediaryUrl: z
+          .string()
+          .max(500, 'آدرس واسط خیلی بلند است')
+          .optional()
+          .nullable()
+          .refine(
+            (v) => !v || v === '' || /^https?:\/\//i.test(v),
+            'آدرس واسط باید با http:// یا https:// شروع شود',
+          ),
+        apiKey: z.string().max(256, 'کلید واسط خیلی بلند است').optional().nullable(),
+        clearApiKey: z.boolean().optional(),
+      })
+      .optional(),
+  })
+  .refine((v) => v.payment || v.sms || v.moadian, {
+    message: 'حداقل یک بخش برای به‌روزرسانی لازم است',
+  });
 
 export const fileUploadMetaSchema = z.object({
   entityType: z.enum(['CUSTOMER', 'LEAD', 'INVOICE', 'TASK', 'NOTE', 'ORGANIZATION']),

@@ -7,17 +7,33 @@ import type { SeedSummary } from './types';
 import { clearDemoData } from './utils';
 import { seedUsers } from './users';
 
-export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
-  console.log('🌱 KesbYar seed — پاک‌سازی داده‌های دمو قبلی...');
+const EMPTY_SUMMARY: SeedSummary = {
+  organizations: 0,
+  users: 0,
+  customers: 0,
+  leads: 0,
+  invoices: 0,
+  payments: 0,
+  tasks: 0,
+  reminders: 0,
+  activities: 0,
+};
+
+function isDemoSeedEnabled(): boolean {
+  return process.env.SEED_DEMO === 'true' || process.env.SEED_DEMO === '1';
+}
+
+async function runDemoSeed(prisma: PrismaClient): Promise<SeedSummary> {
+  console.log('🌱 KesbYar seed — پاک‌سازی داده‌های نمونه قبلی...');
   await clearDemoData(prisma);
 
-  console.log('👤 ایجاد کاربران دمو...');
+  console.log('👤 ایجاد کاربران نمونه...');
   const users = await seedUsers(prisma);
 
   console.log('🏢 سناریوی اصلی: شرکت خدمات تدبیر (demo-general)...');
   const general = await seedGeneralBusiness(prisma, users);
 
-  console.log('📦 سناریوهای عمودی و صنفی: پزشکی، فروشگاهی، پیمانکاری و ...');
+  console.log('📦 سناریوهای عمودی و صنفی...');
   await seedVerticalWorkspaces(prisma, users);
 
   console.log('🎯 داشبوردهای تخصصی (100+ صنف)...');
@@ -59,7 +75,7 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
   };
 
   console.log('');
-  console.log('✅ Seed تکمیل شد.');
+  console.log('✅ Seed نمونه تکمیل شد.');
   console.log('────────────────────────────────────────');
   console.log(`  سازمان‌ها: ${summary.organizations}`);
   console.log(`  مشتریان:   ${summary.customers}`);
@@ -71,18 +87,22 @@ export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
   console.log(`  فعالیت‌ها: ${summary.activities}`);
   console.log('────────────────────────────────────────');
   console.log('');
-  console.log('ورود به سیستم (رمز همه: ' + DEMO_PASSWORD + '):');
-  console.log('  • super@kesbyar.ir     — سوپرادمین پلتفرم');
-  console.log('  • demo@kesbyar.ir      — مالک (دسترسی به همه سازمان‌ها)');
-  console.log('  • manager@kesbyar.ir   — مدیر (فقط demo-general)');
-  console.log('  • staff@kesbyar.ir     — کارمند (فقط demo-general)');
-  console.log('');
-  console.log('سازمان پیش‌فرض: ' + general.organization.name);
-  console.log('  slug: demo-general');
-  console.log('');
-  console.log('سازمان‌های دمو: هسته عمومی + طیف گسترده‌ای از کسب‌وکارهای درمانی، فروشگاهی و خدماتی');
-  console.log('نمونه‌ها: کلینیک، داروخانه، سوپرمارکت، رستوران، املاک، دفتر حقوقی، خدمات نظافتی، آتلیه و ...');
-  console.log('طرح‌های دمو: general=BUSINESS | retail=STARTER | clinic=TRIAL | travel=FREE');
+  console.log('⚠️  این seed فقط برای توسعه/فروش داخلی است — در production اجرا نکنید.');
+  console.log('ورود (رمز: ' + DEMO_PASSWORD + '): demo@kesbyar.ir, manager@kesbyar.ir, ...');
+  console.log('سازمان پیش‌فرض: ' + general.organization.name + ' (slug: demo-general)');
 
   return summary;
+}
+
+export async function runSeed(prisma: PrismaClient): Promise<SeedSummary> {
+  if (!isDemoSeedEnabled()) {
+    console.log('🌱 KesbYar seed — بدون دادهٔ نمونه (پیش‌فرض production-ready)');
+    console.log('');
+    console.log('  سازمان‌های جدید از ثبت‌نام/onboarding با دادهٔ واقعی شروع می‌شوند.');
+    console.log('  برای seed داخلی (فقط dev/staging): SEED_DEMO=true npm run db:seed');
+    console.log('');
+    return EMPTY_SUMMARY;
+  }
+
+  return runDemoSeed(prisma);
 }

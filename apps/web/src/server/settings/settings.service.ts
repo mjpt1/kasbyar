@@ -4,6 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { canManageSettings } from '@/lib/permissions';
 import { prisma } from '@/lib/prisma';
 import { logAudit } from '@/server/audit/audit.service';
+import { assertPackSpecialtyMatch } from '@/server/onboarding/onboarding.service';
 
 export async function getOrganizationSettings(organizationId: string) {
   return prisma.organization.findUnique({
@@ -21,15 +22,28 @@ export async function updateOrganizationSettings(
   organizationId: string,
   role: Parameters<typeof canManageSettings>[0],
   userId: string,
-  data: Prisma.OrganizationUpdateInput,
+  data: Prisma.OrganizationUpdateInput & { industrySpecialty?: string },
 ) {
   if (!canManageSettings(role)) {
     throw new Error('دسترسی کافی برای ویرایش تنظیمات ندارید');
   }
 
+  const { industrySpecialty, ...rest } = data;
+  const updateData: Prisma.OrganizationUpdateInput = { ...rest };
+
+  if (typeof industrySpecialty === 'string' && industrySpecialty.trim()) {
+    const org = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { industryPack: true },
+    });
+    if (!org) throw new Error('سازمان یافت نشد');
+    const specialty = assertPackSpecialtyMatch(org.industryPack, industrySpecialty.trim());
+    updateData.industrySpecialty = specialty.id;
+  }
+
   const updated = await prisma.organization.update({
     where: { id: organizationId },
-    data,
+    data: updateData,
   });
 
   await logAudit({

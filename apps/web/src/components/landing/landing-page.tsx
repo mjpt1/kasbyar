@@ -443,14 +443,14 @@ export function LandingPage() {
           <h2>پیچیدگی را به منطق تبدیل کن</h2>
           <p className="landing-support">
             یک محیط یکپارچه برای مدیریتِ بی‌وقفه؛ از CRM تا صورتحساب. ثبت‌نام سریع · ۱۴
-            روز رایگان · دادهٔ نمونه برای دمو
+            روز رایگان · بدون نیاز به راه‌اندازی پیچیده
           </p>
           <div className="landing-cta">
             <Link className="landing-btn-main" href="/register">
               ساخت پیشخوان رایگان
             </Link>
             <Link className="landing-btn-soft" href="/login">
-              ورود / درخواست دمو
+              ورود به پیشخوان
             </Link>
           </div>
         </div>

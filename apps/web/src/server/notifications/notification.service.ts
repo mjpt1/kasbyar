@@ -117,13 +117,15 @@ export async function notifyOrgAdmins(
   const dayStart = new Date();
   dayStart.setHours(0, 0, 0, 0);
 
+  const dedupeMarker = input.dedupeKey ? `<!--dedupe:${input.dedupeKey}-->` : null;
+
   for (const m of members) {
-    if (input.dedupeKey) {
+    if (dedupeMarker) {
       const existing = await prisma.inAppNotification.findFirst({
         where: {
           organizationId,
           userId: m.userId,
-          title: input.title,
+          body: { startsWith: dedupeMarker },
           createdAt: { gte: dayStart },
         },
         select: { id: true },
@@ -135,7 +137,7 @@ export async function notifyOrgAdmins(
       organizationId,
       userId: m.userId,
       title: input.title,
-      body: input.body,
+      body: dedupeMarker ? `${dedupeMarker}${input.body}` : input.body,
       href: input.href,
       category: input.category,
       skipPush: input.skipPush,

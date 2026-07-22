@@ -18,7 +18,7 @@ const AI_HREFS = [
 ] as const;
 
 describe('getNavItems AI OS', () => {
-  it('shows all AI pages for OWNER (demo@kesbyar.ir) near the top', () => {
+  it('shows all AI pages for OWNER near the top', () => {
     const items = getNavItems('GENERAL', 'OWNER');
     const hrefs = items.map((i) => i.href);
 

@@ -43,6 +43,7 @@ export async function POST(request: Request) {
       apiSuccess({
         registered: true,
         organizationId: workspaces[0]!.organizationId,
+        redirectTo: '/onboarding',
       }),
       { status: 201 },
     );

@@ -23,10 +23,6 @@ const serverEnvSchema = z.object({
     .string()
     .optional()
     .transform((v) => v === 'true' || v === '1'),
-  DEMO_MODE: z
-    .string()
-    .optional()
-    .transform((v) => v === 'true' || v === '1'),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -108,9 +104,5 @@ export function validateServerEnvAtStartup(): void {
     console.warn(
       '[security] ALLOW_SEED=true در production — عملیات مخرب دیتابیس مجاز است',
     );
-  }
-
-  if (getServerEnv().DEMO_MODE === true) {
-    console.warn('[security] DEMO_MODE=true در production — فقط برای محیط فروش اختصاصی');
   }
 }

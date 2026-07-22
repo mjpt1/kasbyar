@@ -40,6 +40,7 @@ interface LineItem {
   description: string;
   quantity: number;
   unitPrice: number;
+  taxRate?: number;
   productId?: string;
   serviceId?: string;
 }
@@ -63,7 +64,11 @@ export function InvoicesCreateForm({
     { description: '', quantity: 1, unitPrice: 0 },
   ]);
 
-  function updateItem(index: number, field: keyof LineItem, value: string | number) {
+  function updateItem(
+    index: number,
+    field: keyof LineItem,
+    value: string | number | undefined,
+  ) {
     setItems((prev) =>
       prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
     );
@@ -139,10 +144,12 @@ export function InvoicesCreateForm({
           customerId,
           dueDate: form.get('dueDate') || undefined,
           notes: form.get('notes') || undefined,
+          kind: form.get('kind') || 'SALE',
           items: items.map((item) => ({
             description: item.description,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
+            taxRate: item.taxRate,
             productId: item.productId,
             serviceId: item.serviceId,
           })),
@@ -202,6 +209,18 @@ export function InvoicesCreateForm({
             <div className="space-y-2">
               <Label htmlFor="dueDate">سررسید</Label>
               <Input id="dueDate" name="dueDate" type="date" dir="ltr" className="text-left" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="kind">نوع سند</Label>
+              <select
+                id="kind"
+                name="kind"
+                defaultValue="SALE"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="SALE">فاکتور قطعی</option>
+                <option value="PROFORMA">پیش‌فاکتور</option>
+              </select>
             </div>
           </div>
 
@@ -277,7 +296,7 @@ export function InvoicesCreateForm({
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label>قیمت واحد</Label>
+                    <Label>قیمت واحد (ریال)</Label>
                     <div className="flex gap-2">
                       <Input
                         type="number"
@@ -301,6 +320,26 @@ export function InvoicesCreateForm({
                         </Button>
                       ) : null}
                     </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label>مالیات٪</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      step="any"
+                      placeholder="پیش‌فرض سازمان"
+                      value={item.taxRate ?? ''}
+                      onChange={(e) =>
+                        updateItem(
+                          index,
+                          'taxRate',
+                          e.target.value === '' ? undefined : Number(e.target.value),
+                        )
+                      }
+                      dir="ltr"
+                      className="text-left"
+                    />
                   </div>
                 </div>
               </div>

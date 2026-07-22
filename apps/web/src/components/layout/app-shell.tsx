@@ -1,13 +1,10 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
-import { DemoBanner } from '@/components/demo/demo-banner';
-import { DemoToolbarActions } from '@/components/demo/demo-walkthrough';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppLayoutClient } from '@/components/layout/app-layout-client';
 import { PushPermissionPrompt } from '@/components/notifications/push-permission-prompt';
 import { getSession, requireActiveWorkspace } from '@/lib/auth/session';
-import { canShowDemoControls } from '@/lib/demo';
 import { needsOnboarding } from '@/server/onboarding/onboarding.service';
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
@@ -22,11 +19,8 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
     redirect('/onboarding');
   }
 
-  const showDemo = canShowDemoControls();
-
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden">
-      {showDemo ? <DemoBanner /> : null}
       <AppLayoutClient
         organizationName={session.organizationName}
         userName={session.user.name}
@@ -37,7 +31,6 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
         header={
           <AppHeader
             organizationName={session.organizationName}
-            demoToolbar={showDemo ? <DemoToolbarActions /> : undefined}
             showNotifications={!onOnboarding}
           />
         }

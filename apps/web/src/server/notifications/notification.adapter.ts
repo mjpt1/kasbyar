@@ -1,17 +1,20 @@
 import {
   INTEGRATION_FAILURE_CODES,
+  KILL_SWITCHES,
   PROVIDER_IDS,
   integrationFailure,
-  resolveProviderId,
   type NotificationAdapter,
   type SendNotificationCommand,
 } from '@kesbyar/shared';
 
 import { APP_LOG_EVENTS, logger } from '@/lib/logger';
+import { isKillSwitchActive } from '@/lib/flags';
+import { resolveSmsCredentials } from '@/server/integrations/org-credentials.service';
+
+import { createKavenegarAdapter } from './providers/kavenegar';
 
 /**
- * No-op notification adapter — records intent without external dispatch (V1).
- * Replace with Kavenegar/Resend adapters without changing automation.service.
+ * No-op notification adapter — records intent without external dispatch.
  */
 class NoopNotificationAdapter implements NotificationAdapter {
   readonly id = PROVIDER_IDS.NOTIFICATION_NOOP;
@@ -30,44 +33,68 @@ class NoopNotificationAdapter implements NotificationAdapter {
   }
 }
 
-const ALLOWED_NOTIFICATION_PROVIDERS = [
-  PROVIDER_IDS.NOTIFICATION_NOOP,
-  PROVIDER_IDS.SMS_KAVENEGAR,
-  PROVIDER_IDS.EMAIL_RESEND,
-] as const;
+const noop = new NoopNotificationAdapter();
 
-let cached: NotificationAdapter | null = null;
+/**
+ * Resolve SMS adapter for an organization (org key → env fallback → noop).
+ */
+export async function getNotificationAdapterForOrg(
+  organizationId: string,
+): Promise<NotificationAdapter> {
+  if (isKillSwitchActive(KILL_SWITCHES.EXTERNAL_NOTIFICATIONS)) {
+    return noop;
+  }
 
+  const creds = await resolveSmsCredentials(organizationId);
+  if (creds.apiKey) {
+    return createKavenegarAdapter(creds.apiKey, creds.sender ?? undefined);
+  }
+
+  const requested = (
+    process.env.NOTIFICATION_PROVIDER ??
+    process.env.SMS_PROVIDER ??
+    ''
+  ).toLowerCase();
+  if (requested === PROVIDER_IDS.SMS_KAVENEGAR || requested === PROVIDER_IDS.EMAIL_RESEND) {
+    logger.warn(APP_LOG_EVENTS.INTEGRATION_NOT_CONFIGURED, {
+      organizationId,
+      requestedProvider: requested,
+      fallback: PROVIDER_IDS.NOTIFICATION_NOOP,
+    });
+  }
+
+  return noop;
+}
+
+/** @deprecated Env-only; prefer getNotificationAdapterForOrg */
 export function getNotificationAdapter(): NotificationAdapter {
-  if (cached) {
-    return cached;
+  if (isKillSwitchActive(KILL_SWITCHES.EXTERNAL_NOTIFICATIONS)) {
+    return noop;
   }
 
-  const id = resolveProviderId(
-    null,
-    process.env.NOTIFICATION_PROVIDER ?? process.env.SMS_PROVIDER,
-    PROVIDER_IDS.NOTIFICATION_NOOP,
-    ALLOWED_NOTIFICATION_PROVIDERS,
-  );
+  const apiKey =
+    process.env.SMS_KAVENEGAR_API_KEY ?? process.env.KAVENEGAR_API_KEY ?? undefined;
+  const sender = process.env.SMS_KAVENEGAR_SENDER ?? process.env.KAVENEGAR_SENDER;
 
-  switch (id) {
-    case PROVIDER_IDS.SMS_KAVENEGAR:
-    case PROVIDER_IDS.EMAIL_RESEND:
-      // post-V1: channel-specific adapters
-      logger.warn(APP_LOG_EVENTS.INTEGRATION_NOT_CONFIGURED, {
-        requestedProvider: id,
-        fallback: PROVIDER_IDS.NOTIFICATION_NOOP,
-      });
-      cached = new NoopNotificationAdapter();
-      return cached;
-    default:
-      cached = new NoopNotificationAdapter();
-      return cached;
+  if (apiKey) {
+    return createKavenegarAdapter(apiKey, sender);
   }
+
+  return noop;
+}
+
+/** @deprecated Prefer isSmsProviderConfiguredForOrg */
+export function isSmsProviderConfigured(): boolean {
+  return Boolean(process.env.SMS_KAVENEGAR_API_KEY ?? process.env.KAVENEGAR_API_KEY);
+}
+
+export async function isSmsProviderConfiguredForOrg(organizationId: string): Promise<boolean> {
+  const creds = await resolveSmsCredentials(organizationId);
+  return Boolean(creds.apiKey);
 }
 
 export async function sendNotification(command: SendNotificationCommand) {
-  const adapter = getNotificationAdapter();
+  const adapter = await getNotificationAdapterForOrg(command.organizationId);
   if (!adapter.supportedChannels.includes(command.channel)) {
     return {
       status: 'failed' as const,
@@ -96,4 +123,9 @@ export async function sendNotification(command: SendNotificationCommand) {
       ),
     };
   }
+}
+
+/** Reset cache — for tests (no longer caches; kept for API compat) */
+export function resetNotificationAdapterCache() {
+  /* no-op: adapters are created per request from org/env credentials */
 }

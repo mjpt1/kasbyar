@@ -15,6 +15,15 @@ function urlBase64ToUint8Array(base64String: string) {
 
 const DISMISS_KEY = 'kesbyar.push.prompt.dismissed';
 
+function serviceWorkerReady(timeoutMs = 8000): Promise<ServiceWorkerRegistration> {
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<ServiceWorkerRegistration>((_, reject) => {
+      window.setTimeout(() => reject(new Error('service-worker-timeout')), timeoutMs);
+    }),
+  ]);
+}
+
 export function PushPermissionPrompt() {
   const [visible, setVisible] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -22,6 +31,7 @@ export function PushPermissionPrompt() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (process.env.NODE_ENV === 'development') return;
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
     if (localStorage.getItem(DISMISS_KEY) === '1') return;
     if (Notification.permission === 'granted' || Notification.permission === 'denied') return;
@@ -50,20 +60,33 @@ export function PushPermissionPrompt() {
         return;
       }
 
-      const reg = await navigator.serviceWorker.ready;
+      const reg = await serviceWorkerReady();
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidJson.data.publicKey),
       });
       const json = sub.toJSON();
-      await fetch('/api/push/subscribe', {
+      const p256dh = json.keys?.p256dh;
+      const auth = json.keys?.auth;
+      if (!json.endpoint || !p256dh || !auth) {
+        setMessage('کلیدهای اشتراک Push از مرورگر دریافت نشد.');
+        return;
+      }
+
+      const saveRes = await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           endpoint: json.endpoint,
-          keys: { p256dh: json.keys?.p256dh, auth: json.keys?.auth },
+          keys: { p256dh, auth },
         }),
       });
+      const saveJson = await saveRes.json().catch(() => null);
+      if (!saveRes.ok || !saveJson?.success) {
+        setMessage('ثبت Push روی سرور انجام نشد؛ اعلان‌های داخل اپ همچنان فعال هستند.');
+        return;
+      }
+
       localStorage.setItem(DISMISS_KEY, '1');
       setVisible(false);
     } catch {

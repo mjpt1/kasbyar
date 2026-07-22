@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import {
   formatCurrency,
+  formatCurrencyWithOptionalToman,
   formatNumber,
   formatPhone,
+  rialToToman,
   slugify,
   toLatinDigits,
 } from './index';
@@ -20,6 +22,16 @@ describe('formatCurrency', () => {
     const result = formatCurrency(1000, 'IRR', false);
     expect(result).toMatch(/\d/);
     expect(result).not.toMatch(/[۰-۹]/);
+  });
+
+  it('optionally shows toman alongside rial', () => {
+    expect(rialToToman(10_000)).toBe(1_000);
+    const withToman = formatCurrencyWithOptionalToman(10_000, {
+      showToman: true,
+      persianDigits: false,
+    });
+    expect(withToman).toContain('ریال');
+    expect(withToman).toContain('تومان');
   });
 });
 

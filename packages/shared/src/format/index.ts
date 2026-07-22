@@ -20,6 +20,30 @@ export function formatCurrency(
   });
 }
 
+/** تبدیل ریال به تومان (تقسیم بر ۱۰ — بدون رند اضافه) */
+export function rialToToman(rial: number): number {
+  return Math.trunc(rial / 10);
+}
+
+/** نمایش ریال با تومان اختیاری کنار آن (واحد ذخیره‌سازی همیشه ریال است) */
+export function formatCurrencyWithOptionalToman(
+  amountRial: number | string | bigint,
+  options?: { showToman?: boolean; persianDigits?: boolean },
+): string {
+  const rial = typeof amountRial === 'bigint' ? Number(amountRial) : Number(amountRial);
+  const persianDigits = options?.persianDigits ?? true;
+  const base = formatCurrency(rial, DEFAULT_CURRENCY, persianDigits);
+  if (!options?.showToman) return base;
+  const tomanLabel = new Intl.NumberFormat('fa-IR', {
+    style: 'decimal',
+    maximumFractionDigits: 0,
+  }).format(rialToToman(rial));
+  const tomanText = persianDigits
+    ? `${tomanLabel} تومان`
+    : `${rialToToman(rial)} تومان`;
+  return `${base} (${tomanText})`;
+}
+
 export function formatNumber(value: number, persianDigits = true): string {
   const formatted = new Intl.NumberFormat('fa-IR').format(value);
   return persianDigits ? formatted : toLatinDigits(formatted);

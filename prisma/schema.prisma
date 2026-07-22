@@ -81,6 +81,22 @@ enum InvoiceStatus {
   CANCELLED
 }
 
+/// پیش‌فاکتور در برابر فاکتور قطعی/فروش
+enum InvoiceKind {
+  PROFORMA
+  SALE
+}
+
+/// وضعیت آماده‌سازی / ارسال سامانه مؤدیان (MVP)
+enum MoadianStatus {
+  NONE
+  DRAFT
+  READY
+  SUBMITTED
+  ACCEPTED
+  REJECTED
+}
+
 enum PaymentMethod {
   CASH
   CARD
@@ -374,6 +390,21 @@ model Organization {
   email        String?
   address      String?
   taxId        String?
+  /// شماره شبا (IR + 24 رقم)
+  sheba        String?
+  /// کد اقتصادی
+  economicCode String?
+  /// شناسه ملی حقوقی / کد ملی
+  companyNationalId String?
+  postalCode   String?
+  province     String?
+  city         String?
+  /// شناسه حافظه مالیاتی (مؤدیان)
+  taxMemoryId  String?
+  /// نرخ پیش‌فرض مالیات بر ارزش افزوده (درصد) — پیش‌فرض ۹
+  defaultVatRate Decimal @default(9) @db.Decimal(5, 2)
+  /// نمایش مبلغ به تومان در کنار ریال (واحد ذخیره‌سازی همچنان ریال است)
+  showTomanAlongside Boolean @default(false)
   currency     String       @default("IRR")
   timezone     String       @default("Asia/Tehran")
   settings     Json         @default("{}")
@@ -390,6 +421,7 @@ model Organization {
   services        Service[]
   invoices        Invoice[]
   payments        Payment[]
+  paymentLinks    InvoicePaymentLink[]
   tasks           Task[]
   reminders       Reminder[]
   notes           Note[]
@@ -497,6 +529,11 @@ model Customer {
   phone          String?
   email          String?
   nationalId     String?
+  /// شبا مشتری (اختیاری — برای تسویه / فاکتور)
+  sheba          String?
+  economicCode   String?
+  postalCode     String?
+  province       String?
   address        String?
   city           String?
   notes          String?
@@ -686,6 +723,8 @@ model Invoice {
   customerId     String
   number         String
   status         InvoiceStatus @default(DRAFT)
+  /// پیش‌فاکتور یا فاکتور قطعی
+  kind           InvoiceKind   @default(SALE)
   issueDate      DateTime      @default(now())
   dueDate        DateTime?
   subtotal       Decimal       @default(0) @db.Decimal(18, 0)
@@ -694,6 +733,15 @@ model Invoice {
   total          Decimal       @default(0) @db.Decimal(18, 0)
   paidAmount     Decimal       @default(0) @db.Decimal(18, 0)
   notes          String?
+  /// اسنپ‌شات فروشنده/خریدار در زمان صدور (برای چاپ و مؤدیان)
+  sellerSnapshot Json?
+  buyerSnapshot  Json?
+  moadianStatus  MoadianStatus @default(NONE)
+  moadianTaxId   String?
+  moadianUid     String?
+  moadianPayload Json?
+  moadianLastError String?
+  moadianSubmittedAt DateTime?
   deletedAt      DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -702,6 +750,7 @@ model Invoice {
   customer     Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
   items        InvoiceItem[]
   payments     Payment[]
+  paymentLinks InvoicePaymentLink[]
   activities   ActivityLog[]
   tasks        Task[]
 
@@ -709,6 +758,7 @@ model Invoice {
   @@index([organizationId])
   @@index([organizationId, status])
   @@index([organizationId, deletedAt])
+  @@index([organizationId, moadianStatus])
   @@index([dueDate])
 }
 
@@ -741,6 +791,10 @@ model Payment {
   method         PaymentMethod @default(CASH)
   status         PaymentStatus @default(COMPLETED)
   reference      String?
+  /// درگاه: zarinpal | idpay | manual
+  gatewayProvider String?
+  /// شناسه مرجع درگاه (authority / trackId) — برای idempotency وب‌هوک
+  gatewayAuthority String?
   paidAt         DateTime      @default(now())
   notes          String?
   createdAt      DateTime      @default(now())
@@ -749,7 +803,30 @@ model Payment {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
   invoice      Invoice?     @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  paymentLink  InvoicePaymentLink?
   activities   ActivityLog[]
+
+  @@unique([gatewayProvider, gatewayAuthority])
+  @@index([organizationId])
+  @@index([invoiceId])
+}
+
+/// لینک عمومی پرداخت فاکتور (بدون نیاز به لاگین مشتری)
+model InvoicePaymentLink {
+  id             String   @id @default(cuid())
+  organizationId String
+  invoiceId      String
+  paymentId      String?  @unique
+  token          String   @unique
+  amount         Decimal  @db.Decimal(18, 0)
+  isActive       Boolean  @default(true)
+  expiresAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  payment      Payment?    @relation(fields: [paymentId], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@index([invoiceId])
@@ -916,13 +993,15 @@ model AuditEvent {
   @@index([createdAt])
 }
 
-// ─── Integrations (future Iranian providers) ─────────────────────────────────
+// ─── Integrations (per-org Iran providers: payment / SMS / Moadian) ───────────
 
 model IntegrationConfig {
   id             String   @id @default(cuid())
   organizationId String
+  /// Stable key: payment | kavenegar | moadian
   provider       String
   label          String
+  /// Secrets stored AES-GCM encrypted (enc:v1:…); never return plaintext via API
   config         Json     @default("{}")
   isActive       Boolean  @default(false)
   createdAt      DateTime @default(now())

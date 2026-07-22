@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 
 import { WorkspaceSelectClient } from '@/app/workspace/select/workspace-select-client';
 import { ORG_COOKIE, SESSION_COOKIE } from '@/lib/auth/crypto';
-import { canShowDemoControls } from '@/lib/demo';
 import { prisma } from '@/lib/prisma';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
 
@@ -36,7 +35,6 @@ export default async function WorkspaceSelectPage() {
         <WorkspaceSelectClient
           workspaces={workspaces}
           currentOrganizationId={currentOrganizationId}
-          showDemoHints={canShowDemoControls()}
         />
       </div>
     </div>

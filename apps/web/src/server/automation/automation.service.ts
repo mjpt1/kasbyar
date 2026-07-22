@@ -91,6 +91,8 @@ async function executeRule(
           title: `پیگیری فاکتور معوق ${invoice.number}`,
           description: `مشتری: ${invoice.customer.name} — قانون: ${rule.name}`,
           userId,
+          invoiceId: invoice.id,
+          customerPhone: invoice.customer.phone,
         });
         if (done) {
           affected += 1;
@@ -206,6 +208,8 @@ async function applyAction(
     description?: string;
     userId?: string;
     taskId?: string;
+    invoiceId?: string;
+    customerPhone?: string | null;
   },
 ): Promise<boolean> {
   switch (action) {
@@ -226,6 +230,7 @@ async function applyAction(
           title: payload.title,
           description: payload.description,
           createdById: payload.userId,
+          invoiceId: payload.invoiceId,
           priority: 'MEDIUM',
           dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },
@@ -254,6 +259,24 @@ async function applyAction(
           taskId: payload.taskId,
         },
       });
+
+      if (payload.invoiceId) {
+        try {
+          const { sendInvoiceDueReminderSms } = await import(
+            '@/server/notifications/sms-invoice.service'
+          );
+          await sendInvoiceDueReminderSms({
+            organizationId,
+            invoiceId: payload.invoiceId,
+          });
+        } catch (error) {
+          logger.warn(APP_LOG_EVENTS.INTEGRATION_PROVIDER_FAILED, {
+            organizationId,
+            message: error instanceof Error ? error.message : String(error),
+            context: 'automation_invoice_due_sms',
+          });
+        }
+      }
       return true;
     }
 
