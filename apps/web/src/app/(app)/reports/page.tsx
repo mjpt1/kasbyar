@@ -1,6 +1,7 @@
 import {
   formatCurrency,
   INVOICE_STATUS_LABELS,
+  LEAD_LABELS,
 } from '@kesbyar/shared';
 
 import { PLAN_FEATURE_LABELS } from '@kesbyar/shared';
@@ -58,7 +59,7 @@ export default async function ReportsPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-sm text-muted-foreground">لیدهای فعال</div>
+            <div className="text-sm text-muted-foreground">{LEAD_LABELS.active}</div>
             <div className="mt-1 text-2xl font-bold">{overview.activeLeads}</div>
           </CardContent>
         </Card>
@@ -104,7 +105,7 @@ export default async function ReportsPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-sm text-muted-foreground">لیدهای بدون پیگیری</div>
+            <div className="text-sm text-muted-foreground">{LEAD_LABELS.stale}</div>
             <div className="mt-1 text-2xl font-bold">{overview.staleLeadCount}</div>
           </CardContent>
         </Card>

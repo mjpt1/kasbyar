@@ -88,3 +88,11 @@ tmp-chrome-shot.js
 tmp-login-reshoot.js
 
 .tmp-*.mjs
+
+test-results/
+playwright-report/
+
+
+# temp smoke / reports (do not commit)
+.tmp-*
+tmp-login.html

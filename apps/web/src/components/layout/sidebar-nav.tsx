@@ -15,6 +15,7 @@ interface SidebarNavProps {
   industrySpecialty?: string | null;
   role: string;
   isSuperAdmin?: boolean;
+  moduleToggles?: Record<string, boolean>;
   onNavigate?: () => void;
   className?: string;
 }

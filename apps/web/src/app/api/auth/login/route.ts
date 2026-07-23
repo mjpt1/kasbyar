@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       workspaces.length === 0 && isSuperAdmin ? '/admin' : '/dashboard';
     if (
       active &&
-      needsOnboarding(active.role, active.industrySpecialty)
+      needsOnboarding(active.role, active.industryPack, active.industrySpecialty)
     ) {
       redirectTo = '/onboarding';
     }

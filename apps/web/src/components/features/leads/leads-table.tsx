@@ -1,7 +1,7 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { formatCurrency, formatJalali } from '@kesbyar/shared';
+import { formatCurrency, formatJalali, LEAD_LABELS } from '@kesbyar/shared';
 import Link from 'next/link';
 
 import { LeadStatusBadge } from '@/components/shared/status-badges';
@@ -78,5 +78,5 @@ const columns: ColumnDef<LeadRow>[] = [
 ];
 
 export function LeadsTable({ data }: { data: LeadRow[] }) {
-  return <DataTable columns={columns} data={data} emptyMessage="لیدی یافت نشد" />;
+  return <DataTable columns={columns} data={data} emptyMessage={`${LEAD_LABELS.singular}ی یافت نشد`} />;
 }

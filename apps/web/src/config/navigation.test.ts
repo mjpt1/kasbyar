@@ -53,4 +53,18 @@ describe('getNavItems AI OS', () => {
     const hrefs = items.map((i) => i.href);
     expect(hrefs.indexOf('/command')).toBeLessThan(hrefs.indexOf('/clinic'));
   });
+
+  it('shows specialty dashboard link when industrySpecialty is set', () => {
+    const items = getNavItems('GENERAL', 'OWNER', 'freelancer');
+    const hrefs = items.map((i) => i.href);
+    expect(hrefs).toContain('/v/freelancer');
+  });
+
+  it('shows pack module links for vertical org without specialty', () => {
+    const items = getNavItems('RETAIL', 'OWNER', null);
+    const hrefs = items.map((i) => i.href);
+    expect(hrefs).toContain('/retail');
+    expect(hrefs).toContain('/retail/products');
+    expect(hrefs).not.toContain('/v/clothing-store');
+  });
 });

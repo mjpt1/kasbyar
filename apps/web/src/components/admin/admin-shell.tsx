@@ -13,6 +13,7 @@ const ADMIN_NAV: { href: string; label: string; exact?: boolean }[] = [
   { href: '/admin', label: 'خلاصه پلتفرم', exact: true },
   { href: '/admin/users', label: 'کاربران' },
   { href: '/admin/organizations', label: 'سازمان‌ها' },
+  { href: '/admin/tickets', label: 'تیکت‌های پشتیبانی' },
   { href: '/admin/settings', label: 'تنظیمات پلتفرم' },
 ];
 

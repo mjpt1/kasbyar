@@ -68,7 +68,7 @@ export const customerUpdateSchema = customerSchema.partial().extend({
 });
 
 export const leadSchema = z.object({
-  title: z.string().min(2, 'عنوان لید الزامی است'),
+  title: z.string().min(2, 'عنوان سرنخ فروش الزامی است'),
   status: z
     .enum(['NEW', 'CONTACTED', 'QUALIFIED', 'PROPOSAL', 'WON', 'LOST'])
     .optional(),
@@ -405,6 +405,12 @@ export const pluginRegisterSchema = z.object({
 export const pluginToggleSchema = z.object({
   action: z.literal('toggle'),
   pluginId: z.string().min(1),
+  enabled: z.boolean(),
+});
+
+export const moduleToggleSchema = z.object({
+  action: z.literal('toggle-module'),
+  moduleKey: z.string().min(2).max(64),
   enabled: z.boolean(),
 });
 

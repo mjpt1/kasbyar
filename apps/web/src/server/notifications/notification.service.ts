@@ -145,6 +145,41 @@ export async function notifyOrgAdmins(
   }
 }
 
+/** Notify all platform super admins (uses their first active membership org for bell context). */
+export async function notifySuperAdmins(
+  input: Omit<CreateNotificationInput, 'organizationId' | 'userId'> & {
+    dedupeKey?: string;
+  },
+) {
+  const admins = await prisma.user.findMany({
+    where: { platformRole: 'SUPER_ADMIN', isActive: true },
+    select: {
+      id: true,
+      memberships: {
+        where: { isActive: true },
+        take: 1,
+        orderBy: { joinedAt: 'asc' },
+        select: { organizationId: true },
+      },
+    },
+  });
+
+  for (const admin of admins) {
+    const orgId = admin.memberships[0]?.organizationId;
+    if (!orgId) continue;
+
+    await createNotification({
+      organizationId: orgId,
+      userId: admin.id,
+      title: input.title,
+      body: input.body,
+      href: input.href,
+      category: input.category,
+      skipPush: input.skipPush,
+    });
+  }
+}
+
 export async function savePushSubscription(input: {
   userId: string;
   organizationId: string;

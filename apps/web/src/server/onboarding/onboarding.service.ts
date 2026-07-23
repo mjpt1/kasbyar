@@ -9,10 +9,14 @@ const PACK_IDS = new Set(Object.keys(PACK_REGISTRY));
 
 export function needsOnboarding(
   role: string,
+  industryPack: string,
   industrySpecialty: string | null | undefined,
 ): boolean {
   if (role !== 'OWNER' && role !== 'ADMIN') return false;
-  return !industrySpecialty?.trim();
+  if (industrySpecialty?.trim()) return false;
+  // Vertical packs already ship module dashboards; specialty refines labels/widgets.
+  if (industryPack && industryPack !== 'GENERAL') return false;
+  return true;
 }
 
 export interface CompleteOnboardingInput {

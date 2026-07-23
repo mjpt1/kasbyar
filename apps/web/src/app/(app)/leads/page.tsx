@@ -1,3 +1,4 @@
+import { LEAD_LABELS } from '@kesbyar/shared';
 import { Suspense } from 'react';
 import { Target } from 'lucide-react';
 
@@ -43,7 +44,10 @@ export default async function LeadsPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader title="لیدها" description={`${total} لید در pipeline`} />
+      <PageHeader
+        title={LEAD_LABELS.plural}
+        description={`${total} ${LEAD_LABELS.singular} در ${LEAD_LABELS.pipeline}`}
+      />
       <Suspense fallback={<LoadingState label="در حال آماده‌سازی جستجو…" className="py-4" />}>
         <ListSearch placeholder="جستجو بر اساس عنوان یا تماس..." />
       </Suspense>
@@ -54,13 +58,13 @@ export default async function LeadsPage({
       {items.length === 0 ? (
         <EmptyState
           icon={Target}
-          title={search ? 'نتیجه‌ای یافت نشد' : 'هنوز لیدی ثبت نشده'}
+          title={search ? 'نتیجه‌ای یافت نشد' : `هنوز ${LEAD_LABELS.singular}ی ثبت نشده`}
           description={
             search
-              ? 'عبارت جستجو را تغییر دهید یا لید جدید اضافه کنید.'
+              ? `عبارت جستجو را تغییر دهید یا ${LEAD_LABELS.singular} جدید اضافه کنید.`
               : 'فرصت‌های فروش جدید را اینجا پیگیری کنید.'
           }
-          actionLabel={search ? undefined : 'افزودن لید'}
+          actionLabel={search ? undefined : LEAD_LABELS.add}
           actionHref={search ? undefined : '#create-lead'}
         />
       ) : (

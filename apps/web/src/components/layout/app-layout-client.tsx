@@ -15,6 +15,7 @@ interface AppLayoutClientProps {
   industrySpecialty?: string | null;
   role: string;
   isSuperAdmin?: boolean;
+  moduleToggles?: Record<string, boolean>;
   header: ReactNode;
   children: ReactNode;
 }
@@ -26,6 +27,7 @@ export function AppLayoutClient({
   industrySpecialty = null,
   role,
   isSuperAdmin = false,
+  moduleToggles,
   header,
   children,
 }: AppLayoutClientProps) {
@@ -41,6 +43,7 @@ export function AppLayoutClient({
           industrySpecialty={industrySpecialty}
           role={role}
           isSuperAdmin={isSuperAdmin}
+          moduleToggles={moduleToggles}
         />
       </aside>
 

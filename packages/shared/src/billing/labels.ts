@@ -23,7 +23,7 @@ export const PLAN_FEATURE_LABELS: Record<string, string> = {
 export const PLAN_QUOTA_LABELS: Record<string, string> = {
   members: 'اعضای تیم',
   customers: 'مشتریان',
-  leads: 'لیدها',
+  leads: 'سرنخ‌های فروش',
   invoicesPerMonth: 'فاکتور در ماه',
   automationRules: 'قوانین اتوماسیون',
   fileAttachments: 'فایل‌های پیوست',

@@ -23,7 +23,7 @@ export default async function ActivityPage() {
         <EmptyState
           icon={Activity}
           title="فعالیتی ثبت نشده"
-          description="با ثبت مشتری، لید، فاکتور و پرداخت، فعالیت‌ها اینجا نمایش داده می‌شوند."
+          description="با ثبت مشتری، سرنخ فروش، فاکتور و پرداخت، فعالیت‌ها اینجا نمایش داده می‌شوند."
         />
       ) : (
         <Card>

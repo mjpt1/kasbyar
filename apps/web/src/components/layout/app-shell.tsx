@@ -6,16 +6,22 @@ import { AppLayoutClient } from '@/components/layout/app-layout-client';
 import { PushPermissionPrompt } from '@/components/notifications/push-permission-prompt';
 import { getSession, requireActiveWorkspace } from '@/lib/auth/session';
 import { needsOnboarding } from '@/server/onboarding/onboarding.service';
+import { getOrgModuleToggles } from '@/server/modules/org-module.service';
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
   await requireActiveWorkspace();
   const session = await getSession();
   if (!session) redirect('/login');
 
+  const moduleToggles = await getOrgModuleToggles(session.organizationId);
+
   const pathname = (await headers()).get('x-pathname') ?? '';
   const onOnboarding = pathname === '/onboarding' || pathname.startsWith('/onboarding/');
 
-  if (!onOnboarding && needsOnboarding(session.role, session.industrySpecialty)) {
+  if (
+    !onOnboarding &&
+    needsOnboarding(session.role, session.industryPack, session.industrySpecialty)
+  ) {
     redirect('/onboarding');
   }
 
@@ -28,6 +34,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
         industrySpecialty={session.industrySpecialty}
         role={session.role}
         isSuperAdmin={session.isSuperAdmin}
+        moduleToggles={moduleToggles}
         header={
           <AppHeader
             organizationName={session.organizationName}

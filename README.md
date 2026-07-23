@@ -1,259 +1,281 @@
-﻿# کسب‌یار (KesbYar)
+# کسب‌یار (KasbYar)
 
-<p align="center">
-  <img src="apps/web/public/landing/logo.svg" alt="لوگوی کسب‌یار" width="72" height="72" />
-</p>
+**سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-<p align="center">
-  <strong>سیستم‌عامل کسب‌وکار + هوش مصنوعی برای بازار ایران</strong><br />
-  فارسی‌اول · راست‌به‌چپ · تقویم شمسی · چندمستأجری
-</p>
+نسخه فعلی: **v0.4.0** · وب‌اپ: [@kesbyar/web](apps/web) · مشترک: [@kesbyar/shared](packages/shared)
 
-<p align="center">
-  <a href="https://kasbyar.vercel.app">نسخه آنلاین</a>
-  ·
-  <a href="https://github.com/mjpt1/kasbyar">مخزن GitHub</a>
-  ·
-  <a href="https://github.com/mjpt1/kasbyar/wiki">ویکی</a>
-  ·
-  <strong>v0.2.2</strong>
-</p>
+| لینک | آدرس |
+|------|------|
+| نسخه آنلاین | [kasbyar.vercel.app](https://kasbyar.vercel.app) |
+| مخزن | [github.com/mjpt1/kasbyar](https://github.com/mjpt1/kasbyar) |
+| ویکی محصول | [GitHub Wiki](https://github.com/mjpt1/kasbyar/wiki) |
 
 ---
 
-![پیش‌نمایش لندینگ کسب‌یار](apps/web/public/landing/poster-hero.jpg)
+## کسب‌یار چیست؟
 
-**کسب‌یار** پیشخوان یکپارچه برای تیم‌های کوچک و متوسط است: از اولین تماس مشتری تا فاکتور و وصول — بدون پراکندگی بین اکسل، واتساپ و چند نرم‌افزار جدا.
+کسب‌یار یک **Business OS** چندمستأجری است: به‌جای چند ابزار پراکنده، یک فضای کاری واحد برای تیم فروش، عملیات، مالی و پشتیبانی می‌دهد — با زبان، تقویم، پرداخت و الزامات بازار ایران.
 
-| | |
-|:---|:---|
-| ![مشتری و لید](apps/web/public/landing/poster-details.jpg) | ![فاکتور و مالی](apps/web/public/landing/poster-sales.jpg) |
-| **مشتری و لید** — حافظه بلندمدت تیم؛ پیگیری تا تبدیل به فروش | **فاکتور و پرداخت** — از صدور تا تسویه با یک نگاه |
-| ![نقش‌ها](apps/web/public/landing/poster-team.jpg) | ![بسته‌های صنفی](apps/web/public/landing/poster-packs.jpg) |
-| **نقش‌ها** — مالک، مدیر و کارمند؛ هر کس فضای خودش را دارد | **صنف‌ها** — کلینیک، خرده‌فروشی، آژانس روی یک هسته |
+### مسئله‌ای که حل می‌کند
+
+کسب‌وکارهای ایرانی معمولاً بین اکسل، پیامک، درگاه پرداخت، فاکتور، پیگیری مشتری و داشبوردهای صنفی پراکنده‌اند. کسب‌یار این جریان‌ها را در یک محصول واحد جمع می‌کند:
+
+- ثبت و پیگیری **سرنخ فروش** و مشتری
+- فاکتور، چاپ و مسیرهای پرداخت
+- داشبوردهای **صنفی / تخصص** (بیش از ۱۰۰ سناریو)
+- اعلان درون‌برنامه‌ای، آنبوردینگ، و ماژول‌های قابل‌فعال‌سازی per-org
+- چت داخلی تیم و تیکت پشتیبانی
+- مرکز فرمان AI برای کار روزمره روی داده همان سازمان
+- PWA قابل نصب روی موبایل و دسکتاپ
+
+### مخاطب
+
+| نقش | کاربرد اصلی |
+|-----|-------------|
+| مالک / مدیر SMB | دید کلی فروش، نقدینگی، وضعیت تیم |
+| فروش / CRM | سرنخ فروش، پیگیری، تبدیل به مشتری |
+| عملیات صنفی | داشبورد تخصص (سالن، غذا، املاک، وکالت، …) |
+| مالی | فاکتور، پرداخت، آمادگی مودیان |
+| پشتیبانی / ادمین | تیکت، ماژول‌ها، یکپارچه‌سازی‌ها |
+| سوپرادمین پلتفرم | سازمان‌ها، پک‌ها، کنترل سراسری |
 
 ---
 
-## قابلیت‌ها
+## قابلیت‌های اصلی
 
-| قابلیت | وضعیت |
+| حوزه | وضعیت | توضیح کوتاه |
+|------|--------|-------------|
+| فضای کاری چندسازمانی + نقش‌ها | آماده | RBAC، سوپرادمین جدا از org |
+| CRM / سرنخ فروش | آماده | لیست، جزئیات، ایجاد/ویرایش، برچسب‌های فارسی |
+| فاکتور و چاپ | آماده | صدور، چاپ، لینک پرداخت |
+| Iran P0 (پرداخت / SMS / مودیان) | آماده | هوک‌ها و مسیرهای بازار ایران |
+| اعتبارنامهٔ per-org | آماده | ذخیره رمزنگاری‌شدهٔ کلیدهای درگاه/سرویس‌ها |
+| پک‌ها و تخصص‌ها (Specialty) | آماده | بیش از ۱۰۰ داشبورد صنفی + دسترسی تخصص |
+| چت داخلی تیم | آماده | مکالمه مستقیم / کانال، عضویت، پیام |
+| تیکت پشتیبانی | آماده | کاربر + پنل ادمین تیکت‌ها |
+| افزونه‌ها / سوییچ ماژول org | آماده | روشن/خاموش per-org از پلتفرم |
+| مرکز فرمان AI | آماده | ماژول‌های AI Business OS + سرویس LLM |
+| اعلان درون‌برنامه‌ای + Web Push | آماده | اعلان‌های محصولی |
+| آنبوردینگ | آماده | مسیر راه‌اندازی سازمان جدید |
+| PWA | آماده | نصب، SW، رسپانسیو موبایل |
+| ویکی و راهنما | آماده | `/help` + [Wiki](https://github.com/mjpt1/kasbyar/wiki) |
+| حذف پوسته دمو | انجام‌شده | مسیرهای demo/reset/scenario از محصول واقعی حذف شدند |
+
+---
+
+## پک‌ها و داشبوردهای صنفی
+
+سیستم **Pack / Specialty** داشبورد و ناوبری را بر اساس صنف سازمان تنظیم می‌کند (مثلاً سالن زیبایی، رستوران، آموزش، باشگاه، املاک، تعمیرگاه، وکالت، حسابداری، بیمه، تبلیغات، پیمانکاری، آتلیه، نظافت، چاپ و ده‌ها تخصص دیگر).
+
+- همگام‌سازی تخصص‌ها در production با تحمل race روی اسلاگ
+- داشبوردهای **GENERAL** برای سازمان‌های بدون صنف خاص
+- کنترل دسترسی تخصص در لایه shared
+
+جزئیات محصولی بیشتر در [ویکی](https://github.com/mjpt1/kasbyar/wiki).
+
+---
+
+## CRM و سرنخ فروش
+
+موجودیت Lead در API همان `leads` است؛ در UI با برچسب‌های فارسی **سرنخ فروش** نمایش داده می‌شود (ایجاد، ویرایش، جدول، جزئیات).
+
+جریان معمول: ثبت سرنخ → پیگیری فعالیت → تبدیل/بستن → گزارش‌گیری.
+
+---
+
+## فاکتور، پرداخت و Iran P0
+
+لایه بازار ایران (P0) شامل مسیرهای عملیاتی برای:
+
+| موضوع | کاربرد |
 |--------|--------|
-| لندینگ پوستری + پارالاکس | ✅ |
-| CRM (مشتری، لید، وظیفه) | ✅ |
-| فاکتور و دریافت پرداخت | ✅ |
-| داشبورد و گزارش | ✅ |
-| نقش و دسترسی (مالک / مدیر / کارمند) | ✅ |
-| پنل سوپرادمین پلتفرم | ✅ |
-| بسته‌های عمودی (کلینیک، خرده‌فروشی، سفر) | ✅ |
-| دستیار عملیاتی + تأیید اقدام | ✅ |
-| طرح اشتراک و محدودیت | ✅ |
-| حالت نمایش (دمو) | ✅ |
-| اتاق فرمان (بریفینگ / سلامت) | ✅ |
-| حافظه شرکت (جستجو معنایی) | ✅ |
-| پیش‌بینی درآمد و نقدینگی | ✅ |
-| استراتژی و شبیه‌سازی | ✅ |
-| جلسات، رشد، دوقلوی دیجیتال | ✅ |
-| پلتفرم ایجنت و اتوماسیون | ✅ |
-| راهنمای داخل اپ (/help) | ✅ |
-| آنبوردینگ حوزه و تخصص | ✅ |
-| تخصص عمومی (فریلنسر، شرکت برنامه‌نویسی، …) | ✅ |
-| اعلان داخل اپ + Web Push | ✅ |
-| درگاه پرداخت آنلاین | 📋 فاز بعد |
+| درگاه / لینک پرداخت | اتصال پرداخت به فاکتور و جریان وصول |
+| زرین‌پال و هوک‌های مرتبط | آماده‌سازی یکپارچه‌سازی پرداخت |
+| SMS | اعلان و پیگیری عملیاتی |
+| مودیان (Moadian) | هوک و آماده‌سازی صورت‌حساب الکترونیکی |
+| اعتبارنامهٔ سازمانی | کلیدها و توکن‌ها به‌صورت per-org و رمزنگاری‌شده |
+
+تنظیمات یکپارچه‌سازی از فضای تنظیمات / پلتفرم هر سازمان مدیریت می‌شود — نه فقط env سراسری.
 
 ---
 
-## ساختار مخزن
+## چت، تیکت و افزونه‌ها
 
-```
-apps/web             اپ اصلی — Next.js 15 + AI Business OS
-apps/ai-service      سرویس AI/LLM — FastAPI (استقرار جدا)
-packages/shared      جلالی، فرمت، billing، تایپ‌های AI
-packages/agent-sdk   قرارداد ایجنت و ابزارها
-packages/ui          اجزای UI مشترک
-prisma/              طرح‌واره، migration و seed
-docs/                معماری، استقرار، ویکی پشتیبان (docs/wiki)
-```
+| ماژول | مسیر تقریبی | توضیح |
+|--------|-------------|--------|
+| چت داخلی | `/chat` | مکالمات تیمی (DIRECT / CHANNEL) |
+| پشتیبانی کاربر | `/support` | ثبت و پیگیری تیکت |
+| تیکت ادمین | `/admin/tickets` | مدیریت تیکت‌ها در سوپرادمین |
+| سوییچ ماژول | پلتفرم / org-modules | فعال‌سازی افزونه‌ها per-org |
+
+مدل داده در migration `20260723120000_team_chat_support_modules` (OrgModuleToggle، TeamConversation، SupportTicket و …).
 
 ---
 
-## شروع سریع (محلی)
+## AI Command Center
+
+ماژول‌های **AI Business OS** روی داده همان سازمان کار می‌کنند (نه دموی عمومی). سرویس جداگانه `apps/ai-service` (FastAPI) برای LLM؛ سخت‌سازی API و فراخوانی‌های AI پس از ممیزی امنیتی اعمال شده است.
+
+---
+
+## PWA و تجربه موبایل
+
+- قابل نصب به‌عنوان Progressive Web App
+- Service Worker با نسخه کش؛ در development غیرفعال برای جلوگیری از شل بدون استایل
+- شل، جداول و لندینگ رسپانسیو
+
+---
+
+## آنبوردینگ
+
+مسیر `/onboarding` سازمان و تنظیمات اولیه را هدایت می‌کند تا تیم سریع به داشبورد و CRM برسد.
+
+---
+
+## معماری مخزن
+
+```
+apps/web             وب‌اپ — Next.js 15 + AI Business OS
+apps/ai-service      سرویس AI/LLM — FastAPI (اختیاری در dev)
+packages/shared      قراردادهای مشترک، billing، packs، modules، ops
+packages/agent-sdk   SDK عامل‌ها و اتوماسیون
+packages/ui          کامپوننت‌های UI مشترک
+prisma/              schema، migration، seed
+docs/ / wiki         مستندات و نسخه پشتیبان ویکی
+```
+
+**بک‌اند داده:** Neon Serverless Postgres · **میزبانی اپ:** Vercel
+
+---
+
+## شروع سریع (لوکال)
+
+پیش‌نیاز: Node.js 20+، دسترسی به Postgres (ترجیحاً Neon).
 
 ```bash
-git clone https://github.com/mjpt1/kasbyar.git
-cd kasbyar
-cp .env.example .env
-npm run setup
+npm install
+cp .env.example .env   # در صورت وجود؛ یا تنظیم DATABASE_URL
+npm run db:migrate
+npm run db:seed
 npm run dev
 ```
 
-| سرویس | آدرس |
-|--------|------|
-| وب و لندینگ | [http://localhost:3000](http://localhost:3000) |
-| ورود | [http://localhost:3000/login](http://localhost:3000/login) |
-| دستیار (اختیاری) | `npm run dev:ai` → پورت `8000` |
-
-
----
-
-## AI Business OS (هوشمند)
-
-کسب‌یار علاوه بر CRM و عملیات، یک **سیستم‌عامل هوشمند** داخل همان اپ دارد. بخش‌ها در سایدبار زیر عنوان **هوشمند** دیده می‌شوند:
-
-| بخش | مسیر | کاربرد |
-|------|------|--------|
-| اتاق فرمان | /command | بریفینگ روزانه، اولویت‌ها، نمره سلامت |
-| دستیار | /conversation | چت عملیاتی با تأیید قبل از اقدام |
-| حافظه شرکت | /memory | ingest، جستجوی معنایی، خط زمانی |
-| پیش‌بینی | /forecast | درآمد و نقدینگی |
-| استراتژی | /strategy | اهداف و اولویت‌های استراتژیک |
-| شبیه‌سازی | /simulation | سناریوهای what-if |
-| جلسات | /meetings | خلاصه، تصمیمات، اقدامات |
-| رشد و بازار | /growth | فرصت‌های رشد |
-| دوقلوی دیجیتال | /twin | پروفایل هوشمند مشتری |
-| پلتفرم | /platform | Agent SDK و افزونه‌ها |
-| اتوماسیون | /automation | قوانین و جریان خودکار |
-| راهنما | /help | راهنمای داخل محصول |
-| آنبوردینگ | /onboarding | انتخاب حوزه و تخصص (مالک/مدیر) |
-| داشبورد تخصص | /v/{specialty} | مثلاً `/v/freelancer`، `/v/software-house` |
-
-نسخه فعلی: **0.2.2** (`package.json` ریشه و `apps/web`).
-
-مستندات کاربری: [ویکی GitHub](https://github.com/mjpt1/kasbyar/wiki) · نسخه پشتیبان در مخزن: [docs/wiki/](./docs/wiki/) · منبع صفحات ویکی: [wiki/](./wiki/)
-
-معماری عمیق‌تر: [docs/architecture/](./docs/architecture/) · یکپارچه‌سازی AI: [docs/AI_INTEGRATION.md](./docs/AI_INTEGRATION.md)
-
-### پیکربندی LLM و دیتابیس
-
-در .env (از روی .env.example):
-
-`env
-DATABASE_URL="postgresql://kesbyar:kesbyar@localhost:5432/kesbyar?schema=public"
-AI_SERVICE_URL="http://localhost:8000"
-AI_SERVICE_TOKEN="internal-dev-token-change-in-production"
-LLM_API_URL="https://api.openai.com/v1"
-LLM_API_KEY=""
-LLM_MODEL="gpt-4o-mini"
-`
-`
-پیشنهاد محلی:
-`
-``ash
-npm run docker:up   # Postgres (+ سرویس‌های compose)
-npm run setup
-npm run dev:ai      # اختیاری — پورت 8000
-npm run dev
-`
-`
-`
-### حساب‌های نمونه
-`
-| ایمیل | رمز | نقش |
-|-------|-----|-----|
-| `demo@kesbyar.ir` | `demo1234` | مالک / دمو |
-| `manager@kesbyar.ir` | `demo1234` | مدیر |
-| `staff@kesbyar.ir` | `demo1234` | کارمند |
-| `super@kesbyar.ir` | `demo1234` | سوپرادمین |
-
-جزئیات seed: [docs/SEED.md](./docs/SEED.md)
-
-### حالت نمایش
-
-```bash
-# در .env:
-DEMO_MODE=true
-NEXT_PUBLIC_DEMO_MODE=true
-npm run db:reseed
-```
-
-مرکز نمایش: `/demo` — [docs/DEMO.md](./docs/DEMO.md)
-
----
-
-## دستورات پرکاربرد
+اسکریپت‌های مهم:
 
 | دستور | کار |
-|-------|-----|
-| `npm run dev` | اجرای وب |
-| `npm run build` | build تولید |
-| `npm run verify` | lint + typecheck + test |
-| `npm run ci` | verify + build (مثل CI) |
-| `npm run db:migrate` | migration توسعه |
-| `npm run db:push` | همگام‌سازی schema |
-| `npm run db:seed` | داده نمونه |
-| `npm run docker:up` | PostgreSQL محلی + سرویس دستیار |
-`
----
-`
-## استقرار روی Vercel
-`
-نسخهٔ فعلی: **[kasbyar.vercel.app](https://kasbyar.vercel.app)**
-`
-1. Import مخزن `mjpt1/kasbyar` از GitHub
-2. تنظیمات پروژه:
-
-| فیلد | مقدار |
-|------|--------|
-| **Root Directory** | `apps/web` |
-| **Include files outside root** | ✅ فعال |
-
-3. متغیرهای محیط:
-
-| متغیر | مقدار نمونه |
-|--------|-------------|
-| `DATABASE_URL` | اتصال Neon / Postgres |
-| `SESSION_SECRET` | رشته تصادفی ≥ ۳۲ کاراکتر |
-| `NEXT_PUBLIC_APP_URL` | `https://kasbyar.vercel.app` |
-| `APP_ENV` | `production` |
-| `ALLOW_SEED` | `false` |
-`
-راهنمای کامل: [docs/DEPLOY_VERCEL.md](./docs/DEPLOY_VERCEL.md)
-`
-> سرویس FastAPI روی Vercel اجرا نمی‌شود؛ اپ بدون آن هم کار می‌کند. برای دستیار کامل، سرویس را جدا deploy کنید.
-
-### Docker / VPS
-
-[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)
-
----
-
-## کیفیت و عملیات
-
-| موضوع | سند |
 |--------|-----|
-| Definition of Done | [docs/quality/](./docs/quality/) |
-| امنیت و tenant | [docs/security/](./docs/security/) |
-| تخریب تدریجی | [docs/reliability/](./docs/reliability/) |
-| یکپارچه‌سازی خارجی | [docs/integrations/](./docs/integrations/) |
-| پایلوت مشتری | [docs/pilot/](./docs/pilot/) |
-| KPI و متریک | [docs/metrics/](./docs/metrics/) |
-| نگهداری داده | [docs/data/data-retention-policy.md](./docs/data/data-retention-policy.md) |
-| تصمیم‌های معماری (ADR) | [docs/decisions/](./docs/decisions/) |
+| `npm run dev` | اجرای وب‌اپ |
+| `npm run db:migrate` | migrate در توسعه |
+| `npm run db:migrate:deploy` | `prisma migrate deploy` (در production با `CONFIRM_MIGRATE_DEPLOY=true`) |
+| `npm run db:seed` | seed (با گارد محیط) |
+| `npm run test:e2e` | Playwright |
 
 ---
 
-## مستندات اصلی
+## استقرار
 
-- [ویکی محصول (GitHub Wiki)](https://github.com/mjpt1/kasbyar/wiki) — راهنمای بخش‌های AI
-- [docs/wiki/](./docs/wiki/) — همان محتوا داخل مخزن
-- [ARCHITECTURE.md](./docs/ARCHITECTURE.md) — معماری
-- [AI_INTEGRATION.md](./docs/AI_INTEGRATION.md) — یکپارچه‌سازی AI/LLM
-- [docs/architecture/](./docs/architecture/) — AI CEO، حافظه، ایجنت، workflow
-- [ENVIRONMENT.md](./docs/ENVIRONMENT.md) — متغیرهای محیط
-- [LOCAL_DEV.md](./docs/LOCAL_DEV.md) — عیب‌یابی محلی
-- [OPERATIONS.md](./docs/OPERATIONS.md) — عملیات
-- [KNOWN_LIMITATIONS.md](./docs/KNOWN_LIMITATIONS.md) — محدودیت‌های V1
-- [V1_LAUNCH.md](./docs/V1_LAUNCH.md) — چک‌لیست لانچ
+1. اپ روی **Vercel** (root monorepo / workspace `@kesbyar/web`)
+2. `DATABASE_URL` (و در صورت نیاز URL غیرpool برای ابزارهای migrate) از **Neon**
+3. پس از تغییر schema: `npm run db:migrate:deploy` روی دیتابیس production
+4. Push به `main` معمولاً deploy خودکار Vercel را تریگر می‌کند
+
+هرگز فایل‌های `.env*` یا connection string را commit نکنید.
 
 ---
 
-<p align="center">
-  <img src="apps/web/public/landing/poster-start.jpg" alt="شروع با کسب‌یار" width="100%" />
-</p>
+## ویکی
 
-<p align="center"><em>کسب‌یار — سیستم‌عامل کسب‌وکار و هوش مصنوعی شما</em></p>
+مستندات گسترده‌تر محصول، واژه‌نامه و راهنمای صفحات در [ویکی GitHub کسب‌یار](https://github.com/mjpt1/kasbyar/wiki) است. نسخه پشتیبان صفحات در پوشه `wiki/` نگه داشته می‌شود.
 
 ---
 
-## مجوز
+## English (short)
 
-خصوصی — استفاده طبق توافق صاحب مخزن.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, and installable PWA. App on Vercel · DB on Neon · current release **v0.4.0**.
+
+---
+
+## تاریخچه نسخه‌ها (Changelog کامل)
+
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.4.0**.
+
+### v0.4.0 — چت تیمی، تیکت، افزونه‌ها، سرنخ فروش
+
+- چت داخلی تیم (مکالمه، پیام، عضویت) + API و UI `/chat`
+- تیکت پشتیبانی کاربر + پنل `/admin/tickets`
+- سوییچ ماژول‌های سازمانی (OrgModuleToggle) و کاتالوگ افزونه‌ها در shared
+- برچسب‌های UI **سرنخ فروش** برای Lead
+- کنترل دسترسی تخصص (specialty-access) و هم‌راستاسازی ناوبری/پلتفرم
+- migration `20260723120000_team_chat_support_modules`
+- همگام‌سازی نسخه root / `@kesbyar/web` / `@kesbyar/shared` روی **0.4.0**
+- بازنویسی README بدون تصویر؛ تمرکز روی توضیح محصول
+
+### v0.3.2 — Iran Market P0 و حذف پوسته دمو
+
+- لینک پرداخت، هوک‌های زرین‌پال / مودیان، مسیرهای SMS
+- اعتبارنامهٔ رمزنگاری‌شده per-org
+- چاپ فاکتور و مسیرهای عملیاتی مالی
+- حذف مسیرهای دمو و APIهای reset/scenario از محصول واقعی
+- migration `20260722180000_iran_market_p0`
+
+### v0.3.0 / v0.3.1 (خط میانی تا P0)
+
+- آماده‌سازی لایه بازار ایران و یکپارچه‌سازی‌ها پیش از برچسب رسمی 0.3.2
+- تثبیت مسیرهای تنظیمات integrations در وب‌اپ
+
+### v0.2.4 — PWA در development
+
+- غیرفعال‌سازی Service Worker در development برای جلوگیری از شل لاگین بدون استایل
+
+### v0.2.3 — کش CSS و لوگوهای احراز هویت
+
+- جلوگیری از کش شدن CSS کهنه Next توسط SW
+- بازگردانی لوگوهای صفحات auth
+
+### v0.2.2 — ویکی خوانا
+
+- اصلاح لینک‌های ویکی GitHub و صفحات محصول قابل‌خواندن
+
+### v0.2.1 — CI / lint
+
+- اصلاح `prefer-const` در ناوبری برای عبور lint در CI
+
+### v0.2.0 — آنبوردینگ، اعلان‌ها، داشبورد GENERAL
+
+- آنبوردینگ سازمان
+- اعلان‌های درون‌برنامه‌ای (+ زیرساخت Web Push)
+- داشبوردهای تخصص GENERAL
+- migration `20260721120000_in_app_notifications`
+
+### پیش از 0.2.0 (انتشار اولیه تا AI OS) — خلاصه موضوعی
+
+| موضوع | خلاصه |
+|--------|--------|
+| انتشار اولیه | سیستم‌عامل کسب‌وکار کسب‌یار؛ استقرار Vercel/monorepo |
+| سوپرادمین | پنل ادمین، RBAC، تم ملایم‌تر |
+| برند و لندینگ | هویت بصری، لندینگ؛ (تصاویر README بعداً حذف شدند) |
+| پک‌های صنفی | موج ۲ و ۳ + بیش از ۱۰۰ specialty |
+| PWA و موبایل | نصب‌پذیری، رسپانسیو شل/جداول/لندینگ |
+| AI Business OS | ماژول‌های AI، docs، سیم‌کشی LLM |
+| امنیت | سخت‌سازی API، فراخوانی AI و سرویس‌ها پس از ممیزی |
+| ویکی | لینک و نسخه پشتیبان صفحات در مخزن |
+| ارائه محصول | سایت استاتیک presentation |
+
+### Migrations Prisma (ترتیب)
+
+1. `20260717133000_baseline`
+2. `20260718113500_add_vertical_packs_wave2`
+3. `20260718140000_add_vertical_packs_wave3`
+4. `20260718150000_add_industry_specialty`
+5. `20260720120000_ai_business_os`
+6. `20260721120000_in_app_notifications`
+7. `20260722180000_iran_market_p0`
+8. `20260723120000_team_chat_support_modules` ← این انتشار
+
+---
+
+## مجوز و نگهداری
+
+پروژه خصوصی/محصولی کسب‌یار. برای باگ و پیشنهاد: Issues در GitHub یا کانال داخلی تیم.
+
+**نسخه‌گذاری:** با هر تغییر معنادار محصول، نسخه root و `@kesbyar/web` (و در صورت تغییر قرارداد، `@kesbyar/shared`) افزایش می‌یابد.

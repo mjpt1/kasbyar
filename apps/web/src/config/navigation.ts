@@ -6,6 +6,7 @@ import {
   BookOpen,
   Boxes,
   Brain,
+  Briefcase,
   Building2,
   Calculator,
   Calendar,
@@ -24,6 +25,7 @@ import {
   Luggage,
   Megaphone,
   MessageSquare,
+  MessagesSquare,
   Package,
   Plane,
   Presentation,
@@ -36,6 +38,7 @@ import {
   Shield,
   Sparkles,
   SprayCan,
+  LifeBuoy,
   Stethoscope,
   Store,
   Target,
@@ -47,7 +50,7 @@ import {
   Wrench,
 } from 'lucide-react';
 
-import { getPackDefinition, getPackNavItems, getSpecialty, type IndustryPackId } from '@kesbyar/shared';
+import { getPackDefinition, getPackNavItems, getSpecialty, LEAD_LABELS, type IndustryPackId, isOrgModuleEnabled, ORG_MODULE_NAV } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 import { canAccessPath } from '@/lib/permissions';
@@ -63,6 +66,7 @@ export interface NavItem {
 }
 
 const PACK_ICON_MAP: Record<string, LucideIcon> = {
+  Briefcase,
   Stethoscope,
   Calendar,
   HeartPulse,
@@ -111,9 +115,16 @@ const AI_NAV_ITEMS: NavItem[] = [
   { href: '/help', label: 'راهنما', icon: BookOpen, section: AI_SECTION },
 ];
 
+const COLLAB_SECTION = 'همکاری';
+
+const COLLAB_NAV_ITEMS: NavItem[] = [
+  { href: '/chat', label: 'گفتگوی تیم', icon: MessagesSquare, section: COLLAB_SECTION },
+  { href: '/support', label: 'پشتیبانی', icon: LifeBuoy, section: COLLAB_SECTION },
+];
+
 const CORE_OPS_ITEMS: NavItem[] = [
   { href: '/customers', label: 'مشتریان', icon: Users },
-  { href: '/leads', label: 'لیدها', icon: Target },
+  { href: '/leads', label: LEAD_LABELS.plural, icon: Target },
   { href: '/invoices', label: 'فاکتورها', icon: Receipt },
   { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
   { href: '/tasks', label: 'وظایف', icon: CheckSquare },
@@ -136,6 +147,7 @@ export function getNavItems(
   industryPack: string,
   role?: string,
   industrySpecialty?: string | null,
+  moduleToggles?: Record<string, boolean>,
 ): NavItem[] {
   const specialty = getSpecialty(industrySpecialty);
   const specialtyItem: NavItem[] = specialty
@@ -160,14 +172,23 @@ export function getNavItems(
   const items: NavItem[] = [
     CORE_NAV_ITEMS[0]!,
     ...AI_NAV_ITEMS,
+    ...COLLAB_NAV_ITEMS,
     ...specialtyItem,
     ...packItems,
     ...CORE_OPS_ITEMS,
   ];
 
-  if (!role) return items;
+  const filteredByModule = moduleToggles
+    ? items.filter((item) => {
+        const moduleKey = Object.entries(ORG_MODULE_NAV).find(([, href]) => href === item.href)?.[0];
+        if (!moduleKey) return true;
+        return isOrgModuleEnabled(moduleToggles, moduleKey);
+      })
+    : items;
 
-  return items.filter((item) =>
+  if (!role) return filteredByModule;
+
+  return filteredByModule.filter((item) =>
     canAccessPath(role as MembershipRole, item.href),
   );
 }

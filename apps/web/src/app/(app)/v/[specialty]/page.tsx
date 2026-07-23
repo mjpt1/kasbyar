@@ -10,7 +10,7 @@ import {
   Users,
 } from 'lucide-react';
 
-import { getPackDefinition, getSpecialty } from '@kesbyar/shared';
+import { canAccessSpecialtyDashboard, getPackDefinition, getSpecialty } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,7 @@ export default async function SpecialtyDashboardPage({
     select: { industrySpecialty: true },
   });
 
-  if (!org?.industrySpecialty || org.industrySpecialty !== specialtyId) {
+  if (!canAccessSpecialtyDashboard(org?.industrySpecialty, specialtyId)) {
     redirect('/dashboard');
   }
 
@@ -140,7 +140,7 @@ export default async function SpecialtyDashboardPage({
             <Button asChild variant="outline" size="sm" className="justify-start">
               <Link href="/leads">
                 <Target className="ms-2 h-4 w-4" />
-                {specialtyId === 'freelancer' ? 'فرصت پروژه' : 'لیدها'}
+                {specialtyId === 'freelancer' ? 'فرصت پروژه' : 'سرنخ‌های فروش'}
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="justify-start">

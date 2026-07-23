@@ -58,7 +58,7 @@ export default async function LeadDetailPage({
         <div className="space-y-6 lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">اطلاعات لید</CardTitle>
+              <CardTitle className="text-base">اطلاعات سرنخ فروش</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div>

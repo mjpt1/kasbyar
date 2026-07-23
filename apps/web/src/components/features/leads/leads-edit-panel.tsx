@@ -1,6 +1,6 @@
 'use client';
 
-import { LEAD_STATUS_LABELS } from '@kesbyar/shared';
+import { LEAD_LABELS, LEAD_STATUS_LABELS } from '@kesbyar/shared';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -57,7 +57,7 @@ export function LeadsEditPanel({
         toast.error(data.error?.message ?? 'به‌روزرسانی ناموفق بود');
         return;
       }
-      toast.success('لید به‌روزرسانی شد');
+      toast.success(`${LEAD_LABELS.singular} به‌روزرسانی شد`);
       router.refresh();
     } catch {
       toast.error('خطا در ارتباط با سرور');
@@ -69,7 +69,7 @@ export function LeadsEditPanel({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">مدیریت لید</CardTitle>
+        <CardTitle className="text-base">مدیریت {LEAD_LABELS.singular}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">

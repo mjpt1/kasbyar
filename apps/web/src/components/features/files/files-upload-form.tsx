@@ -19,7 +19,7 @@ import {
 const ENTITY_OPTIONS = [
   { value: 'ORGANIZATION', label: 'سازمان' },
   { value: 'CUSTOMER', label: 'مشتری' },
-  { value: 'LEAD', label: 'لید' },
+  { value: 'LEAD', label: 'سرنخ فروش' },
   { value: 'INVOICE', label: 'فاکتور' },
   { value: 'TASK', label: 'وظیفه' },
 ] as const;

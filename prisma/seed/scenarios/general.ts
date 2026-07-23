@@ -26,6 +26,7 @@ export async function seedGeneralBusiness(
       name: 'شرکت خدمات تدبیر کسب‌وکار',
       slug: 'demo-general',
       industryPack: 'GENERAL',
+      industrySpecialty: 'general-business',
       isDemo: true,
       phone: '02188776655',
       email: 'info@tadbir-demo.ir',

@@ -1,4 +1,4 @@
-import { formatCurrency } from '@kesbyar/shared';
+import { formatCurrency, LEAD_LABELS } from '@kesbyar/shared';
 import {
   AlertCircle,
   CalendarClock,
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
           icon={AlertCircle}
         />
         <StatCard
-          title="لیدهای فعال"
+          title={LEAD_LABELS.active}
           value={String(stats.activeLeads)}
           subtitle="در قیف فروش"
           href="/leads"
@@ -135,14 +135,14 @@ export default async function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">لیدهای نیازمند پیگیری</CardTitle>
+              <CardTitle className="text-base">{LEAD_LABELS.stale}</CardTitle>
             </CardHeader>
             <CardContent>
               {staleLeads.length === 0 ? (
                 <InlineEmpty
                   icon={Target}
-                  message="لید بدون پیگیری ندارید."
-                  hint="لیدهای جدید را از بخش لیدها مدیریت کنید."
+                  message={`${LEAD_LABELS.singular} بدون پیگیری ندارید.`}
+                  hint={`${LEAD_LABELS.plural} جدید را از همان بخش مدیریت کنید.`}
                 />
               ) : (
                 <div className="space-y-2">
@@ -199,7 +199,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             {recentActivity.length === 0 ? (
-              <InlineEmpty message="هنوز فعالیتی ثبت نشده." hint="با ثبت مشتری، فاکتور یا لید فعالیت‌ها اینجا نمایش داده می‌شوند." />
+              <InlineEmpty message="هنوز فعالیتی ثبت نشده." hint={`با ثبت مشتری، فاکتور یا ${LEAD_LABELS.singular} فعالیت‌ها اینجا نمایش داده می‌شوند.`} />
             ) : (
               recentActivity.map((act) => (
               <div key={act.id} className="rounded-md border p-3">

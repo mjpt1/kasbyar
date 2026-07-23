@@ -15,7 +15,7 @@ export default async function ConversationPage() {
     <div className="space-y-6">
       <PageHeader
         title="دستیار عملیاتی"
-        description="پرسش درباره فروش، مطالبات، لیدها و وظایف — پایهٔ دستیار هوشمند کسب‌یار"
+        description="پرسش درباره فروش، مطالبات، سرنخ‌های فروش و وظایف — پایهٔ دستیار هوشمند کسب‌یار"
         actions={<HelpLink section="conversation" />}
       />
       {!access.allowed ? (

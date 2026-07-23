@@ -47,14 +47,14 @@ const WIDGET_SETS: Array<
     { key: 'pack-b', title: 'شاخص تخصصی ۲', metric: 'packB' },
   ],
   [
-    { key: 'core-leads', title: 'لید فعال', metric: 'activeLeads' },
+    { key: 'core-leads', title: 'سرنخ فروش فعال', metric: 'activeLeads' },
     { key: 'core-tasks', title: 'وظیفه باز', metric: 'pendingTasks' },
     { key: 'pack-a', title: 'شاخص امروز', metric: 'packA' },
     { key: 'pack-c', title: 'شاخص هفته', metric: 'packC' },
   ],
   [
     { key: 'core-customers', title: 'مشتریان', metric: 'customers' },
-    { key: 'core-leads', title: 'لید فعال', metric: 'activeLeads' },
+    { key: 'core-leads', title: 'سرنخ فروش فعال', metric: 'activeLeads' },
     { key: 'pack-a', title: 'اولویت امروز', metric: 'packA' },
     { key: 'pack-b', title: 'پیگیری باز', metric: 'packB' },
   ],

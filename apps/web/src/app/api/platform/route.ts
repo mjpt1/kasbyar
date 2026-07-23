@@ -1,7 +1,9 @@
+import type { MembershipRole } from '@prisma/client';
 import { apiSuccess, jsonResponse } from '@/lib/api-response';
 import { handleApiError, isApiError, requireApiRole, requireApiSession } from '@/lib/api-auth';
 import {
   agentFeedbackSchema,
+  moduleToggleSchema,
   pluginRegisterSchema,
   pluginToggleSchema,
 } from '@/lib/validators';
@@ -14,6 +16,7 @@ import {
   registerPlugin,
   setPluginEnabled,
 } from '@/server/platform/platform.service';
+import { listOrgModules, setOrgModuleEnabled } from '@/server/modules/org-modules.service';
 
 export async function GET(request: Request) {
   try {
@@ -21,7 +24,7 @@ export async function GET(request: Request) {
     if (isApiError(session)) return session;
     const denied = requireApiRole(session, 'STAFF');
     if (denied) return denied;
-    const view = new URL(request.url).searchParams.get('view') ?? 'plugins';
+    const view = new URL(request.url).searchParams.get('view') ?? 'modules';
     if (view === 'learning') {
       const [insights, feedback] = await Promise.all([
         getLearningInsights(session.organizationId),
@@ -29,8 +32,12 @@ export async function GET(request: Request) {
       ]);
       return jsonResponse(apiSuccess({ insights, feedback }));
     }
-    const plugins = await listPlugins(session.organizationId);
-    return jsonResponse(apiSuccess(plugins));
+    if (view === 'agents') {
+      const plugins = await listPlugins(session.organizationId);
+      return jsonResponse(apiSuccess(plugins));
+    }
+    const modules = await listOrgModules(session.organizationId);
+    return jsonResponse(apiSuccess(modules));
   } catch (error) {
     return handleApiError(error, 'platform.GET');
   }
@@ -55,6 +62,20 @@ export async function POST(request: Request) {
         metadata: parsed.data.metadata,
       });
       return jsonResponse(apiSuccess(row));
+    }
+
+    if (body.action === 'toggle-module') {
+      const adminDenied = requireApiRole(session, 'ADMIN');
+      if (adminDenied) return adminDenied;
+      const parsed = parseBody(moduleToggleSchema, body);
+      if (!parsed.ok) return parsed.response;
+      const modules = await setOrgModuleEnabled(
+        session.organizationId,
+        session.role as MembershipRole,
+        parsed.data.moduleKey,
+        parsed.data.enabled,
+      );
+      return jsonResponse(apiSuccess(modules));
     }
 
     if (body.action === 'toggle') {

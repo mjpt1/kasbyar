@@ -27,6 +27,8 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/growth': 'STAFF',
   '/twin': 'STAFF',
   '/platform': 'STAFF',
+  '/chat': 'STAFF',
+  '/support': 'STAFF',
   '/reports': 'MANAGER',
   '/activity': 'STAFF',
   '/automation': 'STAFF',

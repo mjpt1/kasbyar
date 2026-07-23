@@ -1,6 +1,6 @@
 {
   "name": "kesbyar",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "private": true,
   "description": "کسب‌یار — سیستم‌عامل هوشمند کسب‌وکار برای بازار ایران",
   "workspaces": [
@@ -38,9 +38,12 @@
     "docker:staging:down": "docker compose -f docker/docker-compose.staging.yml down",
     "verify": "npm run db:generate && npm run lint && npm run typecheck && npm test",
     "ci": "npm run verify && npm run build",
-    "setup": "npm install && npm run db:migrate && npm run db:seed"
+    "setup": "npm install && npm run db:migrate && npm run db:seed",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@prisma/client": "^6.1.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.2",

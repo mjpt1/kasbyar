@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 export default async function OnboardingPage() {
   const session = await requireSession();
 
-  if (!needsOnboarding(session.role, session.industrySpecialty)) {
+  if (!needsOnboarding(session.role, session.industryPack, session.industrySpecialty)) {
     redirect('/dashboard');
   }
 

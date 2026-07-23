@@ -1,6 +1,6 @@
 'use client';
 
-import { LEAD_SOURCE_LABELS } from '@kesbyar/shared';
+import { LEAD_LABELS, LEAD_SOURCE_LABELS } from '@kesbyar/shared';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -46,10 +46,10 @@ export function LeadsCreateForm() {
       });
       const data = await res.json();
       if (!data.success) {
-        toast.error(data.error?.message ?? 'ثبت لید ناموفق بود');
+        toast.error(data.error?.message ?? `ثبت ${LEAD_LABELS.singular} ناموفق بود`);
         return;
       }
-      toast.success('لید با موفقیت ثبت شد');
+      toast.success(`${LEAD_LABELS.singular} با موفقیت ثبت شد`);
       e.currentTarget.reset();
       setSource('OTHER');
       setOpen(false);
@@ -62,13 +62,13 @@ export function LeadsCreateForm() {
   }
 
   if (!open) {
-    return <Button onClick={() => setOpen(true)}>لید جدید</Button>;
+    return <Button onClick={() => setOpen(true)}>{LEAD_LABELS.new}</Button>;
   }
 
   return (
     <Card className="mb-6">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base">ثبت لید جدید</CardTitle>
+        <CardTitle className="text-base">ثبت {LEAD_LABELS.singular} جدید</CardTitle>
         <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
           بستن
         </Button>
@@ -122,7 +122,7 @@ export function LeadsCreateForm() {
           </div>
           <div className="sm:col-span-2">
             <Button type="submit" disabled={loading}>
-              {loading ? 'در حال ثبت...' : 'ثبت لید'}
+              {loading ? 'در حال ثبت...' : `ثبت ${LEAD_LABELS.singular}`}
             </Button>
           </div>
         </form>
