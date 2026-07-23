@@ -1,6 +1,6 @@
 {
   "name": "kesbyar",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "private": true,
   "description": "کسب‌یار — سیستم‌عامل هوشمند کسب‌وکار برای بازار ایران",
   "workspaces": [
@@ -10,6 +10,8 @@
   "scripts": {
     "postinstall": "prisma generate --schema=./prisma/schema.prisma",
     "dev": "npm run dev --workspace=@kesbyar/web",
+    "dev:mobile": "npm run start --workspace=@kesbyar/mobile",
+    "android": "npm run android --workspace=@kesbyar/mobile",
     "dev:local": "node scripts/sync-local-db-env.mjs && node scripts/test-db.mjs && npm run dev",
     "dev:ai": "npm run dev --workspace=@kesbyar/ai-service",
     "build": "npm run build --workspace=@kesbyar/web",

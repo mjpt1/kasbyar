@@ -1,24 +1,45 @@
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import type { SessionContext } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 import {
+  AUTH_BEARER_PREFIX,
   ORG_COOKIE,
+  ORG_ID_HEADER,
   SESSION_COOKIE,
-  orgCookieOptions,
-} from '@/lib/auth/cookie-options';
+} from '@/lib/auth/constants';
+import { orgCookieOptions } from '@/lib/auth/cookie-options';
 import { prisma } from '@/lib/prisma';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
 
 const LOGIN_EXPIRED = '/login?expired=1';
 
-export async function getSession(): Promise<SessionContext | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (!token) return null;
+export async function getSessionCredentials(): Promise<{
+  token: string | null;
+  organizationId: string | null;
+}> {
+  const headerStore = await headers();
+  const authorization = headerStore.get('authorization');
+  if (authorization?.startsWith(AUTH_BEARER_PREFIX)) {
+    return {
+      token: authorization.slice(AUTH_BEARER_PREFIX.length).trim(),
+      organizationId: headerStore.get(ORG_ID_HEADER),
+    };
+  }
 
+  const cookieStore = await cookies();
+  return {
+    token: cookieStore.get(SESSION_COOKIE)?.value ?? null,
+    organizationId: cookieStore.get(ORG_COOKIE)?.value ?? null,
+  };
+}
+
+async function buildSessionContext(
+  token: string,
+  preferredOrgId: string | null,
+): Promise<SessionContext | null> {
   const session = await prisma.session.findUnique({
     where: { token },
     include: { user: true },
@@ -50,7 +71,6 @@ export async function getSession(): Promise<SessionContext | null> {
     };
   }
 
-  const preferredOrgId = cookieStore.get(ORG_COOKIE)?.value;
   const active =
     workspaces.find((w) => w.organizationId === preferredOrgId) ?? workspaces[0];
 
@@ -73,6 +93,12 @@ export async function getSession(): Promise<SessionContext | null> {
   };
 }
 
+export async function getSession(): Promise<SessionContext | null> {
+  const { token, organizationId } = await getSessionCredentials();
+  if (!token) return null;
+  return buildSessionContext(token, organizationId);
+}
+
 export async function requireSession(): Promise<SessionContext> {
   const session = await getSession();
   if (!session) {
@@ -82,8 +108,7 @@ export async function requireSession(): Promise<SessionContext> {
 }
 
 export async function requireActiveWorkspace(): Promise<SessionContext> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  const { token, organizationId } = await getSessionCredentials();
   if (!token) redirect(LOGIN_EXPIRED);
 
   const sessionRecord = await prisma.session.findUnique({
@@ -101,8 +126,7 @@ export async function requireActiveWorkspace(): Promise<SessionContext> {
   const workspaces = await listUserWorkspaces(sessionRecord.user.id);
   if (workspaces.length === 0) redirect(LOGIN_EXPIRED);
 
-  const preferredOrgId = cookieStore.get(ORG_COOKIE)?.value;
-  if (!preferredOrgId && workspaces.length > 1) {
+  if (!organizationId && workspaces.length > 1) {
     redirect('/workspace/select');
   }
 

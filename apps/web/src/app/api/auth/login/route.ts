@@ -2,12 +2,17 @@ import { NextResponse } from 'next/server';
 
 import { apiSuccess, apiError } from '@/lib/api-response';
 import { applyAuthCookies } from '@/lib/auth/cookie-options';
+import { MOBILE_CLIENT_HEADER, MOBILE_CLIENT_VALUE } from '@/lib/auth/constants';
 import { loginSchema } from '@/lib/validators';
 import { loginUser } from '@/server/auth/auth.service';
 import { needsOnboarding } from '@/server/onboarding/onboarding.service';
 import { listUserWorkspaces } from '@/server/workspace/workspace.service';
 
 export const dynamic = 'force-dynamic';
+
+function isMobileClient(request: Request): boolean {
+  return request.headers.get(MOBILE_CLIENT_HEADER) === MOBILE_CLIENT_VALUE;
+}
 
 export async function POST(request: Request) {
   try {
@@ -52,6 +57,8 @@ export async function POST(request: Request) {
       redirectTo = '/onboarding';
     }
 
+    const mobile = isMobileClient(request);
+
     const response = NextResponse.json(
       apiSuccess({
         id: user.id,
@@ -60,6 +67,13 @@ export async function POST(request: Request) {
         organizationId: activeOrgId,
         isSuperAdmin,
         redirectTo,
+        ...(mobile
+          ? {
+              token,
+              expiresAt: expiresAt.toISOString(),
+              workspaces,
+            }
+          : {}),
       }),
     );
 
