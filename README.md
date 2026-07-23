@@ -2,13 +2,14 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.4.0** · وب‌اپ: [@kesbyar/web](apps/web) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.5.1** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
 | نسخه آنلاین | [kasbyar.vercel.app](https://kasbyar.vercel.app) |
 | مخزن | [github.com/mjpt1/kasbyar](https://github.com/mjpt1/kasbyar) |
 | ویکی محصول | [GitHub Wiki](https://github.com/mjpt1/kasbyar/wiki) |
+| اپ اندروید | [apps/mobile](apps/mobile) — Expo / React Native |
 
 ---
 
@@ -26,6 +27,7 @@
 - اعلان درون‌برنامه‌ای، آنبوردینگ، و ماژول‌های قابل‌فعال‌سازی per-org
 - چت داخلی تیم و تیکت پشتیبانی
 - مرکز فرمان AI برای کار روزمره روی داده همان سازمان
+- **اپ اندروید بومی** همگام با همان API و دیتابیس وب
 - PWA قابل نصب روی موبایل و دسکتاپ
 
 ### مخاطب
@@ -56,6 +58,7 @@
 | افزونه‌ها / سوییچ ماژول org | آماده | روشن/خاموش per-org از پلتفرم |
 | مرکز فرمان AI | آماده | ماژول‌های AI Business OS + سرویس LLM |
 | اعلان درون‌برنامه‌ای + Web Push | آماده | اعلان‌های محصولی |
+| اپ اندروید (Expo) | آماده | همگام با API وب؛ فرم‌ها، آفلاین، Push، Deep Link |
 | آنبوردینگ | آماده | مسیر راه‌اندازی سازمان جدید |
 | PWA | آماده | نصب، SW، رسپانسیو موبایل |
 | ویکی و راهنما | آماده | `/help` + [Wiki](https://github.com/mjpt1/kasbyar/wiki) |
@@ -118,7 +121,31 @@
 
 ---
 
-## PWA و تجربه موبایل
+## اپ اندروید (`apps/mobile`)
+
+اپ **Expo / React Native** برای اندروید که به همان REST API وب وصل است (نه اتصال مستقیم به دیتابیس). داده و نشست با وب همگام‌اند.
+
+| قابلیت | توضیح |
+|--------|--------|
+| احراز هویت موبایل | Bearer Token + هدر `X-Org-Id`؛ ورود با `X-Kasbyar-Client: mobile` |
+| صفحات اصلی | داشبورد، سرنخ فروش، مشتری، فاکتور (ایجاد/ویرایش) |
+| همکاری | گفتگوی تیم، تیکت پشتیبانی، اعلان‌ها |
+| هوشمند | دستیار، اتاق فرمان (بریفینگ روزانه) |
+| آفلاین | کش AsyncStorage؛ نمایش دادهٔ قبلی هنگام قطعی شبکه |
+| Push | ثبت توکن Expo در `POST /api/push/expo` و ارسال از سرور |
+| Deep Link | `kesbyar://` و لینک‌های `/pay` و `/invoices` |
+
+```bash
+npm install
+npm run dev:mobile          # Expo
+# اختیاری: EXPO_PUBLIC_API_URL=http://LAN_IP:3000 برای API لوکال
+```
+
+جزئیات بیشتر: [apps/mobile/README.md](apps/mobile/README.md).
+
+---
+
+## PWA و تجربه موبایل وب
 
 - قابل نصب به‌عنوان Progressive Web App
 - Service Worker با نسخه کش؛ در development غیرفعال برای جلوگیری از شل بدون استایل
@@ -136,6 +163,7 @@
 
 ```
 apps/web             وب‌اپ — Next.js 15 + AI Business OS
+apps/mobile          اپ اندروید — Expo / React Native (همگام با API وب)
 apps/ai-service      سرویس AI/LLM — FastAPI (اختیاری در dev)
 packages/shared      قراردادهای مشترک، billing، packs، modules، ops
 packages/agent-sdk   SDK عامل‌ها و اتوماسیون
@@ -165,6 +193,8 @@ npm run dev
 | دستور | کار |
 |--------|-----|
 | `npm run dev` | اجرای وب‌اپ |
+| `npm run dev:mobile` | اجرای اپ Expo موبایل |
+| `npm run android` | اجرای بیلد/امولاتور اندروید |
 | `npm run db:migrate` | migrate در توسعه |
 | `npm run db:migrate:deploy` | `prisma migrate deploy` (در production با `CONFIRM_MIGRATE_DEPLOY=true`) |
 | `npm run db:seed` | seed (با گارد محیط) |
@@ -191,13 +221,31 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, and installable PWA. App on Vercel · DB on Neon · current release **v0.4.0**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.5.1**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.4.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.5.1**.
+
+### v0.5.1 — اپ اندروید، آفلاین، Push، Deep Link
+
+- اپ موبایل Expo در `apps/mobile` (RTL فارسی، همگام با API وب)
+- احراز هویت موبایل: Bearer Token + `X-Org-Id`؛ پاسخ توکن در login با هدر `X-Kasbyar-Client: mobile`
+- `GET /api/auth/session` برای بازیابی نشست و workspaces
+- صفحات CRUD: سرنخ فروش، مشتری، فاکتور (+ جزئیات و لینک پرداخت)
+- وظایف، پرداخت‌ها، اعلان‌ها، تنظیمات، دستیار، اتاق فرمان، چت، پشتیبانی
+- کش آفلاین (AsyncStorage) و همگام‌سازی هنگام بازگشت به اپ
+- Push اندروید: `POST/DELETE /api/push/expo` + ارسال Expo در لایه web-push سرور
+- Deep Link: `kesbyar://` و مسیرهای `/pay` و `/invoices`
+- اسکریپت‌های `npm run dev:mobile` و `npm run android`
+- نسخه root / `@kesbyar/web` / `@kesbyar/mobile` روی **0.5.1**
+
+### v0.5.0 — اسکلت اپ موبایل و auth موبایل
+
+- اسکلت اولیه Expo، ناوبری تب‌ها، منوی امکانات همگام با وب
+- پشتیبانی Bearer در session وب برای کلاینت بومی
 
 ### v0.4.0 — چت تیمی، تیکت، افزونه‌ها، سرنخ فروش
 
