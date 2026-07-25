@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.5.1** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.5.2** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -137,6 +137,7 @@
 
 ```bash
 npm install
+npm run mobile:install      # وابستگی‌های Expo جدا از وب
 npm run dev:mobile          # Expo
 # اختیاری: EXPO_PUBLIC_API_URL=http://LAN_IP:3000 برای API لوکال
 ```
@@ -194,6 +195,7 @@ npm run dev
 |--------|-----|
 | `npm run dev` | اجرای وب‌اپ |
 | `npm run dev:mobile` | اجرای اپ Expo موبایل |
+| `npm run mobile:install` | نصب وابستگی‌های جداگانهٔ `apps/mobile` |
 | `npm run android` | اجرای بیلد/امولاتور اندروید |
 | `npm run db:migrate` | migrate در توسعه |
 | `npm run db:migrate:deploy` | `prisma migrate deploy` (در production با `CONFIRM_MIGRATE_DEPLOY=true`) |
@@ -221,13 +223,19 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.5.1**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.5.2**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.5.1**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.5.2**.
+
+### v0.5.2 — رفع deploy Production (lockfile / workspaces)
+
+- جدا کردن `apps/mobile` از npm workspaces ریشه تا `npm ci` در Vercel/CI بدون وابستگی‌های Expo بماند
+- همگام‌سازی `package-lock.json` با workspaces وب
+- اسکریپت‌های `mobile:install` / `dev:mobile` از طریق `npm --prefix apps/mobile`
 
 ### v0.5.1 — اپ اندروید، آفلاین، Push، Deep Link
 
