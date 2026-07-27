@@ -40,6 +40,14 @@ export const registerSchema = z.object({
       'PHOTOGRAPHY',
       'CLEANING',
       'PRINTING',
+      'LOGISTICS',
+      'AUTOMOTIVE',
+      'HOSPITALITY',
+      'WHOLESALE',
+      'EVENTS',
+      'AGRICULTURE',
+      'HOME_SERVICES',
+      'DISTRIBUTION',
     ])
     .optional(),
 });

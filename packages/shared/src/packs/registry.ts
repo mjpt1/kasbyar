@@ -203,6 +203,94 @@ export const PACK_REGISTRY: Record<IndustryPackId, PackDefinition> = {
     ],
     labels: { customer: 'مشتری', customers: 'مشتریان' },
   },
+  LOGISTICS: {
+    id: 'LOGISTICS',
+    label: 'حمل‌ونقل و پیک',
+    description: 'باربری، پیک شهری و پیگیری محموله',
+    homeRoute: '/logistics',
+    navItems: [
+      { href: '/logistics', label: 'حمل‌ونقل', icon: 'Truck' },
+      { href: '/logistics/jobs', label: 'محموله‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'فرستنده', customers: 'فرستندگان' },
+  },
+  AUTOMOTIVE: {
+    id: 'AUTOMOTIVE',
+    label: 'خودرو',
+    description: 'نمایشگاه، نمایندگی و اجاره خودرو',
+    homeRoute: '/automotive',
+    navItems: [
+      { href: '/automotive', label: 'خودرو', icon: 'Car' },
+      { href: '/automotive/jobs', label: 'پرونده‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'خریدار', customers: 'خریداران' },
+  },
+  HOSPITALITY: {
+    id: 'HOSPITALITY',
+    label: 'هتل و اقامتگاه',
+    description: 'رزرو اتاق، مهمان و اقامت',
+    homeRoute: '/hospitality',
+    navItems: [
+      { href: '/hospitality', label: 'اقامتگاه', icon: 'Hotel' },
+      { href: '/hospitality/jobs', label: 'رزروها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'مهمان', customers: 'مهمانان' },
+  },
+  WHOLESALE: {
+    id: 'WHOLESALE',
+    label: 'عمده‌فروشی و هایپر',
+    description: 'فروش عمده، هایپر و مجتمع تجاری',
+    homeRoute: '/wholesale',
+    navItems: [
+      { href: '/wholesale', label: 'عمده', icon: 'Warehouse' },
+      { href: '/wholesale/jobs', label: 'سفارش‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'خریدار عمده', customers: 'خریداران عمده' },
+  },
+  EVENTS: {
+    id: 'EVENTS',
+    label: 'تشریفات و مراسم',
+    description: 'تالار، رویداد و پذیرایی',
+    homeRoute: '/events',
+    navItems: [
+      { href: '/events', label: 'مراسم', icon: 'PartyPopper' },
+      { href: '/events/jobs', label: 'رویدادها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'برگزارکننده', customers: 'برگزارکنندگان' },
+  },
+  AGRICULTURE: {
+    id: 'AGRICULTURE',
+    label: 'کشاورزی و دام',
+    description: 'گلخانه، دامداری و فروش محصول',
+    homeRoute: '/agriculture',
+    navItems: [
+      { href: '/agriculture', label: 'کشاورزی', icon: 'Sprout' },
+      { href: '/agriculture/jobs', label: 'سفارش‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'خریدار', customers: 'خریداران' },
+  },
+  HOME_SERVICES: {
+    id: 'HOME_SERVICES',
+    label: 'خدمات منزل',
+    description: 'نقاشی، اسباب‌کشی و سرویس تأسیسات',
+    homeRoute: '/home-services',
+    navItems: [
+      { href: '/home-services', label: 'خدمات منزل', icon: 'House' },
+      { href: '/home-services/jobs', label: 'سفارش‌ها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'مشتری', customers: 'مشتریان' },
+  },
+  DISTRIBUTION: {
+    id: 'DISTRIBUTION',
+    label: 'پخش و نمایندگی',
+    description: 'پخش مویرگی، نمایندگی برند و توزیع',
+    homeRoute: '/distribution',
+    navItems: [
+      { href: '/distribution', label: 'پخش', icon: 'Route' },
+      { href: '/distribution/jobs', label: 'مسیرها', icon: 'ClipboardList' },
+    ],
+    labels: { customer: 'فروشگاه', customers: 'فروشگاه‌ها' },
+  },
 };
 
 export function getPackDefinition(packId: string): PackDefinition {

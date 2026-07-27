@@ -19,7 +19,9 @@ import { getContractingDashboardSignals } from '@/server/packs/contracting/contr
 import { getPhotographyDashboardSignals } from '@/server/packs/photography/photography.service';
 import { getCleaningDashboardSignals } from '@/server/packs/cleaning/cleaning.service';
 import { getPrintingDashboardSignals } from '@/server/packs/printing/printing.service';
+import { getPackWorkItemDashboardSignals } from '@/server/packs/work-items/work-item.service';
 import { getSpecialtyDashboardWidgets } from '@/server/packs/specialty-dashboard.service';
+import { isWave4Pack, wave4JobsHref, type Wave4PackId } from '@kesbyar/shared';
 
 export async function getPackDashboardWidgets(
   organizationId: string,
@@ -309,6 +311,23 @@ export async function getBasePackDashboardWidgets(
         title: 'سررسید ۷ روز',
         value: s.dueSoonCount,
         href: '/printing/orders',
+        variant: s.dueSoonCount > 0 ? 'warning' : 'default',
+      },
+    ];
+  }
+
+  if (isWave4Pack(pack)) {
+    const wavePack = pack as Wave4PackId;
+    const s = await getPackWorkItemDashboardSignals(organizationId, wavePack);
+    const href = wave4JobsHref(wavePack);
+    return [
+      { key: 'active', title: 'فعال', value: s.activeCount, href },
+      { key: 'planned', title: 'برنامه‌ریزی', value: s.plannedCount, href },
+      {
+        key: 'due',
+        title: 'سررسید ۷ روز',
+        value: s.dueSoonCount,
+        href,
         variant: s.dueSoonCount > 0 ? 'warning' : 'default',
       },
     ];

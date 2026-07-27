@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.5.2** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.6.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -223,13 +223,21 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.5.2**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.6.0**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.5.2**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.6.0**.
+
+### v0.6.0 — پک‌ها و مشاغل موج ۴
+
+- ۸ پک صنعتی جدید: حمل‌ونقل، خودرو، هتل/اقامتگاه، عمده‌فروشی، تشریفات، کشاورزی، خدمات منزل، پخش/نمایندگی
+- تخصص‌های جدید (آزمایشگاه، لیزر زیبایی، لوازم‌یدکی، گالری، گیم‌نت، باربری، نمایشگاه خودرو، بوم‌گردی، هایپر، تالار، گلخانه، اسباب‌کشی، پخش مویرگی و …)
+- مدل دیتابیس `PackWorkItem` + migration `20260727120000_wave4_vertical_packs`
+- صفحات و API پیشخوان برای پک‌های موج ۴
+- نسخه root / web / mobile / shared روی **0.6.0**
 
 ### v0.5.2 — رفع deploy Production (lockfile / workspaces)
 
@@ -326,7 +334,8 @@ npm run dev
 5. `20260720120000_ai_business_os`
 6. `20260721120000_in_app_notifications`
 7. `20260722180000_iran_market_p0`
-8. `20260723120000_team_chat_support_modules` ← این انتشار
+8. `20260723120000_team_chat_support_modules`
+9. `20260727120000_wave4_vertical_packs` ← این انتشار
 
 ---
 

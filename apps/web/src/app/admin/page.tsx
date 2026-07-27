@@ -61,6 +61,14 @@ export default async function AdminDashboardPage() {
     'PHOTOGRAPHY',
     'CLEANING',
     'PRINTING',
+    'LOGISTICS',
+    'AUTOMOTIVE',
+    'HOSPITALITY',
+    'WHOLESALE',
+    'EVENTS',
+    'AGRICULTURE',
+    'HOME_SERVICES',
+    'DISTRIBUTION',
     'GENERAL',
   ] as const;
   const packItems = packOrder.map((key) => ({

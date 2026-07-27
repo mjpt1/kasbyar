@@ -182,9 +182,32 @@ export function featureApiPath(webPath: string): string {
       photography: 'photography',
       cleaning: 'cleaning',
       printing: 'printing',
+      logistics: 'logistics',
+      automotive: 'automotive',
+      hospitality: 'hospitality',
+      wholesale: 'wholesale',
+      events: 'events',
+      agriculture: 'agriculture',
+      'home-services': 'home-services',
+      distribution: 'distribution',
     };
     const apiPack = packApiMap[pack];
     if (apiPack) {
+      // wave4 packs use a single collection endpoint (not /jobs subpath)
+      if (
+        [
+          'logistics',
+          'automotive',
+          'hospitality',
+          'wholesale',
+          'events',
+          'agriculture',
+          'home-services',
+          'distribution',
+        ].includes(apiPack)
+      ) {
+        return `/api/packs/${apiPack}`;
+      }
       return `/api/packs/${apiPack}/${resource}`;
     }
   }

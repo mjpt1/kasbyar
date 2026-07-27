@@ -33,6 +33,14 @@ const industryPackSchema = z.enum([
   'PHOTOGRAPHY',
   'CLEANING',
   'PRINTING',
+  'LOGISTICS',
+  'AUTOMOTIVE',
+  'HOSPITALITY',
+  'WHOLESALE',
+  'EVENTS',
+  'AGRICULTURE',
+  'HOME_SERVICES',
+  'DISTRIBUTION',
 ]);
 
 const specialtyIds = new Set(listSpecialties().map((s) => s.id));

@@ -103,6 +103,14 @@ export const INDUSTRY_PACK_LABELS: Record<string, string> = {
   PHOTOGRAPHY: 'آتلیه عکاسی',
   CLEANING: 'خدمات نظافتی',
   PRINTING: 'چاپ و تبلیغات',
+  LOGISTICS: 'حمل‌ونقل و پیک',
+  AUTOMOTIVE: 'خودرو',
+  HOSPITALITY: 'هتل و اقامتگاه',
+  WHOLESALE: 'عمده‌فروشی و هایپر',
+  EVENTS: 'تشریفات و مراسم',
+  AGRICULTURE: 'کشاورزی و دام',
+  HOME_SERVICES: 'خدمات منزل',
+  DISTRIBUTION: 'پخش و نمایندگی',
 };
 
 export const LEAD_SOURCE_LABELS: Record<string, string> = {

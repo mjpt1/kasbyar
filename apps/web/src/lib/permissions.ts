@@ -56,6 +56,14 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/photography': 'STAFF',
   '/cleaning': 'STAFF',
   '/printing': 'STAFF',
+  '/logistics': 'STAFF',
+  '/automotive': 'STAFF',
+  '/hospitality': 'STAFF',
+  '/wholesale': 'STAFF',
+  '/events': 'STAFF',
+  '/agriculture': 'STAFF',
+  '/home-services': 'STAFF',
+  '/distribution': 'STAFF',
   '/v': 'STAFF',
   '/workspace': 'VIEWER',
 };
@@ -132,6 +140,14 @@ export function getDefaultHomePath(
     PHOTOGRAPHY: '/photography',
     CLEANING: '/cleaning',
     PRINTING: '/printing',
+    LOGISTICS: '/logistics',
+    AUTOMOTIVE: '/automotive',
+    HOSPITALITY: '/hospitality',
+    WHOLESALE: '/wholesale',
+    EVENTS: '/events',
+    AGRICULTURE: '/agriculture',
+    HOME_SERVICES: '/home-services',
+    DISTRIBUTION: '/distribution',
   };
   return packHome[industryPack] ?? '/dashboard';
 }

@@ -36,6 +36,14 @@ enum IndustryPack {
   PHOTOGRAPHY
   CLEANING
   PRINTING
+  LOGISTICS
+  AUTOMOTIVE
+  HOSPITALITY
+  WHOLESALE
+  EVENTS
+  AGRICULTURE
+  HOME_SERVICES
+  DISTRIBUTION
 }
 
 enum LeadStatus {
@@ -480,6 +488,7 @@ model Organization {
   photoSessions   PhotoSession[]
   cleaningJobs    CleaningJob[]
   printOrders     PrintOrder[]
+  packWorkItems   PackWorkItem[]
   subscription    Subscription?
   subscriptionEvents SubscriptionEvent[]
   conversationSessions ConversationSession[]
@@ -597,6 +606,7 @@ model Customer {
   photoSessions PhotoSession[]
   cleaningJobs CleaningJob[]
   printOrders PrintOrder[]
+  packWorkItems PackWorkItem[]
   tasks       Task[]
   messageThreads MessageThread[]
   customerSentiments CustomerSentiment[]
@@ -1611,6 +1621,32 @@ model PrintOrder {
 
   @@index([organizationId])
   @@index([organizationId, status])
+  @@index([customerId])
+}
+
+/** Shared operational items for wave-4 vertical packs (logistics, hospitality, …). */
+model PackWorkItem {
+  id             String           @id @default(cuid())
+  organizationId String
+  customerId     String
+  pack           IndustryPack
+  title          String
+  status         ProjectJobStatus @default(PLANNED)
+  scheduledAt    DateTime?
+  dueAt          DateTime?
+  amount         Decimal?         @db.Decimal(18, 0)
+  location       String?
+  meta           Json             @default("{}")
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, pack])
+  @@index([organizationId, pack, status])
   @@index([customerId])
 }
 

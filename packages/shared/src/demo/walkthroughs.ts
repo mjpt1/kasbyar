@@ -383,6 +383,118 @@ const DEFAULT_STEPS_BY_PACK: Record<IndustryPackId, DemoWalkthroughStep[]> = {
       href: '/invoices',
     },
   ],
+  LOGISTICS: [
+    {
+      id: 'log-default-1',
+      title: 'نمای حمل‌ونقل',
+      description: 'محموله‌های فعال و برنامه‌ریزی',
+      href: '/logistics',
+    },
+    {
+      id: 'log-default-2',
+      title: 'محموله‌ها',
+      description: 'پیگیری بار و پیک',
+      href: '/logistics/jobs',
+    },
+  ],
+  AUTOMOTIVE: [
+    {
+      id: 'auto-default-1',
+      title: 'نمای خودرو',
+      description: 'پرونده‌های فروش و اجاره',
+      href: '/automotive',
+    },
+    {
+      id: 'auto-default-2',
+      title: 'پرونده‌ها',
+      description: 'پیگیری معامله و قرارداد',
+      href: '/automotive/jobs',
+    },
+  ],
+  HOSPITALITY: [
+    {
+      id: 'hosp-default-1',
+      title: 'نمای اقامتگاه',
+      description: 'رزروها و وضعیت اتاق',
+      href: '/hospitality',
+    },
+    {
+      id: 'hosp-default-2',
+      title: 'رزروها',
+      description: 'پیگیری مهمان و اقامت',
+      href: '/hospitality/jobs',
+    },
+  ],
+  WHOLESALE: [
+    {
+      id: 'ws-default-1',
+      title: 'نمای عمده',
+      description: 'سفارش‌های عمده و انبار',
+      href: '/wholesale',
+    },
+    {
+      id: 'ws-default-2',
+      title: 'سفارش‌ها',
+      description: 'پیگیری خریداران عمده',
+      href: '/wholesale/jobs',
+    },
+  ],
+  EVENTS: [
+    {
+      id: 'evt-default-1',
+      title: 'نمای مراسم',
+      description: 'رویدادهای برنامه‌ریزی‌شده و فعال',
+      href: '/events',
+    },
+    {
+      id: 'evt-default-2',
+      title: 'رویدادها',
+      description: 'پیگیری تالار و تشریفات',
+      href: '/events/jobs',
+    },
+  ],
+  AGRICULTURE: [
+    {
+      id: 'agr-default-1',
+      title: 'نمای کشاورزی',
+      description: 'سفارش محصول و مشتری',
+      href: '/agriculture',
+    },
+    {
+      id: 'agr-default-2',
+      title: 'سفارش‌ها',
+      description: 'پیگیری فروش فصلی',
+      href: '/agriculture/jobs',
+    },
+  ],
+  HOME_SERVICES: [
+    {
+      id: 'hs-default-1',
+      title: 'نمای خدمات منزل',
+      description: 'سفارش‌های اعزام و زمان‌بندی',
+      href: '/home-services',
+    },
+    {
+      id: 'hs-default-2',
+      title: 'سفارش‌ها',
+      description: 'پیگیری نقاشی، اسباب‌کشی و تأسیسات',
+      href: '/home-services/jobs',
+    },
+  ],
+  DISTRIBUTION: [
+    {
+      id: 'dist-default-1',
+      title: 'نمای پخش',
+      description: 'مسیر فروش و سفارش فروشگاهی',
+      href: '/distribution',
+    },
+    {
+      id: 'dist-default-2',
+      title: 'مسیرها',
+      description: 'پیگیری ویزیتور و توزیع',
+      href: '/distribution/jobs',
+    },
+  ],
 };
 
 const SCENARIO_STEPS: Partial<Record<DemoScenarioId, DemoWalkthroughStep[]>> = {

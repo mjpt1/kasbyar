@@ -72,4 +72,22 @@ describe('pack registry', () => {
     expect(getPackDefinition('CLEANING').homeRoute).toBe('/cleaning');
     expect(getPackDefinition('PRINTING').homeRoute).toBe('/printing');
   });
+
+  it('exposes wave 4 vertical packs', () => {
+    expect(isVerticalPack('LOGISTICS')).toBe(true);
+    expect(isVerticalPack('AUTOMOTIVE')).toBe(true);
+    expect(isVerticalPack('HOSPITALITY')).toBe(true);
+    expect(isVerticalPack('WHOLESALE')).toBe(true);
+    expect(isVerticalPack('EVENTS')).toBe(true);
+    expect(isVerticalPack('AGRICULTURE')).toBe(true);
+    expect(isVerticalPack('HOME_SERVICES')).toBe(true);
+    expect(isVerticalPack('DISTRIBUTION')).toBe(true);
+
+    expect(getPackNavItems('LOGISTICS').some((n) => n.href === '/logistics/jobs')).toBe(true);
+    expect(getPackNavItems('HOME_SERVICES').some((n) => n.href === '/home-services/jobs')).toBe(
+      true,
+    );
+    expect(getPackDefinition('HOSPITALITY').homeRoute).toBe('/hospitality');
+    expect(getPackDefinition('DISTRIBUTION').labels.customer).toBe('فروشگاه');
+  });
 });

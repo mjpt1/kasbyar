@@ -17,7 +17,26 @@ export type IndustryPackId =
   | 'CONTRACTING'
   | 'PHOTOGRAPHY'
   | 'CLEANING'
-  | 'PRINTING';
+  | 'PRINTING'
+  | 'LOGISTICS'
+  | 'AUTOMOTIVE'
+  | 'HOSPITALITY'
+  | 'WHOLESALE'
+  | 'EVENTS'
+  | 'AGRICULTURE'
+  | 'HOME_SERVICES'
+  | 'DISTRIBUTION';
+
+export const WAVE4_PACK_IDS = [
+  'LOGISTICS',
+  'AUTOMOTIVE',
+  'HOSPITALITY',
+  'WHOLESALE',
+  'EVENTS',
+  'AGRICULTURE',
+  'HOME_SERVICES',
+  'DISTRIBUTION',
+] as const satisfies readonly IndustryPackId[];
 
 export interface PackNavItemDef {
   href: string;
