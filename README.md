@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.9.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.10.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -65,7 +65,7 @@
 | صندوق ورودی چندکاناله | آماده | واتساپ، SMS، ایمیل، VoIP، تلگرام، اینستاگرام |
 | KPI تیم و تخصیص مکالمه | آماده | داشبورد `/team`، assignee، round-robin |
 | اتوماسیون رویدادمحور | آماده | پیام ورودی، احساس منفی، تماس ازدست‌رفته |
-| Kanban سرنخ / پورتال مشتری | MVP | `/leads/kanban`، `/portal/[token]` |
+| Kanban سرنخ / پورتال مشتری | آماده | `/leads/kanban` با drag-and-drop، `/portal/[token]` |
 | حذف پوسته دمو | انجام‌شده | مسیرهای demo/reset/scenario از محصول واقعی حذف شدند |
 
 ---
@@ -227,13 +227,20 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.9.1**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with Kanban drag-and-drop), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.10.0**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.9.1**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.10.0**.
+
+### v0.10.0 — کانبان سرنخ با drag-and-drop
+
+- کشیدن و رها کردن کارت سرنخ بین ستون‌های قیف فروش در `/leads/kanban`
+- انتقال خوش‌بینانه + toast فارسی؛ کلیک روی مرحله مقصد به‌عنوان fallback دسترسی‌پذیر باقی ماند
+- ستون «بدون مرحله» هنگام درگ برای رها کردن نمایش داده می‌شود
+- نسخه root / web / mobile / shared روی **0.10.0**
 
 ### v0.9.1 — رفع Core gaps صندوق ورودی
 

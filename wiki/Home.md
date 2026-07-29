@@ -11,7 +11,7 @@
 | مخزن کد | https://github.com/mjpt1/kasbyar |
 | ویکی GitHub | https://github.com/mjpt1/kasbyar/wiki |
 
-**نسخه فعلی:** `0.2.2`
+**نسخه فعلی:** `0.10.0`
 
 ---
 

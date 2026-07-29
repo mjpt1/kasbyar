@@ -27,7 +27,7 @@ export default async function LeadsKanbanPage() {
     <div className="space-y-6">
       <PageHeader
         title={`${LEAD_LABELS.plural} — کانبان`}
-        description="مراحل قیف فروش — برای انتقال روی نام مرحله مقصد کلیک کنید"
+        description="مراحل قیف فروش — کارت را بکشید و رها کنید، یا روی نام مرحله مقصد کلیک کنید"
         actions={
           <Button variant="outline" size="sm" asChild>
             <Link href="/leads">
