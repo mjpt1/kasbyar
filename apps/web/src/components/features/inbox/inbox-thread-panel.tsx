@@ -28,6 +28,7 @@ export function InboxThreadPanel({
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
   const [threadId, setThreadId] = useState<string | null>(null);
   const [assigneeName, setAssigneeName] = useState<string | null>(null);
   const [messages, setMessages] = useState<InboxMessageItem[]>([]);
@@ -57,6 +58,27 @@ export function InboxThreadPanel({
   useEffect(() => {
     void load();
   }, [load]);
+
+  async function suggestReply() {
+    if (!threadId) return;
+    setSuggesting(true);
+    try {
+      const res = await fetch(`/api/inbox/${threadId}/suggest-reply`, { method: 'POST' });
+      const data = await res.json();
+      if (!data.success) {
+        toast.error(data.error?.message ?? 'پیشنهاد پاسخ ناموفق بود');
+        return;
+      }
+      setContent(data.data.draft ?? '');
+      toast.success(
+        data.data.source === 'llm' ? 'پیشنهاد هوشمند آماده شد' : 'پیشنهاد پایه آماده شد',
+      );
+    } catch {
+      toast.error('خطا در دریافت پیشنهاد پاسخ');
+    } finally {
+      setSuggesting(false);
+    }
+  }
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
@@ -206,9 +228,20 @@ export function InboxThreadPanel({
                         : 'پیام واتساپ...'
               }
             />
-            <Button type="submit" disabled={sending || !content.trim()}>
-              {sending ? 'در حال ارسال...' : 'ارسال پیام'}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={suggesting}
+                onClick={() => void suggestReply()}
+              >
+                {suggesting ? 'در حال پیشنهاد...' : 'پیشنهاد پاسخ هوشمند'}
+              </Button>
+              <Button type="submit" disabled={sending || !content.trim()}>
+                {sending ? 'در حال ارسال...' : 'ارسال پیام'}
+              </Button>
+            </div>
           </form>
         ) : (
           <p className="text-xs text-muted-foreground">

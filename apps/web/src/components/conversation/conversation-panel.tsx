@@ -21,18 +21,22 @@ const suggestions = [
 
 type AgentOption = { type: string; name: string };
 type SessionOption = { id: string; title: string; updatedAt: string; messageCount: number };
+type Citation = { source: string; excerpt: string };
+type ChatMessage = ConversationMessage & { citations?: Citation[] };
 
 function createMessage(
   role: ConversationMessage['role'],
   content: string,
   id?: string,
   createdAt?: string,
-): ConversationMessage {
+  citations?: Citation[],
+): ChatMessage {
   return {
     id: id ?? `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     role,
     content,
     createdAt: createdAt ?? new Date().toISOString(),
+    citations,
   };
 }
 
@@ -40,7 +44,7 @@ const GREETING =
   'سلام! من دستیار عملیاتی کسب‌یار هستم. می‌توانید دپارتمان را انتخاب کنید یا بگذارید به‌صورت خودکار مسیر‌یابی شود.';
 
 export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) {
-  const [messages, setMessages] = useState<ConversationMessage[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage('assistant', GREETING),
   ]);
   const [input, setInput] = useState('');
@@ -199,9 +203,7 @@ export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) 
       if (answer.agentType) {
         content = `〔${answer.agentType}〕\n${content}`;
       }
-      if (answer.citations?.length) {
-        content += `\n\nمنابع:\n${answer.citations.map((c) => `• ${c.source}: ${c.excerpt.slice(0, 80)}`).join('\n')}`;
-      }
+      const citationList = answer.citations ?? [];
       if (answer.degraded) {
         content +=
           '\n\n(پاسخ از حالت پشتیبان — سرویس هوشمند موقتاً در دسترس نیست؛ داده از workspace شما استخراج شده است.)';
@@ -216,7 +218,10 @@ export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) 
         })),
       );
 
-      setMessages((prev) => [...prev, createMessage('assistant', content)]);
+      setMessages((prev) => [
+        ...prev,
+        createMessage('assistant', content, undefined, undefined, citationList),
+      ]);
     } catch {
       toast.error('ارتباط با دستیار برقرار نشد. اتصال اینترنت را بررسی کنید.');
     } finally {
@@ -302,16 +307,28 @@ export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) 
           aria-relevant="additions"
         >
           {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`rounded-lg px-3 py-2 text-sm whitespace-pre-line ${
-                m.role === 'user'
-                  ? 'ms-4 bg-primary text-primary-foreground'
-                  : 'me-4 border bg-background'
-              }`}
-            >
-              <span className="sr-only">{m.role === 'user' ? 'شما' : 'دستیار'}: </span>
-              {m.content}
+            <div key={m.id}>
+              <div
+                className={`rounded-lg px-3 py-2 text-sm whitespace-pre-line ${
+                  m.role === 'user'
+                    ? 'ms-4 bg-primary text-primary-foreground'
+                    : 'me-4 border bg-background'
+                }`}
+              >
+                <span className="sr-only">{m.role === 'user' ? 'شما' : 'دستیار'}: </span>
+                {m.content}
+              </div>
+              {m.role === 'assistant' && m.citations && m.citations.length > 0 ? (
+                <div className="me-4 mt-2 space-y-1 rounded-md border border-dashed bg-muted/40 p-2">
+                  <p className="text-xs font-medium text-muted-foreground">منابع حافظه شرکت</p>
+                  {m.citations.map((c, i) => (
+                    <div key={`${m.id}-cite-${i}`} className="text-xs">
+                      <span className="font-medium">{c.source}</span>
+                      <p className="text-muted-foreground line-clamp-2">{c.excerpt}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
           ))}
           {loading ? (
