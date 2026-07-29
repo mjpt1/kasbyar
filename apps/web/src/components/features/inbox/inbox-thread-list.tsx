@@ -93,34 +93,75 @@ export function InboxThreadList({ canAssign = false }: InboxThreadListProps) {
     if (channelFilter !== 'ALL') params.set('channel', channelFilter);
     const streamUrl = `/api/inbox/stream?${params.toString()}`;
 
+    let cancelled = false;
+    let es: EventSource | null = null;
     let pollTimer: number | null = null;
-    const es = new EventSource(streamUrl);
+    let reconnectTimer: number | null = null;
+    let attempt = 0;
 
-    es.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data) as {
-          type?: string;
-          data?: { items?: InboxThreadSummary[] };
-        };
-        if (payload.type === 'threads' && payload.data?.items) {
-          setItems(payload.data.items);
-          setLoading(false);
-        }
-      } catch {
-        // ignore malformed SSE payloads
+    const applyThreads = (payload: {
+      type?: string;
+      data?: { items?: InboxThreadSummary[] };
+    }) => {
+      if (payload.type === 'threads' && payload.data?.items) {
+        setItems(payload.data.items);
+        setLoading(false);
       }
     };
 
-    es.onerror = () => {
-      es.close();
+    const stopPollFallback = () => {
+      if (pollTimer) {
+        window.clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    };
+
+    const startPollFallback = () => {
+      if (pollTimer || cancelled) return;
       pollTimer = window.setInterval(() => {
         void load(true);
       }, POLL_INTERVAL_MS);
     };
 
+    const connect = () => {
+      if (cancelled) return;
+      es?.close();
+      es = new EventSource(streamUrl);
+
+      const onPayload = (event: MessageEvent) => {
+        attempt = 0;
+        stopPollFallback();
+        try {
+          applyThreads(JSON.parse(event.data) as {
+            type?: string;
+            data?: { items?: InboxThreadSummary[] };
+          });
+        } catch {
+          // ignore malformed SSE payloads
+        }
+      };
+
+      es.addEventListener('threads', onPayload);
+      es.onmessage = onPayload;
+
+      es.onerror = () => {
+        es?.close();
+        es = null;
+        startPollFallback();
+        if (cancelled) return;
+        const delay = Math.min(30_000, 1_500 * 2 ** attempt);
+        attempt += 1;
+        reconnectTimer = window.setTimeout(connect, delay);
+      };
+    };
+
+    connect();
+
     return () => {
-      es.close();
-      if (pollTimer) window.clearInterval(pollTimer);
+      cancelled = true;
+      es?.close();
+      stopPollFallback();
+      if (reconnectTimer) window.clearTimeout(reconnectTimer);
     };
   }, [channelFilter, load]);
 

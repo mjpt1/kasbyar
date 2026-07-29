@@ -2,13 +2,15 @@
 
 import type { ConversationMessage } from '@kesbyar/shared';
 import { useEffect, useRef, useState } from 'react';
-import { Bot, Loader2, Send, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Bot, Loader2, Plus, Send, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { AiServiceStatusBadge } from '@/components/ai/ai-service-status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+
+const STORAGE_KEY = 'kesbyar_assistant_session';
 
 const suggestions = [
   'امروز چقدر فروش داشتم؟',
@@ -18,48 +20,105 @@ const suggestions = [
 ];
 
 type AgentOption = { type: string; name: string };
+type SessionOption = { id: string; title: string; updatedAt: string; messageCount: number };
 
 function createMessage(
   role: ConversationMessage['role'],
   content: string,
+  id?: string,
+  createdAt?: string,
 ): ConversationMessage {
   return {
-    id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: id ?? `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     role,
     content,
-    createdAt: new Date().toISOString(),
+    createdAt: createdAt ?? new Date().toISOString(),
   };
 }
 
+const GREETING =
+  'سلام! من دستیار عملیاتی کسب‌یار هستم. می‌توانید دپارتمان را انتخاب کنید یا بگذارید به‌صورت خودکار مسیر‌یابی شود.';
+
 export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) {
   const [messages, setMessages] = useState<ConversationMessage[]>([
-    createMessage(
-      'assistant',
-      'سلام! من دستیار عملیاتی کسب‌یار هستم. می‌توانید دپارتمان را انتخاب کنید یا بگذارید به‌صورت خودکار مسیر‌یابی شود.',
-    ),
+    createMessage('assistant', GREETING),
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | undefined>();
   const [agents, setAgents] = useState<AgentOption[]>([]);
+  const [sessions, setSessions] = useState<SessionOption[]>([]);
   const [agentType, setAgentType] = useState<string>('AUTO');
   const [lastAgentType, setLastAgentType] = useState<string | undefined>();
   const [pendingActions, setPendingActions] = useState<
     Array<{ id: string; title: string; payload: Record<string, unknown> }>
   >([]);
+  const [hydrated, setHydrated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  async function loadSession(id: string) {
+    const res = await fetch(`/api/conversation?sessionId=${encodeURIComponent(id)}`);
+    const data = await res.json();
+    if (!data.success) return false;
+    const history = data.data.messages as ConversationMessage[];
+    setSessionId(id);
+    try {
+      localStorage.setItem(STORAGE_KEY, id);
+    } catch {
+      // ignore
+    }
+    setMessages(
+      history.length > 0
+        ? history
+        : [createMessage('assistant', GREETING)],
+    );
+    return true;
+  }
 
   useEffect(() => {
     void (async () => {
       const res = await fetch('/api/conversation');
       const data = await res.json();
-      if (data.success) setAgents(data.data.agents ?? []);
+      if (data.success) {
+        setAgents(data.data.agents ?? []);
+        setSessions(data.data.sessions ?? []);
+      }
+
+      let stored: string | null = null;
+      try {
+        stored = localStorage.getItem(STORAGE_KEY);
+      } catch {
+        stored = null;
+      }
+
+      if (stored) {
+        const ok = await loadSession(stored);
+        if (!ok) {
+          try {
+            localStorage.removeItem(STORAGE_KEY);
+          } catch {
+            // ignore
+          }
+        }
+      }
+      setHydrated(true);
     })();
   }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, loading]);
+
+  function startNewChat() {
+    setSessionId(undefined);
+    setMessages([createMessage('assistant', GREETING)]);
+    setPendingActions([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  }
 
   async function sendFeedback(helpful: boolean) {
     await fetch('/api/platform', {
@@ -114,7 +173,26 @@ export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) 
         degraded?: boolean;
       };
 
-      if (answer.sessionId) setSessionId(answer.sessionId);
+      if (answer.sessionId) {
+        setSessionId(answer.sessionId);
+        try {
+          localStorage.setItem(STORAGE_KEY, answer.sessionId);
+        } catch {
+          // ignore
+        }
+        setSessions((prev) => {
+          if (prev.some((s) => s.id === answer.sessionId)) return prev;
+          return [
+            {
+              id: answer.sessionId!,
+              title: question.trim().slice(0, 40),
+              updatedAt: new Date().toISOString(),
+              messageCount: 2,
+            },
+            ...prev,
+          ];
+        });
+      }
       if (answer.agentType) setLastAgentType(answer.agentType);
 
       let content = answer.answer;
@@ -155,9 +233,9 @@ export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) 
           <AiServiceStatusBadge />
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          پاسخ‌ها بر اساس داده واقعی workspace شما — دپارتمان را انتخاب کنید یا خودکار بگذارید.
+          پاسخ‌ها بر اساس داده واقعی workspace شما — تاریخچه گفتگو ذخیره می‌شود.
         </p>
-        <div className="pt-2">
+        <div className="flex flex-wrap items-center gap-2 pt-2">
           <select
             className="border-input bg-background h-9 w-full max-w-xs rounded-md border px-3 text-sm"
             value={agentType}
@@ -171,6 +249,32 @@ export function ConversationPanel({ fullPage = false }: { fullPage?: boolean }) 
               </option>
             ))}
           </select>
+          {hydrated && sessions.length > 0 ? (
+            <select
+              className="border-input bg-background h-9 w-full max-w-xs rounded-md border px-3 text-sm"
+              value={sessionId ?? ''}
+              onChange={(e) => {
+                const id = e.target.value;
+                if (!id) {
+                  startNewChat();
+                  return;
+                }
+                void loadSession(id);
+              }}
+              aria-label="گفتگوهای قبلی"
+            >
+              <option value="">گفتگوی جاری / جدید</option>
+              {sessions.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.title} ({s.messageCount})
+                </option>
+              ))}
+            </select>
+          ) : null}
+          <Button type="button" size="sm" variant="outline" onClick={startNewChat}>
+            <Plus className="size-3.5" aria-hidden />
+            گفتگوی جدید
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { InvoicesCreateForm } from '@/components/features/invoices/invoices-create-form';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
+import { ExportCsvButton } from '@/components/shared/export-csv-button';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { ListPagination } from '@/components/shared/list-pagination';
 import { ListSearch } from '@/components/shared/list-search';
@@ -50,7 +51,11 @@ export default async function InvoicesPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader title="فاکتورها" description={`${total} فاکتور`} />
+      <PageHeader
+        title="فاکتورها"
+        description={`${total} فاکتور`}
+        actions={<ExportCsvButton entity="invoices" label="خروجی CSV فاکتورها" />}
+      />
 
       <Suspense fallback={<LoadingState label="در حال آماده‌سازی جستجو…" className="py-4" />}>
         <ListSearch placeholder="جستجو بر اساس شماره یا نام مشتری..." />

@@ -64,3 +64,56 @@ export const MOADIAN_STATUS_LABELS: Record<string, string> = {
   ACCEPTED: 'پذیرفته‌شده',
   REJECTED: 'ردشده',
 };
+
+/** Escapes text for XML attribute/text nodes. */
+function xmlEscape(value: string | number | undefined | null): string {
+  if (value == null) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
+ * Offline XML export for intermediary / TPS software.
+ * Direct Tax API signing still requires fiscal memory certificate (operator-only).
+ */
+export function buildMoadianXml(payload: MoadianPayload): string {
+  const h = payload.header;
+  const lines = payload.body
+    .map(
+      (line) => `    <BodyLine>
+      <sstid>${xmlEscape(line.sstid)}</sstid>
+      <sstt>${xmlEscape(line.sstt)}</sstt>
+      <am>${xmlEscape(line.am)}</am>
+      <fee>${xmlEscape(line.fee)}</fee>
+      <prdis>${xmlEscape(line.prdis)}</prdis>
+      <dis>${xmlEscape(line.dis)}</dis>
+      <adis>${xmlEscape(line.adis)}</adis>
+      <vra>${xmlEscape(line.vra)}</vra>
+      <vam>${xmlEscape(line.vam)}</vam>
+      <tsstam>${xmlEscape(line.tsstam)}</tsstam>
+    </BodyLine>`,
+    )
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<MoadianInvoice>
+  <Header>
+    <indatim>${xmlEscape(h.indatim)}</indatim>
+    <inty>${xmlEscape(h.inty)}</inty>
+    <inp>${xmlEscape(h.inp)}</inp>
+    <inso>${xmlEscape(h.inso)}</inso>
+    <tins>${xmlEscape(h.tins)}</tins>
+    <setm>${xmlEscape(h.setm)}</setm>
+    ${h.tinb ? `<tinb>${xmlEscape(h.tinb)}</tinb>` : ''}
+    ${h.taxid ? `<taxid>${xmlEscape(h.taxid)}</taxid>` : ''}
+  </Header>
+  <Body>
+${lines}
+  </Body>
+</MoadianInvoice>
+`;
+}

@@ -1,6 +1,6 @@
 /** Edge-safe cookie option helpers (no Node-only imports). */
 
-import { SESSION_DAYS, ORG_COOKIE, SESSION_COOKIE } from './constants';
+import { SESSION_DAYS, ORG_COOKIE, SESSION_COOKIE, PORTAL_COOKIE } from './constants';
 
 export function secureCookiesEnabled(): boolean {
   if (process.env.VERCEL === '1') return true;
@@ -60,6 +60,28 @@ export function clearAuthCookiesOnResponse(response: {
   }
 }
 
+export function portalCookieOptions(expires: Date) {
+  return sessionCookieOptions(expires);
+}
+
+export function applyPortalCookie(
+  response: {
+    cookies: { set: (name: string, value: string, options: object) => void };
+  },
+  token: string,
+  expiresAt: Date,
+) {
+  response.cookies.set(PORTAL_COOKIE, token, portalCookieOptions(expiresAt));
+}
+
+export function clearPortalCookieOnResponse(response: {
+  cookies: { set: (name: string, value: string, options: object) => void };
+}) {
+  for (const secure of [true, false]) {
+    response.cookies.set(PORTAL_COOKIE, '', clearedAuthCookieOptions(secure));
+  }
+}
+
 export function applyAuthCookies(
   response: {
     cookies: { set: (name: string, value: string, options: object) => void };
@@ -74,4 +96,4 @@ export function applyAuthCookies(
   }
 }
 
-export { SESSION_COOKIE, ORG_COOKIE, SESSION_DAYS };
+export { SESSION_COOKIE, ORG_COOKIE, PORTAL_COOKIE, SESSION_DAYS };

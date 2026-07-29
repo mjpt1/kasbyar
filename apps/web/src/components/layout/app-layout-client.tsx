@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 
 interface AppLayoutClientProps {
   organizationName: string;
+  organizationId?: string;
   userName: string;
   industryPack: string;
   industrySpecialty?: string | null;
@@ -22,6 +23,7 @@ interface AppLayoutClientProps {
 
 export function AppLayoutClient({
   organizationName,
+  organizationId,
   userName,
   industryPack,
   industrySpecialty = null,
@@ -38,6 +40,7 @@ export function AppLayoutClient({
       <aside className="hidden h-full w-64 shrink-0 flex-col overflow-hidden border-e bg-card md:flex">
         <SidebarNav
           organizationName={organizationName}
+          organizationId={organizationId}
           userName={userName}
           industryPack={industryPack}
           industrySpecialty={industrySpecialty}
@@ -71,6 +74,7 @@ export function AppLayoutClient({
             <div className="min-h-0 flex-1 overflow-hidden">
               <SidebarNav
                 organizationName={organizationName}
+                organizationId={organizationId}
                 userName={userName}
                 industryPack={industryPack}
                 industrySpecialty={industrySpecialty}

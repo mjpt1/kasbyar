@@ -29,6 +29,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-[100dvh] flex-col overflow-hidden">
       <AppLayoutClient
         organizationName={session.organizationName}
+        organizationId={session.organizationId}
         userName={session.user.name}
         industryPack={session.industryPack}
         industrySpecialty={session.industrySpecialty}

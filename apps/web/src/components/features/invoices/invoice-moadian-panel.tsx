@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { MOADIAN_STATUS_LABELS } from '@kesbyar/shared';
+import { MOADIAN_STATUS_LABELS, buildMoadianXml } from '@kesbyar/shared';
 import { CheckCircle2, CircleAlert, Download, FileCheck2, Loader2, Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -65,8 +65,9 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
     }
   }
 
-  async function downloadExport() {
+  async function downloadExport(format: 'json' | 'xml' = 'json') {
     let json = payloadJson;
+    let payload: unknown = null;
     if (!json) {
       setLoading('prepare');
       try {
@@ -80,6 +81,8 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
         setItems(data.data.readiness.items);
         setReady(data.data.readiness.ready);
         setModeLabel(data.data.modeLabelFa);
+        setMode(data.data.mode ?? 'export');
+        payload = data.data.payload;
         json = JSON.stringify(data.data.payload, null, 2);
         setPayloadJson(json);
         router.refresh();
@@ -89,7 +92,28 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
       } finally {
         setLoading(null);
       }
+    } else {
+      try {
+        payload = JSON.parse(json);
+      } catch {
+        payload = {};
+      }
     }
+
+    if (format === 'xml') {
+      const xml = buildMoadianXml(
+        (payload ?? {}) as Parameters<typeof buildMoadianXml>[0],
+      );
+      const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `moadian-${invoiceId}.xml`;
+      a.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
+
     const blob = new Blob([json || '{}'], { type: 'application/json;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -190,12 +214,40 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
                 variant="outline"
                 className="min-h-9"
                 disabled={busy}
-                onClick={downloadExport}
+                onClick={() => void downloadExport('json')}
               >
                 <Download className="size-4" aria-hidden />
                 دانلود JSON
               </Button>
-              {mode === 'intermediary' ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="min-h-9"
+                disabled={busy}
+                onClick={() => void downloadExport('xml')}
+              >
+                <Download className="size-4" aria-hidden />
+                دانلود XML
+              </Button>
+              {(moadianStatus === 'REJECTED' || moadianStatus === 'READY') && mode === 'intermediary' ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  className="min-h-9"
+                  disabled={busy || !ready}
+                  onClick={sendToIntermediary}
+                  aria-busy={loading === 'intermediary'}
+                  title={!ready ? 'ابتدا موارد ناقص چک‌لیست را تکمیل کنید' : undefined}
+                >
+                  {loading === 'intermediary' ? (
+                    <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
+                  ) : (
+                    <Upload className="size-4" aria-hidden />
+                  )}
+                  {moadianStatus === 'REJECTED' ? 'تلاش مجدد ارسال' : 'ارسال به واسط مؤدیان'}
+                </Button>
+              ) : mode === 'intermediary' ? (
                 <Button
                   type="button"
                   size="sm"

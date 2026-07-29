@@ -11,6 +11,7 @@ Next.js dev همچنین به `apps/web/.env.local` نیاز دارد.
 | `NODE_ENV` | خیر | `development` | Next.js | fallback برای `APP_ENV` |
 | `DATABASE_URL` | **بله** | — | Prisma, scripts | PostgreSQL connection string |
 | `SESSION_SECRET` | prod: **بله** | dev fallback | auth | ≥۱۶ کاراکتر؛ کوکی session |
+| `CRON_SECRET` | prod برای cron | — | `/api/cron/automation` | Bearer یا هدر `x-cron-secret` |
 
 ## وب (Next.js)
 

@@ -149,6 +149,9 @@ async function executeRule(
           title: `پیگیری لید: ${lead.title}`,
           description: rule.description ?? `لید بدون پیگیری — ${rule.name}`,
           userId,
+          leadId: lead.id,
+          customerId: lead.customerId ?? undefined,
+          customerPhone: lead.contactPhone,
         });
         if (done) {
           affected += 1;
@@ -416,6 +419,72 @@ async function applyAction(
             organizationId,
             message: error instanceof Error ? error.message : String(error),
             context: 'automation_invoice_due_sms',
+          });
+        }
+      }
+
+      // Resolve customer phone when not provided (event automations)
+      let phone = payload.customerPhone ?? null;
+      if (!phone && payload.customerId) {
+        const customer = await prisma.customer.findFirst({
+          where: { id: payload.customerId, organizationId },
+          select: { phone: true },
+        });
+        phone = customer?.phone ?? null;
+      }
+
+      const body = [payload.title, payload.description].filter(Boolean).join('\n').slice(0, 900);
+
+      if (phone) {
+        try {
+          const { sendNotification } = await import('@/server/notifications/notification.adapter');
+          const { isValidIranianMobile, normalizeIranianMobile } = await import(
+            '@/lib/validators/iranian'
+          );
+          const normalized = normalizeIranianMobile(phone);
+          if (isValidIranianMobile(normalized)) {
+            await sendNotification({
+              organizationId,
+              channel: 'sms',
+              recipient: normalized,
+              body,
+              tags: { kind: 'automation_reminder' },
+            });
+          }
+        } catch (error) {
+          logger.warn(APP_LOG_EVENTS.INTEGRATION_PROVIDER_FAILED, {
+            organizationId,
+            message: error instanceof Error ? error.message : String(error),
+            context: 'automation_reminder_sms',
+          });
+        }
+
+        try {
+          const { resolveWhatsAppCredentials } = await import(
+            '@/server/integrations/org-credentials.service'
+          );
+          const { sendWhatsAppText } = await import(
+            '@/server/messaging/providers/whatsapp-cloud'
+          );
+          const creds = await resolveWhatsAppCredentials(organizationId);
+          if (creds.phoneNumberId && creds.accessToken) {
+            const digits = phone.replace(/\D/g, '');
+            const waTo = digits.startsWith('98')
+              ? digits
+              : digits.startsWith('0')
+                ? `98${digits.slice(1)}`
+                : digits;
+            await sendWhatsAppText(
+              { phoneNumberId: creds.phoneNumberId, accessToken: creds.accessToken },
+              waTo,
+              body,
+            );
+          }
+        } catch (error) {
+          logger.warn(APP_LOG_EVENTS.INTEGRATION_PROVIDER_FAILED, {
+            organizationId,
+            message: error instanceof Error ? error.message : String(error),
+            context: 'automation_reminder_whatsapp',
           });
         }
       }

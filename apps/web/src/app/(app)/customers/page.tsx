@@ -5,6 +5,7 @@ import { CustomersCreateForm } from '@/components/features/customers/customers-c
 import { CustomersTable } from '@/components/features/customers/customers-table';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
+import { ExportCsvButton } from '@/components/shared/export-csv-button';
 import { ListPagination } from '@/components/shared/list-pagination';
 import { ListSearch } from '@/components/shared/list-search';
 import { LoadingState } from '@/components/shared/loading-state';
@@ -39,7 +40,11 @@ export default async function CustomersPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader title="مشتریان" description={`${total} مشتری ثبت‌شده`} />
+      <PageHeader
+        title="مشتریان"
+        description={`${total} مشتری ثبت‌شده`}
+        actions={<ExportCsvButton entity="customers" label="خروجی CSV مشتریان" />}
+      />
       <Suspense fallback={<LoadingState label="در حال آماده‌سازی جستجو…" className="py-4" />}>
         <ListSearch placeholder="جستجو بر اساس نام، تلفن یا ایمیل..." />
       </Suspense>

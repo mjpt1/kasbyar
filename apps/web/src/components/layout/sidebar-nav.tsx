@@ -6,10 +6,12 @@ import { Settings } from 'lucide-react';
 
 import { AUTH_NAV, getNavItems } from '@/config/navigation';
 import { LogoutButton } from '@/components/layout/logout-button';
+import { OrgSwitcher } from '@/components/layout/org-switcher';
 import { cn } from '@/lib/utils';
 
 interface SidebarNavProps {
   organizationName: string;
+  organizationId?: string;
   userName: string;
   industryPack: string;
   industrySpecialty?: string | null;
@@ -22,6 +24,7 @@ interface SidebarNavProps {
 
 export function SidebarNav({
   organizationName,
+  organizationId,
   userName,
   industryPack,
   industrySpecialty = null,
@@ -45,9 +48,13 @@ export function SidebarNav({
             height={36}
             className="h-9 w-9 shrink-0 rounded-[10px]"
           />
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="text-lg font-bold text-primary">کسب‌یار</div>
-            <div className="truncate text-sm text-muted-foreground">{organizationName}</div>
+            <OrgSwitcher
+              currentOrganizationId={organizationId}
+              currentOrganizationName={organizationName}
+              className="mt-0.5"
+            />
           </div>
         </div>
       </div>

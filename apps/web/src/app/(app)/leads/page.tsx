@@ -8,6 +8,7 @@ import { LeadsTable } from '@/components/features/leads/leads-table';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/shared/empty-state';
+import { ExportCsvButton } from '@/components/shared/export-csv-button';
 import { ListPagination } from '@/components/shared/list-pagination';
 import { ListSearch } from '@/components/shared/list-search';
 import { LoadingState } from '@/components/shared/loading-state';
@@ -50,12 +51,15 @@ export default async function LeadsPage({
         title={LEAD_LABELS.plural}
         description={`${total} ${LEAD_LABELS.singular} در ${LEAD_LABELS.pipeline}`}
         actions={
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/leads/kanban">
-              <Columns3 className="size-4" aria-hidden />
-              کانبان
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <ExportCsvButton entity="leads" label="خروجی CSV سرنخ‌ها" />
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/leads/kanban">
+                <Columns3 className="size-4" aria-hidden />
+                کانبان
+              </Link>
+            </Button>
+          </div>
         }
       />
       <Suspense fallback={<LoadingState label="در حال آماده‌سازی جستجو…" className="py-4" />}>

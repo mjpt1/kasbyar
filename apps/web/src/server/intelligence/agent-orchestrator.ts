@@ -185,3 +185,52 @@ export async function runAgentOrchestrator(params: {
     degraded,
   };
 }
+
+export async function listConversationSessions(organizationId: string, userId: string) {
+  return prisma.conversationSession.findMany({
+    where: { organizationId, userId },
+    orderBy: { updatedAt: 'desc' },
+    take: 20,
+    select: {
+      id: true,
+      title: true,
+      updatedAt: true,
+      createdAt: true,
+      _count: { select: { messages: true } },
+    },
+  });
+}
+
+export async function getConversationSessionMessages(
+  organizationId: string,
+  userId: string,
+  sessionId: string,
+) {
+  const session = await prisma.conversationSession.findFirst({
+    where: { id: sessionId, organizationId, userId },
+    select: { id: true, title: true },
+  });
+  if (!session) return null;
+
+  const messages = await prisma.conversationMessage.findMany({
+    where: { sessionId },
+    orderBy: { createdAt: 'asc' },
+    take: 200,
+    select: {
+      id: true,
+      role: true,
+      content: true,
+      createdAt: true,
+    },
+  });
+
+  return {
+    session,
+    messages: messages.map((m) => ({
+      id: m.id,
+      role: m.role === 'USER' ? ('user' as const) : ('assistant' as const),
+      content: m.content,
+      createdAt: m.createdAt.toISOString(),
+    })),
+  };
+}

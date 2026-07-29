@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.11.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.12.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -65,7 +65,8 @@
 | صندوق ورودی چندکاناله | آماده | واتساپ، SMS، ایمیل، VoIP، تلگرام، اینستاگرام |
 | KPI تیم و تخصیص مکالمه | آماده | داشبورد `/team`، assignee، round-robin |
 | اتوماسیون رویدادمحور | آماده | پیام ورودی، احساس منفی، تماس ازدست‌رفته |
-| Kanban سرنخ / پورتال مشتری | آماده | `/leads/kanban` با DnD؛ پورتال `/portal/[token]` با فاکتور، سرنخ، وظیفه |
+| Kanban سرنخ / پورتال مشتری | آماده | `/leads/kanban` با `@dnd-kit`؛ پورتال نشست‌دار `/portal` + لینک جادویی |
+| خروجی CSV | آماده | مشتریان، سرنخ‌ها، فاکتورها — هدر فارسی و تاریخ جلالی |
 | اپ موبایل — صندوق پیام | آماده | لیست + جزئیات مکالمه + پاسخ omnichannel |
 | حذف پوسته دمو | انجام‌شده | مسیرهای demo/reset/scenario از محصول واقعی حذف شدند |
 
@@ -228,13 +229,27 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with Kanban drag-and-drop), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.11.0**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.12.0**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.11.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.12.0**.
+
+### v0.12.0 — پورتال نشست‌دار، کانبان پیشرفته، SSE، CSV، اتوماسیون پیام
+
+- **پورتال مشتری:** کوکی `kesbyar_portal` پس از claim توکن؛ `/portal/login` لینک جادویی؛ خروج از نشست
+- **کانبان:** `@dnd-kit` با Pointer/Touch/Keyboard + DragOverlay
+- **Inbox SSE:** heartbeat، `retry:`، reconnect نمایی، poll داخلی ۸ثانیه (WebSocket روی serverless deferred)
+- **خروجی CSV** برای مشتریان / سرنخ‌ها / فاکتورها (`/api/export/[entity]`)
+- **مؤدیان:** دانلود XML + تلاش مجدد ارسال به واسط
+- **اتوماسیون:** `SEND_REMINDER` → SMS (Kavenegar) و WhatsApp در صورت پیکربندی
+- **احساس مشتری:** واژگان فارسی گسترده‌تر (+ LLM اختیاری)
+- **دستیار:** بازیابی تاریخچه از DB + لیست گفتگوها
+- **فضای کاری:** سوئیچر در سایدبار بدون logout کامل
+- مستندات: `.env.example`، `CRON_SECRET`، `docs/META_APP_REVIEW_CHECKLIST.md`، ویکی محدودیت‌ها
+- نسخه root / web / mobile / shared روی **0.12.0**
 
 ### v0.11.0 — پاسخ صندوق موبایل + پورتال مشتری غنی‌تر
 
