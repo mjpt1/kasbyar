@@ -136,6 +136,18 @@ export default async function LeadDetailPage({
             channel="phone"
             readOnly
           />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/lead/${lead.id}/telegram`}
+            title="تلگرام سرنخ"
+            channel="telegram"
+            emptyHint="هنوز مکالمه تلگرامی با این سرنخ ثبت نشده."
+          />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/lead/${lead.id}/instagram`}
+            title="اینستاگرام سرنخ"
+            channel="instagram"
+            emptyHint="هنوز DM اینستاگرامی با این سرنخ ثبت نشده."
+          />
           <LeadsFollowUpForm leadId={lead.id} />
 
           <Card>

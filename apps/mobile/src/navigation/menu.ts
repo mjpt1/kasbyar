@@ -30,6 +30,7 @@ const CORE_ITEMS: MobileMenuItem[] = [
   { id: 'automation', label: 'اتوماسیون', href: '/automation', section: 'هوشمند', icon: 'git-network' },
   { id: 'help', label: 'راهنما', href: '/help', section: 'هوشمند', icon: 'book' },
   { id: 'chat', label: 'گفتگوی تیم', href: '/chat', section: 'همکاری', icon: 'chatbubbles' },
+  { id: 'inbox', label: 'صندوق پیام', href: '/inbox', section: 'همکاری', icon: 'mail' },
   { id: 'support', label: 'پشتیبانی', href: '/support', section: 'همکاری', icon: 'life-buoy' },
   { id: 'customers', label: 'مشتریان', href: '/customers', icon: 'people' },
   { id: 'leads', label: LEAD_LABELS.plural, href: '/leads', icon: 'flag' },
@@ -51,6 +52,7 @@ export function webPathToMobileRoute(href: string): string {
   const root = href.replace(/^\//, '').split('/')[0] ?? '';
   const dedicated = new Set([
     'chat',
+    'inbox',
     'support',
     'leads',
     'customers',
@@ -134,6 +136,7 @@ export function featureApiPath(webPath: string): string {
     '/settings': '/api/settings',
     '/notifications': '/api/notifications',
     '/chat': '/api/chat/conversations',
+    '/inbox': '/api/inbox',
     '/support': '/api/support/tickets',
     '/platform': '/api/platform',
     '/org-modules': '/api/org-modules',

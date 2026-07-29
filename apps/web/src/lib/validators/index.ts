@@ -325,6 +325,8 @@ export const orgIntegrationsUpdateSchema = z
         pageId: z.string().max(64, 'شناسه صفحه خیلی بلند است').optional().nullable(),
         accessToken: z.string().max(512, 'توکن اینستاگرام خیلی بلند است').optional().nullable(),
         clearAccessToken: z.boolean().optional(),
+        appSecret: z.string().max(256, 'App Secret خیلی بلند است').optional().nullable(),
+        clearAppSecret: z.boolean().optional(),
       })
       .optional(),
   })

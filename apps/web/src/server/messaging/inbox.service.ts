@@ -567,7 +567,11 @@ export async function listInboxThreads(
       assigneeName: row.assignee?.name ?? null,
       lastMessageAt: (row.lastMessageAt ?? last?.sentAt)?.toISOString() ?? null,
       lastMessagePreview: last?.content?.slice(0, 120) ?? null,
-      unreadCount: last?.direction === 'INBOUND' ? 1 : 0,
+      unreadCount:
+        last?.direction === 'INBOUND' &&
+        (!row.lastReadAt || (last.sentAt && last.sentAt > row.lastReadAt))
+          ? 1
+          : 0,
     };
   });
 
@@ -587,6 +591,11 @@ export async function listThreadMessages(
 
   const page = params.page ?? 1;
   const pageSize = Math.min(params.pageSize ?? 50, 100);
+
+  await prisma.messageThread.updateMany({
+    where: { id: threadId, organizationId },
+    data: { lastReadAt: new Date() },
+  });
 
   const [items, total] = await Promise.all([
     prisma.message.findMany({
@@ -697,6 +706,71 @@ export async function getLeadEmailThread(organizationId: string, leadId: string)
     subject: lead.title,
   });
   return listThreadMessages(organizationId, thread.id, { pageSize: 100 });
+}
+
+async function getLinkedChannelThread(
+  organizationId: string,
+  channel: 'TELEGRAM' | 'INSTAGRAM',
+  links: { customerId?: string; leadId?: string },
+) {
+  if (!links.customerId && !links.leadId) return null;
+
+  const thread = await prisma.messageThread.findFirst({
+    where: {
+      organizationId,
+      channel,
+      ...(links.customerId ? { customerId: links.customerId } : { leadId: links.leadId! }),
+    },
+    orderBy: [{ lastMessageAt: 'desc' }, { updatedAt: 'desc' }],
+  });
+
+  if (!thread) {
+    return {
+      thread: null,
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: 100,
+    };
+  }
+
+  return listThreadMessages(organizationId, thread.id, { pageSize: 100 });
+}
+
+export async function getCustomerTelegramThread(organizationId: string, customerId: string) {
+  const customer = await prisma.customer.findFirst({
+    where: { id: customerId, organizationId, deletedAt: null },
+    select: { id: true },
+  });
+  if (!customer) return null;
+  return getLinkedChannelThread(organizationId, 'TELEGRAM', { customerId });
+}
+
+export async function getCustomerInstagramThread(organizationId: string, customerId: string) {
+  const customer = await prisma.customer.findFirst({
+    where: { id: customerId, organizationId, deletedAt: null },
+    select: { id: true },
+  });
+  if (!customer) return null;
+  return getLinkedChannelThread(organizationId, 'INSTAGRAM', { customerId });
+}
+
+export async function getLeadTelegramThread(organizationId: string, leadId: string) {
+  const lead = await prisma.lead.findFirst({
+    where: { id: leadId, organizationId },
+    select: { id: true },
+  });
+  if (!lead) return null;
+  return getLinkedChannelThread(organizationId, 'TELEGRAM', { leadId });
+}
+
+export async function getLeadInstagramThread(organizationId: string, leadId: string) {
+  const lead = await prisma.lead.findFirst({
+    where: { id: leadId, organizationId },
+    select: { id: true },
+  });
+  if (!lead) return null;
+  return getLinkedChannelThread(organizationId, 'INSTAGRAM', { leadId });
 }
 
 export async function sendThreadMessage(

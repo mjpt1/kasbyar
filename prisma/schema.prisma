@@ -1815,6 +1815,8 @@ model MessageThread {
   /// آدرس ایمیل طرف مکالمه
   externalEmail  String?
   lastMessageAt  DateTime?
+  /// آخرین زمان «خوانده‌شده» توسط تیم (برای badge خوانده‌نشده)
+  lastReadAt     DateTime?
   assigneeId     String?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt

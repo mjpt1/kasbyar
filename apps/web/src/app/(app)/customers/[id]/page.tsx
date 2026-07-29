@@ -128,6 +128,18 @@ export default async function CustomerDetailPage({
             channel="phone"
             readOnly
           />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/customer/${customer.id}/telegram`}
+            title="تلگرام مشتری"
+            channel="telegram"
+            emptyHint="هنوز مکالمه تلگرامی با این مشتری ثبت نشده. پس از اولین پیام ورودی، thread اینجا نمایش داده می‌شود."
+          />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/customer/${customer.id}/instagram`}
+            title="اینستاگرام مشتری"
+            channel="instagram"
+            emptyHint="هنوز DM اینستاگرامی با این مشتری ثبت نشده. پس از اولین پیام ورودی، thread اینجا نمایش داده می‌شود."
+          />
 
           <Card>
             <CardHeader>

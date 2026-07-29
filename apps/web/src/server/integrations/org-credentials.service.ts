@@ -993,6 +993,18 @@ export async function updateOrgIntegrations(
       next.accessTokenLast4 = secretLast4(plain) ?? undefined;
     }
 
+    if (input.instagram.clearAppSecret) {
+      delete next.appSecretEnc;
+      delete next.appSecretLast4;
+    } else if (
+      typeof input.instagram.appSecret === 'string' &&
+      input.instagram.appSecret.trim()
+    ) {
+      const plain = input.instagram.appSecret.trim();
+      next.appSecretEnc = encryptSecret(plain);
+      next.appSecretLast4 = secretLast4(plain) ?? undefined;
+    }
+
     await upsertIntegration(
       organizationId,
       ORG_INTEGRATION.INSTAGRAM,

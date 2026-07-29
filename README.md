@@ -227,13 +227,23 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.9.0**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.9.1**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.9.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.9.1**.
+
+### v0.9.1 — رفع Core gaps صندوق ورودی
+
+- ذخیره **Instagram App Secret** per-org در تنظیمات + UI
+- پنل تلگرام/اینستاگرام روی صفحات مشتری و سرنخ + APIهای thread
+- **SSE** در UI لیست inbox (با fallback polling) + فیلتر کانال روی stream
+- **lastReadAt** روی thread — badge خوانده‌نشده پس از باز کردن مکالمه پاک می‌شود
+- کلیک روی thread در `/inbox` → پنل پاسخ inline
+- **اپ موبایل:** صفحه read-only `/inbox` در منوی «بیشتر»
+- `.env.example` به‌روز برای Instagram Graph API
 
 ### v0.9.0 — تکمیل production صندوق ورودی
 

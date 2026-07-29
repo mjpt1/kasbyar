@@ -15,6 +15,7 @@ type InboxThreadPanelProps = {
   title?: string;
   channel?: 'whatsapp' | 'sms' | 'email' | 'phone' | 'telegram' | 'instagram';
   readOnly?: boolean;
+  emptyHint?: string;
 };
 
 export function InboxThreadPanel({
@@ -22,6 +23,7 @@ export function InboxThreadPanel({
   title = 'مکالمه',
   channel = 'whatsapp',
   readOnly = false,
+  emptyHint,
 }: InboxThreadPanelProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -42,8 +44,8 @@ export function InboxThreadPanel({
         setMessages([]);
         return;
       }
-      setThreadId(data.data.thread.id);
-      setAssigneeName(data.data.thread.assignee?.name ?? null);
+      setThreadId(data.data.thread?.id ?? null);
+      setAssigneeName(data.data.thread?.assignee?.name ?? null);
       setMessages(data.data.items ?? []);
     } catch {
       toast.error('بارگذاری مکالمه ناموفق بود');
@@ -111,7 +113,8 @@ export function InboxThreadPanel({
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            شماره موبایل/ایمیل معتبر ثبت نشده یا اتصال کانال پیکربندی نشده است.
+            {emptyHint ??
+              'شماره موبایل/ایمیل معتبر ثبت نشده یا اتصال کانال پیکربندی نشده است.'}
           </p>
         </CardContent>
       </Card>

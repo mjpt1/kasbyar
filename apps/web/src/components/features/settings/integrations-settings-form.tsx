@@ -83,6 +83,7 @@ type IntegrationsView = {
   instagram: {
     pageId: string | null;
     accessTokenMasked: string | null;
+    appSecretMasked: string | null;
     configured: boolean;
     webhookUrl: string;
     status: 'active' | 'needs_setup' | 'preview';
@@ -161,6 +162,8 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
   const [instagramPageId, setInstagramPageId] = useState('');
   const [instagramToken, setInstagramToken] = useState('');
   const [changeInstagramToken, setChangeInstagramToken] = useState(false);
+  const [instagramAppSecret, setInstagramAppSecret] = useState('');
+  const [changeInstagramAppSecret, setChangeInstagramAppSecret] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -190,6 +193,7 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
       setChangeTelegramToken(!v.telegram.botTokenMasked);
       setInstagramPageId(v.instagram.pageId ?? '');
       setChangeInstagramToken(!v.instagram.accessTokenMasked);
+      setChangeInstagramAppSecret(!v.instagram.appSecretMasked);
       setZarinpalId('');
       setIdpayKey('');
       setSmsKey('');
@@ -199,6 +203,7 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
       setVoipWebhookSecret('');
       setTelegramToken('');
       setInstagramToken('');
+      setInstagramAppSecret('');
     } catch {
       toast.error('اتصال برقرار نشد. دوباره تلاش کنید.');
     } finally {
@@ -266,6 +271,9 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
           ...(changeInstagramToken && instagramToken.trim()
             ? { accessToken: instagramToken.trim() }
             : {}),
+          ...(changeInstagramAppSecret && instagramAppSecret.trim()
+            ? { appSecret: instagramAppSecret.trim() }
+            : {}),
         },
       };
 
@@ -291,6 +299,7 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
       setChangeVoipSecret(false);
       setChangeTelegramToken(false);
       setChangeInstagramToken(false);
+      setChangeInstagramAppSecret(false);
       setZarinpalId('');
       setIdpayKey('');
       setSmsKey('');
@@ -300,6 +309,7 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
       setVoipWebhookSecret('');
       setTelegramToken('');
       setInstagramToken('');
+      setInstagramAppSecret('');
     } catch {
       toast.error('اتصال برقرار نشد. دوباره تلاش کنید.');
     } finally {
@@ -770,7 +780,7 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
             </CardTitle>
             <CardDescription className="ms-10">
               {view?.instagram.noticeFa ??
-                'پشتیبانی کامل DM اینستاگرام در حال توسعه — فعلاً webhook stub.'}
+                'دریافت/ارسال DM با Graph API — برای production نیاز به Meta App Review است.'}
             </CardDescription>
           </div>
           {view ? (
@@ -810,9 +820,28 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
               />
             )}
           </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="instagram-app-secret">App Secret (امضای webhook)</Label>
+            {view?.instagram.appSecretMasked && !changeInstagramAppSecret ? (
+              <MaskedSecretRow
+                masked={view.instagram.appSecretMasked}
+                onChange={() => setChangeInstagramAppSecret(true)}
+              />
+            ) : (
+              <Input
+                id="instagram-app-secret"
+                type="password"
+                autoComplete="off"
+                dir="ltr"
+                className="text-start"
+                value={instagramAppSecret}
+                onChange={(e) => setInstagramAppSecret(e.target.value)}
+              />
+            )}
+          </div>
           {view?.instagram.webhookUrl ? (
             <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
-              Webhook اینستاگرام (پیش‌نمایش):{' '}
+              Webhook اینستاگرام:{' '}
               <span dir="ltr" className="font-mono break-all">
                 {view.instagram.webhookUrl}
               </span>

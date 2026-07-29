@@ -1,7 +1,18 @@
+import type { InboxChannel } from '@kesbyar/shared';
+import type { MessageChannel } from '@prisma/client';
 import { isApiError, requireApiSession } from '@/lib/api-auth';
 import { listInboxThreads } from '@/server/messaging/inbox.service';
 
 export const dynamic = 'force-dynamic';
+
+const INBOX_CHANNELS: InboxChannel[] = [
+  'WHATSAPP',
+  'SMS',
+  'EMAIL',
+  'PHONE',
+  'TELEGRAM',
+  'INSTAGRAM',
+];
 
 /**
  * Lightweight SSE stream — polls inbox every 15s and pushes updates.
@@ -10,6 +21,13 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
   const session = await requireApiSession();
   if (isApiError(session)) return session;
+
+  const { searchParams } = new URL(request.url);
+  const channelParam = searchParams.get('channel');
+  const channel =
+    channelParam && INBOX_CHANNELS.includes(channelParam as InboxChannel)
+      ? (channelParam as MessageChannel)
+      : undefined;
 
   const orgId = session.organizationId;
   const encoder = new TextEncoder();
@@ -23,7 +41,7 @@ export async function GET(request: Request) {
 
       const poll = async () => {
         try {
-          const data = await listInboxThreads(orgId, { pageSize: 50 });
+          const data = await listInboxThreads(orgId, { pageSize: 50, channel });
           const fingerprint = data.items
             .map((t) => `${t.id}:${t.lastMessageAt}:${t.unreadCount}`)
             .join('|');
