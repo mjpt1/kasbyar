@@ -68,6 +68,10 @@
 | Kanban سرنخ / پورتال مشتری | آماده | `/leads/kanban` با `@dnd-kit`؛ پورتال نشست‌دار `/portal` + لینک جادویی |
 | خروجی CSV | آماده | مشتریان، سرنخ‌ها، فاکتورها — هدر فارسی و تاریخ جلالی |
 | اپ موبایل — صندوق پیام | آماده | لیست + جزئیات مکالمه + پاسخ omnichannel |
+| اشتراک SaaS و `/pricing` | آماده | checkout زرین‌پال/آیدی‌پی با `BILLING_*` پلتفرم |
+| پیشنهاد پاسخ inbox (AI) | آماده | `POST /api/inbox/[threadId]/suggest-reply` |
+| انتشار موبایل (EAS) | آماده | `eas.json`، [MOBILE_RELEASE.md](docs/MOBILE_RELEASE.md) |
+| آمادگی go-live | آماده | [GO_LIVE_CHECKLIST.md](docs/GO_LIVE_CHECKLIST.md)، runbook پایلوت ۳ org |
 | حذف پوسته دمو | انجام‌شده | مسیرهای demo/reset/scenario از محصول واقعی حذف شدند |
 
 ---
@@ -229,7 +233,7 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.12.0**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.15.0** (SaaS `/pricing` checkout, inbox AI suggest-reply, EAS mobile release docs).
 
 ---
 
