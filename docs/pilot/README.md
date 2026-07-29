@@ -12,5 +12,7 @@
 | [pilot-known-limitations.md](./pilot-known-limitations.md) | share with pilot |
 | [sample-first-workflows.md](./sample-first-workflows.md) | جلسه onboarding |
 | [go-live-readiness.md](./go-live-readiness.md) | قبل از اولین کاربر |
+| [pilot-3-org-runbook.md](./pilot-3-org-runbook.md) | پایلوت ۳ org همزمان |
+| [../GO_LIVE_CHECKLIST.md](../GO_LIVE_CHECKLIST.md) | Vercel env + health |
 
 **Legacy short doc:** [PILOT_ONBOARDING.md](../PILOT_ONBOARDING.md) (redirects here)

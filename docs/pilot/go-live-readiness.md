@@ -16,8 +16,10 @@
 ## Technical
 
 - [ ] `npm run ci` green on deployed commit
-- [ ] `/api/health/ready` → database ok
-- [ ] AI health ok OR fallback documented if AI sold
+- [ ] `GET /api/health` → liveness ok
+- [ ] `GET /api/health/ready` → database ok
+- [ ] `GET /api/inbox/health` (authenticated) → channel status per org
+- [ ] AI health ok OR fallback documented if AI sold (`GET /api/ai/health`)
 - [ ] No `DEMO_MODE` on customer production org
 - [ ] `ALLOW_SEED=false` production
 - [ ] Backup run in last 7 days ([BACKUP_RESTORE.md](../BACKUP_RESTORE.md))
