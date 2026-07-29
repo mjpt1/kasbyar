@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  activityLogSchema,
   customerSchema,
   followUpSchema,
   invoiceSchema,
@@ -99,5 +100,25 @@ describe('reminderSchema', () => {
       remindAt: '',
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe('activityLogSchema', () => {
+  it('requires customer or lead', () => {
+    const result = activityLogSchema.safeParse({
+      type: 'CALL',
+      title: 'تماس',
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts call on lead', () => {
+    const result = activityLogSchema.safeParse({
+      type: 'CALL',
+      title: 'تماس پیگیری',
+      leadId: 'lead_1',
+      durationMinutes: 10,
+    });
+    expect(result.success).toBe(true);
   });
 });

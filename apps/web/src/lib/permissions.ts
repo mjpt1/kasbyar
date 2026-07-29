@@ -30,6 +30,8 @@ export const ROUTE_MIN_ROLE: Record<string, MembershipRole> = {
   '/chat': 'STAFF',
   '/support': 'STAFF',
   '/reports': 'MANAGER',
+  '/team': 'MANAGER',
+  '/inbox': 'STAFF',
   '/activity': 'STAFF',
   '/automation': 'STAFF',
   '/files': 'STAFF',

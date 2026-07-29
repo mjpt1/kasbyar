@@ -6,7 +6,7 @@ import {
   clearAuthCookiesOnResponse,
 } from '@/lib/auth/cookie-options';
 
-const publicPaths = ['/', '/login', '/register', '/offline', '/pay'];
+const publicPaths = ['/', '/login', '/register', '/offline', '/pay', '/portal'];
 const workspacePaths = ['/workspace/select'];
 const authPaths = ['/login', '/register'];
 

@@ -140,6 +140,9 @@ enum AutomationTrigger {
   TASK_DUE
   PAYMENT_RECEIVED
   CUSTOMER_CREATED
+  INBOUND_MESSAGE
+  NEGATIVE_SENTIMENT
+  MISSED_CALL
 }
 
 enum AutomationAction {
@@ -233,6 +236,7 @@ enum MessageChannel {
   WHATSAPP
   TELEGRAM
   PHONE
+  INSTAGRAM
 }
 
 enum MessageDirection {
@@ -394,6 +398,8 @@ model User {
   teamChatMessages        TeamChatMessage[]
   supportTickets          SupportTicket[]
   ticketMessages          TicketMessage[]
+  sentMessages            Message[] @relation("MessageSender")
+  assignedThreads         MessageThread[] @relation("ThreadAssignee")
 }
 
 model Session {
@@ -453,6 +459,7 @@ model Organization {
   invoices        Invoice[]
   payments        Payment[]
   paymentLinks    InvoicePaymentLink[]
+  portalTokens    CustomerPortalToken[]
   tasks           Task[]
   reminders       Reminder[]
   notes           Note[]
@@ -610,10 +617,26 @@ model Customer {
   tasks       Task[]
   messageThreads MessageThread[]
   customerSentiments CustomerSentiment[]
+  portalTokens CustomerPortalToken[]
 
   @@index([organizationId])
   @@index([organizationId, name])
   @@index([organizationId, deletedAt])
+}
+
+model CustomerPortalToken {
+  id             String   @id @default(cuid())
+  organizationId String
+  customerId     String
+  token          String   @unique
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([customerId])
 }
 
 model Contact {
@@ -673,6 +696,7 @@ model Lead {
   followUps    FollowUpLog[]
   activities   ActivityLog[]
   tasks        Task[]
+  messageThreads MessageThread[]
 
   @@index([organizationId])
   @@index([organizationId, status])
@@ -1782,34 +1806,52 @@ model MessageThread {
   id             String         @id @default(cuid())
   organizationId String
   customerId     String?
+  leadId         String?
   channel        MessageChannel @default(INTERNAL)
   subject        String?
   externalId     String?
+  /// شماره واتساپ/پیامک نرمال‌شده (مثلاً 989121111111)
+  externalPhone  String?
+  /// آدرس ایمیل طرف مکالمه
+  externalEmail  String?
+  lastMessageAt  DateTime?
+  assigneeId     String?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   customer     Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  lead         Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  assignee     User?        @relation("ThreadAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   messages     Message[]
 
+  @@unique([organizationId, channel, externalPhone])
+  @@unique([organizationId, channel, externalEmail])
   @@index([organizationId])
   @@index([customerId])
+  @@index([leadId])
+  @@index([assigneeId])
   @@index([organizationId, channel])
+  @@index([organizationId, lastMessageAt])
 }
 
 model Message {
-  id        String           @id @default(cuid())
-  threadId  String
-  direction MessageDirection
-  content   String
-  metadata  Json             @default("{}")
-  sentAt    DateTime         @default(now())
-  createdAt DateTime         @default(now())
+  id           String           @id @default(cuid())
+  threadId     String
+  direction    MessageDirection
+  content      String
+  metadata     Json             @default("{}")
+  externalId   String?          @unique
+  senderUserId String?
+  sentAt       DateTime         @default(now())
+  createdAt    DateTime         @default(now())
 
-  thread MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  thread     MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderUser User?         @relation("MessageSender", fields: [senderUserId], references: [id], onDelete: SetNull)
 
   @@index([threadId])
   @@index([threadId, sentAt])
+  @@index([senderUserId])
 }
 
 model Meeting {

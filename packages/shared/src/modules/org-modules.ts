@@ -12,6 +12,7 @@ export const ORG_MODULE_NAV: Record<string, string> = {
   moadian: '/invoices',
   inventory: '/retail/inventory',
   push_notifications: '/settings',
+  customer_inbox: '/inbox',
 };
 
 export function resolveOrgModuleForPath(pathname: string): string | null {

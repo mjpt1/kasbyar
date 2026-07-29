@@ -15,6 +15,46 @@ export interface AutomationRunResult {
   details: string[];
 }
 
+export type EventAutomationContext = {
+  title: string;
+  description?: string;
+  customerId?: string;
+  leadId?: string;
+  userId?: string;
+};
+
+export async function runEventAutomation(
+  organizationId: string,
+  trigger: AutomationTrigger,
+  context: EventAutomationContext,
+): Promise<number> {
+  const rules = await listAutomationRules(organizationId);
+  const matching = rules.filter((rule) => rule.isActive && rule.trigger === trigger);
+  let affected = 0;
+
+  for (const rule of matching) {
+    try {
+      const done = await applyAction(organizationId, rule.action, {
+        title: context.title,
+        description: context.description ?? rule.description ?? rule.name,
+        userId: context.userId,
+        customerId: context.customerId,
+        leadId: context.leadId,
+      });
+      if (done) affected += 1;
+    } catch (error) {
+      logger.warn(APP_LOG_EVENTS.AUTOMATION_RULE_FAILED, {
+        organizationId,
+        ruleId: rule.id,
+        ruleName: rule.name,
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  return affected;
+}
+
 export async function runAutomationForOrganization(
   organizationId: string,
   userId?: string,
@@ -180,10 +220,108 @@ async function executeRule(
           title: `مشتری جدید: ${customer.name}`,
           description: rule.description ?? rule.name,
           userId,
+          customerId: customer.id,
         });
         if (done) {
           affected += 1;
           details.push(customer.name);
+        }
+      }
+      break;
+    }
+
+    case 'INBOUND_MESSAGE': {
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const messages = await prisma.message.findMany({
+        where: {
+          direction: 'INBOUND',
+          sentAt: { gte: since },
+          thread: { organizationId },
+        },
+        include: {
+          thread: {
+            select: { customerId: true, leadId: true, customer: { select: { name: true } } },
+          },
+        },
+        orderBy: { sentAt: 'desc' },
+        take: 20,
+      });
+
+      for (const message of messages) {
+        const customerName = message.thread.customer?.name ?? 'مشتری';
+        const done = await applyAction(organizationId, rule.action, {
+          title: `پاسخ به پیام ${customerName}`,
+          description: message.content.slice(0, 120),
+          userId,
+          customerId: message.thread.customerId ?? undefined,
+          leadId: message.thread.leadId ?? undefined,
+        });
+        if (done) {
+          affected += 1;
+          details.push(customerName);
+        }
+      }
+      break;
+    }
+
+    case 'NEGATIVE_SENTIMENT': {
+      const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const sentiments = await prisma.customerSentiment.findMany({
+        where: {
+          organizationId,
+          createdAt: { gte: since },
+          label: { in: ['NEGATIVE', 'VERY_NEGATIVE'] },
+        },
+        include: { customer: { select: { id: true, name: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+      });
+
+      for (const sentiment of sentiments) {
+        const done = await applyAction(organizationId, rule.action, {
+          title: `پیگیری مشتری ناراضی: ${sentiment.customer.name}`,
+          description: sentiment.summary ?? rule.description ?? rule.name,
+          userId,
+          customerId: sentiment.customerId,
+        });
+        if (done) {
+          affected += 1;
+          details.push(sentiment.customer.name);
+        }
+      }
+      break;
+    }
+
+    case 'MISSED_CALL': {
+      const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const calls = await prisma.activityLog.findMany({
+        where: {
+          organizationId,
+          type: 'CALL',
+          createdAt: { gte: since },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 30,
+      });
+
+      for (const call of calls) {
+        const meta =
+          call.metadata && typeof call.metadata === 'object' && !Array.isArray(call.metadata)
+            ? (call.metadata as Record<string, unknown>)
+            : {};
+        const status = String(meta.status ?? meta.outcome ?? '');
+        if (!['missed', 'no_answer', 'busy', 'MISSED'].includes(status)) continue;
+
+        const done = await applyAction(organizationId, rule.action, {
+          title: call.title,
+          description: call.description ?? rule.description ?? rule.name,
+          userId,
+          customerId: call.customerId ?? undefined,
+          leadId: call.leadId ?? undefined,
+        });
+        if (done) {
+          affected += 1;
+          details.push(call.title);
         }
       }
       break;
@@ -209,6 +347,8 @@ async function applyAction(
     userId?: string;
     taskId?: string;
     invoiceId?: string;
+    customerId?: string;
+    leadId?: string;
     customerPhone?: string | null;
   },
 ): Promise<boolean> {
@@ -231,6 +371,8 @@ async function applyAction(
           description: payload.description,
           createdById: payload.userId,
           invoiceId: payload.invoiceId,
+          customerId: payload.customerId,
+          leadId: payload.leadId,
           priority: 'MEDIUM',
           dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },

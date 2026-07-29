@@ -3,6 +3,7 @@ import type { Prisma, SentimentLabel } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { chatWithLlm } from '@/lib/ai';
 import { requireCustomerInOrg } from '@/server/tenant/tenant-scope';
+import { runEventAutomation } from '@/server/automation/automation.service';
 
 const NEGATIVE_WORDS = [
   'ناراضی',
@@ -79,7 +80,7 @@ export async function analyzeCustomerSentiment(
     }
   }
 
-  return prisma.customerSentiment.create({
+  const sentiment = await prisma.customerSentiment.create({
     data: {
       organizationId,
       customerId,
@@ -90,7 +91,18 @@ export async function analyzeCustomerSentiment(
       sourceId,
       summary: content.slice(0, 200),
     },
+    include: { customer: { select: { name: true } } },
   });
+
+  if (sentiment.label === 'NEGATIVE' || sentiment.label === 'VERY_NEGATIVE') {
+    void runEventAutomation(organizationId, 'NEGATIVE_SENTIMENT', {
+      title: `پیگیری مشتری ناراضی: ${sentiment.customer.name}`,
+      description: sentiment.summary ?? content.slice(0, 120),
+      customerId,
+    }).catch(() => undefined);
+  }
+
+  return sentiment;
 }
 
 export async function analyzeFollowUpLogs(organizationId: string) {
@@ -118,6 +130,37 @@ export async function analyzeFollowUpLogs(organizationId: string) {
     results.push(sentiment);
   }
   return results;
+}
+
+export async function analyzeInboundMessageSentiment(params: {
+  organizationId: string;
+  threadId: string;
+  messageId: string;
+  content: string;
+}) {
+  const thread = await prisma.messageThread.findFirst({
+    where: { id: params.threadId, organizationId: params.organizationId },
+    select: { customerId: true },
+  });
+  if (!thread?.customerId || !params.content.trim()) return null;
+
+  const existing = await prisma.customerSentiment.findFirst({
+    where: {
+      organizationId: params.organizationId,
+      sourceType: 'Message',
+      sourceId: params.messageId,
+    },
+    select: { id: true },
+  });
+  if (existing) return null;
+
+  return analyzeCustomerSentiment(
+    params.organizationId,
+    thread.customerId,
+    params.content,
+    'Message',
+    params.messageId,
+  );
 }
 
 export async function listSentiments(organizationId: string, limit = 40) {

@@ -191,6 +191,20 @@ export const taskUpdateSchema = z.object({
   assigneeId: z.string().nullable().optional(),
 });
 
+export const activityLogSchema = z
+  .object({
+    type: z.enum(['CALL', 'MEETING', 'NOTE', 'EMAIL']),
+    title: z.string().min(2, 'عنوان فعالیت الزامی است'),
+    description: z.string().optional(),
+    customerId: z.string().optional(),
+    leadId: z.string().optional(),
+    durationMinutes: z.coerce.number().int().positive().optional(),
+    outcome: z.string().optional(),
+  })
+  .refine((data) => data.customerId || data.leadId, {
+    message: 'مشتری یا سرنخ فروش باید مشخص شود',
+  });
+
 export const reminderSchema = z.object({
   title: z.string().min(2, 'عنوان یادآور الزامی است'),
   message: z.string().optional(),
@@ -279,10 +293,64 @@ export const orgIntegrationsUpdateSchema = z
         clearApiKey: z.boolean().optional(),
       })
       .optional(),
+    whatsapp: z
+      .object({
+        phoneNumberId: z.string().max(64, 'شناسه شماره واتساپ خیلی بلند است').optional().nullable(),
+        accessToken: z.string().max(512, 'توکن واتساپ خیلی بلند است').optional().nullable(),
+        clearAccessToken: z.boolean().optional(),
+      })
+      .optional(),
+    email: z
+      .object({
+        fromEmail: z.string().email('ایمیل فرستنده نامعتبر است').optional().nullable(),
+        apiKey: z.string().max(256, 'کلید Resend خیلی بلند است').optional().nullable(),
+        clearApiKey: z.boolean().optional(),
+      })
+      .optional(),
+    voip: z
+      .object({
+        webhookSecret: z.string().max(128, 'کلید webhook خیلی بلند است').optional().nullable(),
+        clearWebhookSecret: z.boolean().optional(),
+      })
+      .optional(),
+    telegram: z
+      .object({
+        botUsername: z.string().max(64, 'نام کاربری ربات خیلی بلند است').optional().nullable(),
+        botToken: z.string().max(128, 'توکن ربات خیلی بلند است').optional().nullable(),
+        clearBotToken: z.boolean().optional(),
+      })
+      .optional(),
+    instagram: z
+      .object({
+        pageId: z.string().max(64, 'شناسه صفحه خیلی بلند است').optional().nullable(),
+        accessToken: z.string().max(512, 'توکن اینستاگرام خیلی بلند است').optional().nullable(),
+        clearAccessToken: z.boolean().optional(),
+      })
+      .optional(),
   })
-  .refine((v) => v.payment || v.sms || v.moadian, {
-    message: 'حداقل یک بخش برای به‌روزرسانی لازم است',
-  });
+  .refine(
+    (v) =>
+      v.payment ||
+      v.sms ||
+      v.moadian ||
+      v.whatsapp ||
+      v.email ||
+      v.voip ||
+      v.telegram ||
+      v.instagram,
+    {
+      message: 'حداقل یک بخش برای به‌روزرسانی لازم است',
+    },
+  );
+
+export const inboxSendSchema = z.object({
+  content: z.string().min(1, 'متن پیام الزامی است').max(4096),
+  subject: z.string().max(998).optional(),
+});
+
+export const inboxAssignSchema = z.object({
+  assigneeId: z.string().nullable(),
+});
 
 export const fileUploadMetaSchema = z.object({
   entityType: z.enum(['CUSTOMER', 'LEAD', 'INVOICE', 'TASK', 'NOTE', 'ORGANIZATION']),
@@ -302,6 +370,9 @@ export const automationRuleSchema = z.object({
     'TASK_DUE',
     'PAYMENT_RECEIVED',
     'CUSTOMER_CREATED',
+    'INBOUND_MESSAGE',
+    'NEGATIVE_SENTIMENT',
+    'MISSED_CALL',
   ]),
   action: z.enum(['CREATE_TASK', 'SEND_REMINDER', 'NOTIFY_USER', 'UPDATE_STATUS']),
   isActive: z.boolean().optional(),

@@ -22,6 +22,7 @@ import {
   Home,
   Hotel,
   House,
+  Inbox,
   LayoutDashboard,
   LineChart,
   Luggage,
@@ -51,6 +52,7 @@ import {
   Truck,
   Car,
   Users,
+  UsersRound,
   UtensilsCrossed,
   Wallet,
   Warehouse,
@@ -135,6 +137,7 @@ const COLLAB_SECTION = 'همکاری';
 
 const COLLAB_NAV_ITEMS: NavItem[] = [
   { href: '/chat', label: 'گفتگوی تیم', icon: MessagesSquare, section: COLLAB_SECTION },
+  { href: '/inbox', label: 'صندوق پیام', icon: Inbox, section: COLLAB_SECTION },
   { href: '/support', label: 'پشتیبانی', icon: LifeBuoy, section: COLLAB_SECTION },
 ];
 
@@ -145,6 +148,7 @@ const CORE_OPS_ITEMS: NavItem[] = [
   { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
   { href: '/tasks', label: 'وظایف', icon: CheckSquare },
   { href: '/reports', label: 'گزارش‌ها', icon: BarChart3 },
+  { href: '/team', label: 'عملکرد تیم', icon: UsersRound },
   { href: '/activity', label: 'فعالیت‌ها', icon: Activity },
   { href: '/files', label: 'فایل‌ها', icon: FolderOpen },
   { href: '/settings', label: 'تنظیمات', icon: Settings },

@@ -17,6 +17,11 @@ export const ORG_INTEGRATION = {
   PAYMENT: 'payment',
   KAVENEGAR: 'kavenegar',
   MOADIAN: 'moadian',
+  WHATSAPP: 'whatsapp',
+  RESEND: 'resend',
+  VOIP: 'voip',
+  TELEGRAM: 'telegram',
+  INSTAGRAM: 'instagram',
 } as const;
 
 export type PaymentProviderChoice =
@@ -45,6 +50,37 @@ type MoadianConfigJson = {
   apiKeyLast4?: string;
 };
 
+type WhatsAppConfigJson = {
+  phoneNumberId?: string | null;
+  accessTokenEnc?: string;
+  accessTokenLast4?: string;
+};
+
+type ResendConfigJson = {
+  apiKeyEnc?: string;
+  apiKeyLast4?: string;
+  fromEmail?: string | null;
+};
+
+type VoipConfigJson = {
+  webhookSecretEnc?: string;
+  webhookSecretLast4?: string;
+};
+
+type TelegramConfigJson = {
+  botTokenEnc?: string;
+  botTokenLast4?: string;
+  botUsername?: string | null;
+};
+
+type InstagramConfigJson = {
+  pageId?: string | null;
+  accessTokenEnc?: string;
+  accessTokenLast4?: string;
+  appSecretEnc?: string;
+  appSecretLast4?: string;
+};
+
 export type ResolvedPaymentCredentials = {
   preferredProvider: PaymentProviderChoice;
   zarinpalMerchantId: string | null;
@@ -65,6 +101,35 @@ export type ResolvedMoadianCredentials = {
   source: 'org' | 'env' | 'none';
 };
 
+export type ResolvedWhatsAppCredentials = {
+  phoneNumberId: string | null;
+  accessToken: string | null;
+  source: 'org' | 'env' | 'none';
+};
+
+export type ResolvedResendCredentials = {
+  apiKey: string | null;
+  fromEmail: string | null;
+  source: 'org' | 'env' | 'none';
+};
+
+export type ResolvedVoipCredentials = {
+  webhookSecret: string | null;
+  source: 'org' | 'env' | 'none';
+};
+
+export type ResolvedTelegramCredentials = {
+  botToken: string | null;
+  botUsername: string | null;
+  source: 'org' | 'env' | 'none';
+};
+
+export type ResolvedInstagramCredentials = {
+  pageId: string | null;
+  accessToken: string | null;
+  source: 'org' | 'env' | 'none';
+};
+
 /** Public/masked view for Settings GET — never includes full secrets */
 export type OrgIntegrationsPublicView = {
   payment: {
@@ -81,6 +146,7 @@ export type OrgIntegrationsPublicView = {
     apiKeyMasked: string | null;
     configured: boolean;
     sender: string | null;
+    webhookUrl: string;
     status: 'active' | 'needs_setup';
     statusLabelFa: string;
   };
@@ -92,6 +158,50 @@ export type OrgIntegrationsPublicView = {
     status: 'active' | 'export_only';
     statusLabelFa: string;
     noticeFa: string;
+  };
+  whatsapp: {
+    phoneNumberId: string | null;
+    accessTokenMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  email: {
+    fromEmail: string | null;
+    apiKeyMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  voip: {
+    webhookSecretMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  telegram: {
+    botUsername: string | null;
+    botTokenMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  instagram: {
+    pageId: string | null;
+    accessTokenMasked: string | null;
+    appSecretMasked: string | null;
+    configured: boolean;
+    tokenValid: boolean;
+    pageName: string | null;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+    noticeFa: string;
+    permissionsFa: string[];
   };
 };
 
@@ -115,6 +225,32 @@ export type UpdateOrgIntegrationsInput = {
     apiKey?: string | null;
     clearApiKey?: boolean;
   };
+  whatsapp?: {
+    phoneNumberId?: string | null;
+    accessToken?: string | null;
+    clearAccessToken?: boolean;
+  };
+  email?: {
+    fromEmail?: string | null;
+    apiKey?: string | null;
+    clearApiKey?: boolean;
+  };
+  voip?: {
+    webhookSecret?: string | null;
+    clearWebhookSecret?: boolean;
+  };
+  telegram?: {
+    botUsername?: string | null;
+    botToken?: string | null;
+    clearBotToken?: boolean;
+  };
+  instagram?: {
+    pageId?: string | null;
+    accessToken?: string | null;
+    appSecret?: string | null;
+    clearAccessToken?: boolean;
+    clearAppSecret?: boolean;
+  };
 };
 
 function envSandbox(): boolean {
@@ -135,6 +271,39 @@ function asKavenegarConfig(raw: Prisma.JsonValue | null | undefined): KavenegarC
 function asMoadianConfig(raw: Prisma.JsonValue | null | undefined): MoadianConfigJson {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
   return raw as MoadianConfigJson;
+}
+
+function asWhatsAppConfig(raw: Prisma.JsonValue | null | undefined): WhatsAppConfigJson {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  return raw as WhatsAppConfigJson;
+}
+
+function asResendConfig(raw: Prisma.JsonValue | null | undefined): ResendConfigJson {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  return raw as ResendConfigJson;
+}
+
+function asVoipConfig(raw: Prisma.JsonValue | null | undefined): VoipConfigJson {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  return raw as VoipConfigJson;
+}
+
+function asTelegramConfig(raw: Prisma.JsonValue | null | undefined): TelegramConfigJson {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  return raw as TelegramConfigJson;
+}
+
+function asInstagramConfig(raw: Prisma.JsonValue | null | undefined): InstagramConfigJson {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  return raw as InstagramConfigJson;
+}
+
+function appBaseUrl(): string {
+  return (
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
+    process.env.APP_URL?.replace(/\/$/, '') ||
+    'http://localhost:3000'
+  );
 }
 
 function paymentStatusLabel(
@@ -163,7 +332,16 @@ async function loadConfigs(organizationId: string) {
     where: {
       organizationId,
       provider: {
-        in: [ORG_INTEGRATION.PAYMENT, ORG_INTEGRATION.KAVENEGAR, ORG_INTEGRATION.MOADIAN],
+        in: [
+          ORG_INTEGRATION.PAYMENT,
+          ORG_INTEGRATION.KAVENEGAR,
+          ORG_INTEGRATION.MOADIAN,
+          ORG_INTEGRATION.WHATSAPP,
+          ORG_INTEGRATION.RESEND,
+          ORG_INTEGRATION.VOIP,
+          ORG_INTEGRATION.TELEGRAM,
+          ORG_INTEGRATION.INSTAGRAM,
+        ],
       },
     },
   });
@@ -172,6 +350,11 @@ async function loadConfigs(organizationId: string) {
     payment: byProvider[ORG_INTEGRATION.PAYMENT] ?? null,
     kavenegar: byProvider[ORG_INTEGRATION.KAVENEGAR] ?? null,
     moadian: byProvider[ORG_INTEGRATION.MOADIAN] ?? null,
+    whatsapp: byProvider[ORG_INTEGRATION.WHATSAPP] ?? null,
+    resend: byProvider[ORG_INTEGRATION.RESEND] ?? null,
+    voip: byProvider[ORG_INTEGRATION.VOIP] ?? null,
+    telegram: byProvider[ORG_INTEGRATION.TELEGRAM] ?? null,
+    instagram: byProvider[ORG_INTEGRATION.INSTAGRAM] ?? null,
   };
 }
 
@@ -274,6 +457,111 @@ export async function resolveMoadianCredentials(
   return { intermediaryUrl: url, apiKey, source: 'none' };
 }
 
+export async function resolveWhatsAppCredentials(
+  organizationId: string,
+): Promise<ResolvedWhatsAppCredentials> {
+  const { whatsapp } = await loadConfigs(organizationId);
+  const cfg = asWhatsAppConfig(whatsapp?.config);
+  const orgToken = decryptSecret(cfg.accessTokenEnc);
+  const envToken = process.env.WHATSAPP_ACCESS_TOKEN?.trim() || null;
+  const envPhone = process.env.WHATSAPP_PHONE_NUMBER_ID?.trim() || null;
+  const phoneNumberId = cfg.phoneNumberId?.trim() || envPhone;
+  const accessToken = orgToken || envToken;
+
+  if (cfg.phoneNumberId || orgToken) {
+    return { phoneNumberId, accessToken, source: 'org' };
+  }
+  if (envPhone || envToken) {
+    return { phoneNumberId, accessToken, source: 'env' };
+  }
+  return { phoneNumberId: phoneNumberId || null, accessToken: null, source: 'none' };
+}
+
+export async function resolveResendCredentials(
+  organizationId: string,
+): Promise<ResolvedResendCredentials> {
+  const { resend } = await loadConfigs(organizationId);
+  const cfg = asResendConfig(resend?.config);
+  const orgKey = decryptSecret(cfg.apiKeyEnc);
+  const envKey = process.env.RESEND_API_KEY?.trim() || null;
+  const envFrom = process.env.RESEND_FROM_EMAIL?.trim() || null;
+  const fromEmail = cfg.fromEmail?.trim() || envFrom;
+
+  if (orgKey || cfg.fromEmail) {
+    return { apiKey: orgKey || envKey, fromEmail, source: 'org' };
+  }
+  if (envKey || envFrom) {
+    return { apiKey: envKey, fromEmail: envFrom, source: 'env' };
+  }
+  return { apiKey: null, fromEmail: null, source: 'none' };
+}
+
+export async function resolveVoipWebhookSecret(
+  organizationId: string,
+): Promise<string | null> {
+  const { voip } = await loadConfigs(organizationId);
+  const cfg = asVoipConfig(voip?.config);
+  const orgSecret = cfg.webhookSecretEnc ? decryptSecret(cfg.webhookSecretEnc) : null;
+  const envSecret = process.env.VOIP_WEBHOOK_SECRET?.trim() || null;
+  return orgSecret || envSecret;
+}
+
+export async function resolveTelegramCredentials(
+  organizationId: string,
+): Promise<ResolvedTelegramCredentials> {
+  const { telegram } = await loadConfigs(organizationId);
+  const cfg = asTelegramConfig(telegram?.config);
+  const orgToken = decryptSecret(cfg.botTokenEnc);
+  const envToken = process.env.TELEGRAM_BOT_TOKEN?.trim() || null;
+  const botToken = orgToken || envToken;
+  const botUsername = cfg.botUsername?.trim() || process.env.TELEGRAM_BOT_USERNAME?.trim() || null;
+
+  if (orgToken || cfg.botUsername) {
+    return { botToken, botUsername, source: 'org' };
+  }
+  if (envToken) {
+    return { botToken: envToken, botUsername, source: 'env' };
+  }
+  return { botToken: null, botUsername, source: 'none' };
+}
+
+export async function resolveInstagramCredentials(
+  organizationId: string,
+): Promise<ResolvedInstagramCredentials> {
+  const { instagram } = await loadConfigs(organizationId);
+  const cfg = asInstagramConfig(instagram?.config);
+  const orgToken = decryptSecret(cfg.accessTokenEnc);
+  const envToken = process.env.INSTAGRAM_ACCESS_TOKEN?.trim() || null;
+  const pageId = cfg.pageId?.trim() || process.env.INSTAGRAM_PAGE_ID?.trim() || null;
+  const accessToken = orgToken || envToken;
+
+  if (cfg.pageId || orgToken) {
+    return { pageId, accessToken, source: 'org' };
+  }
+  if (envToken || pageId) {
+    return { pageId, accessToken: envToken, source: 'env' };
+  }
+  return { pageId: null, accessToken: null, source: 'none' };
+}
+
+export async function resolveInstagramAppSecret(orgSlug: string): Promise<string | null> {
+  const org = await prisma.organization.findUnique({
+    where: { slug: orgSlug },
+    select: { id: true },
+  });
+  if (!org) return null;
+
+  const { instagram } = await loadConfigs(org.id);
+  const cfg = asInstagramConfig(instagram?.config);
+  const orgSecret = cfg.appSecretEnc ? decryptSecret(cfg.appSecretEnc) : null;
+  return (
+    orgSecret ||
+    process.env.INSTAGRAM_APP_SECRET?.trim() ||
+    process.env.META_APP_SECRET?.trim() ||
+    null
+  );
+}
+
 export async function getOrgIntegrationsPublicView(
   organizationId: string,
 ): Promise<OrgIntegrationsPublicView> {
@@ -281,13 +569,18 @@ export async function getOrgIntegrationsPublicView(
     loadConfigs(organizationId),
     prisma.organization.findUnique({
       where: { id: organizationId },
-      select: { taxMemoryId: true },
+      select: { taxMemoryId: true, slug: true },
     }),
   ]);
 
   const payCfg = asPaymentConfig(configs.payment?.config);
   const smsCfg = asKavenegarConfig(configs.kavenegar?.config);
   const moadianCfg = asMoadianConfig(configs.moadian?.config);
+  const whatsappCfg = asWhatsAppConfig(configs.whatsapp?.config);
+  const resendCfg = asResendConfig(configs.resend?.config);
+  const voipCfg = asVoipConfig(configs.voip?.config);
+  const telegramCfg = asTelegramConfig(configs.telegram?.config);
+  const instagramCfg = asInstagramConfig(configs.instagram?.config);
 
   const resolvedPay = await resolvePaymentCredentials(organizationId);
   const zarinpalConfigured = Boolean(resolvedPay.zarinpalMerchantId);
@@ -305,6 +598,29 @@ export async function getOrgIntegrationsPublicView(
   const moadianConfigured = Boolean(
     moadianResolved.intermediaryUrl && moadianResolved.apiKey,
   );
+
+  const whatsappResolved = await resolveWhatsAppCredentials(organizationId);
+  const whatsappConfigured = Boolean(
+    whatsappResolved.phoneNumberId && whatsappResolved.accessToken,
+  );
+
+  const resendResolved = await resolveResendCredentials(organizationId);
+  const emailConfigured = Boolean(resendResolved.apiKey && resendResolved.fromEmail);
+
+  const voipSecret = voipCfg.webhookSecretEnc
+    ? decryptSecret(voipCfg.webhookSecretEnc)
+    : process.env.VOIP_WEBHOOK_SECRET?.trim() || null;
+  const voipConfigured = true;
+
+  const telegramResolved = await resolveTelegramCredentials(organizationId);
+  const telegramConfigured = Boolean(telegramResolved.botToken);
+
+  const instagramResolved = await resolveInstagramCredentials(organizationId);
+  const instagramConfigured = Boolean(
+    instagramResolved.pageId && instagramResolved.accessToken,
+  );
+
+  const orgSlug = org?.slug ?? 'slug-سازمان';
 
   return {
     payment: {
@@ -330,6 +646,7 @@ export async function getOrgIntegrationsPublicView(
       ),
       configured: smsConfigured,
       sender: smsResolved.sender,
+      webhookUrl: `${appBaseUrl()}/api/webhooks/kavenegar/${orgSlug}`,
       status: smsConfigured ? 'active' : 'needs_setup',
       statusLabelFa: smsConfigured ? 'فعال' : 'نیاز به تکمیل',
     },
@@ -345,6 +662,75 @@ export async function getOrgIntegrationsPublicView(
       statusLabelFa: moadianConfigured ? 'فعال (واسط)' : 'فقط خروجی / بارگذاری دستی',
       noticeFa:
         'این بخش اتصال به «واسط مؤدیان» است، نه اتصال مستقیم به سازمان امور مالیاتی. بدون URL و کلید واسط، فقط خروجی JSON و بارگذاری دستی در کارپوشه ممکن است.',
+    },
+    whatsapp: {
+      phoneNumberId: whatsappResolved.phoneNumberId,
+      accessTokenMasked: maskSecret(
+        whatsappCfg.accessTokenLast4 ?? secretLast4(whatsappResolved.accessToken),
+        Boolean(whatsappResolved.accessToken),
+      ),
+      configured: whatsappConfigured,
+      webhookUrl: `${appBaseUrl()}/api/webhooks/whatsapp`,
+      status: whatsappConfigured ? 'active' : 'needs_setup',
+      statusLabelFa: whatsappConfigured ? 'فعال' : 'نیاز به تکمیل',
+    },
+    email: {
+      fromEmail: resendResolved.fromEmail,
+      apiKeyMasked: maskSecret(
+        resendCfg.apiKeyLast4 ?? secretLast4(resendResolved.apiKey),
+        Boolean(resendResolved.apiKey),
+      ),
+      configured: emailConfigured,
+      webhookUrl: `${appBaseUrl()}/api/webhooks/resend/${orgSlug}`,
+      status: emailConfigured ? 'active' : 'needs_setup',
+      statusLabelFa: emailConfigured ? 'فعال' : 'نیاز به تکمیل',
+    },
+    voip: {
+      webhookSecretMasked: maskSecret(
+        voipCfg.webhookSecretLast4 ?? secretLast4(voipSecret),
+        Boolean(voipSecret),
+      ),
+      configured: voipConfigured,
+      webhookUrl: `${appBaseUrl()}/api/webhooks/voip/${orgSlug}`,
+      status: voipSecret ? 'active' : 'needs_setup',
+      statusLabelFa: voipSecret ? 'فعال' : 'فعال — توصیه: کلید webhook',
+    },
+    telegram: {
+      botUsername: telegramResolved.botUsername,
+      botTokenMasked: maskSecret(
+        telegramCfg.botTokenLast4 ?? secretLast4(telegramResolved.botToken),
+        Boolean(telegramResolved.botToken),
+      ),
+      configured: telegramConfigured,
+      webhookUrl: `${appBaseUrl()}/api/webhooks/telegram/${orgSlug}`,
+      status: telegramConfigured ? 'active' : 'needs_setup',
+      statusLabelFa: telegramConfigured ? 'فعال' : 'نیاز به تکمیل',
+    },
+    instagram: {
+      pageId: instagramResolved.pageId,
+      accessTokenMasked: maskSecret(
+        instagramCfg.accessTokenLast4 ?? secretLast4(instagramResolved.accessToken),
+        Boolean(instagramResolved.accessToken),
+      ),
+      appSecretMasked: maskSecret(
+        instagramCfg.appSecretLast4 ??
+          secretLast4(instagramCfg.appSecretEnc ? decryptSecret(instagramCfg.appSecretEnc) : null),
+        Boolean(instagramCfg.appSecretEnc),
+      ),
+      configured: instagramConfigured,
+      tokenValid: instagramConfigured,
+      pageName: null,
+      webhookUrl: `${appBaseUrl()}/api/webhooks/instagram/${orgSlug}`,
+      status: instagramConfigured ? 'active' : 'needs_setup',
+      statusLabelFa: instagramConfigured ? 'فعال — دریافت/ارسال DM' : 'پیکربندی نشده',
+      noticeFa:
+        'برای production، Meta App Review برای instagram_manage_messages لازم است. webhook و امضای HMAC با App Secret پشتیبانی می‌شود.',
+      permissionsFa: [
+        'instagram_basic',
+        'instagram_manage_messages',
+        'pages_manage_metadata',
+        'pages_messaging',
+      ],
     },
   };
 }
@@ -481,6 +867,138 @@ export async function updateOrgIntegrations(
       'واسط مؤدیان',
       next as Prisma.InputJsonValue,
       Boolean(next.intermediaryUrl && next.apiKeyEnc),
+    );
+  }
+
+  if (input.whatsapp) {
+    const prev = asWhatsAppConfig(existing.whatsapp?.config);
+    const next: WhatsAppConfigJson = { ...prev };
+
+    if (input.whatsapp.phoneNumberId !== undefined) {
+      next.phoneNumberId = input.whatsapp.phoneNumberId?.trim() || null;
+    }
+
+    if (input.whatsapp.clearAccessToken) {
+      delete next.accessTokenEnc;
+      delete next.accessTokenLast4;
+    } else if (typeof input.whatsapp.accessToken === 'string' && input.whatsapp.accessToken.trim()) {
+      const plain = input.whatsapp.accessToken.trim();
+      next.accessTokenEnc = encryptSecret(plain);
+      next.accessTokenLast4 = secretLast4(plain) ?? undefined;
+    }
+
+    await upsertIntegration(
+      organizationId,
+      ORG_INTEGRATION.WHATSAPP,
+      'واتساپ Business',
+      next as Prisma.InputJsonValue,
+      Boolean(next.phoneNumberId && next.accessTokenEnc),
+    );
+  }
+
+  if (input.email) {
+    const prev = asResendConfig(existing.resend?.config);
+    const next: ResendConfigJson = { ...prev };
+
+    if (input.email.fromEmail !== undefined) {
+      next.fromEmail = input.email.fromEmail?.trim() || null;
+    }
+
+    if (input.email.clearApiKey) {
+      delete next.apiKeyEnc;
+      delete next.apiKeyLast4;
+    } else if (typeof input.email.apiKey === 'string' && input.email.apiKey.trim()) {
+      const plain = input.email.apiKey.trim();
+      next.apiKeyEnc = encryptSecret(plain);
+      next.apiKeyLast4 = secretLast4(plain) ?? undefined;
+    }
+
+    await upsertIntegration(
+      organizationId,
+      ORG_INTEGRATION.RESEND,
+      'ایمیل Resend',
+      next as Prisma.InputJsonValue,
+      Boolean(next.apiKeyEnc && next.fromEmail),
+    );
+  }
+
+  if (input.voip) {
+    const prev = asVoipConfig(existing.voip?.config);
+    const next: VoipConfigJson = { ...prev };
+
+    if (input.voip.clearWebhookSecret) {
+      delete next.webhookSecretEnc;
+      delete next.webhookSecretLast4;
+    } else if (
+      typeof input.voip.webhookSecret === 'string' &&
+      input.voip.webhookSecret.trim()
+    ) {
+      const plain = input.voip.webhookSecret.trim();
+      next.webhookSecretEnc = encryptSecret(plain);
+      next.webhookSecretLast4 = secretLast4(plain) ?? undefined;
+    }
+
+    await upsertIntegration(
+      organizationId,
+      ORG_INTEGRATION.VOIP,
+      'تماس VoIP',
+      next as Prisma.InputJsonValue,
+      true,
+    );
+  }
+
+  if (input.telegram) {
+    const prev = asTelegramConfig(existing.telegram?.config);
+    const next: TelegramConfigJson = { ...prev };
+
+    if (input.telegram.botUsername !== undefined) {
+      next.botUsername = input.telegram.botUsername?.trim() || null;
+    }
+
+    if (input.telegram.clearBotToken) {
+      delete next.botTokenEnc;
+      delete next.botTokenLast4;
+    } else if (typeof input.telegram.botToken === 'string' && input.telegram.botToken.trim()) {
+      const plain = input.telegram.botToken.trim();
+      next.botTokenEnc = encryptSecret(plain);
+      next.botTokenLast4 = secretLast4(plain) ?? undefined;
+    }
+
+    await upsertIntegration(
+      organizationId,
+      ORG_INTEGRATION.TELEGRAM,
+      'ربات تلگرام',
+      next as Prisma.InputJsonValue,
+      Boolean(next.botTokenEnc),
+    );
+  }
+
+  if (input.instagram) {
+    const prev = asInstagramConfig(existing.instagram?.config);
+    const next: InstagramConfigJson = { ...prev };
+
+    if (input.instagram.pageId !== undefined) {
+      next.pageId = input.instagram.pageId?.trim() || null;
+    }
+
+    if (input.instagram.clearAccessToken) {
+      delete next.accessTokenEnc;
+      delete next.accessTokenLast4;
+    } else if (
+      typeof input.instagram.accessToken === 'string' &&
+      input.instagram.accessToken.trim()
+    ) {
+      const plain = input.instagram.accessToken.trim();
+      next.accessTokenEnc = encryptSecret(plain);
+      next.accessTokenLast4 = secretLast4(plain) ?? undefined;
+    }
+
+    await upsertIntegration(
+      organizationId,
+      ORG_INTEGRATION.INSTAGRAM,
+      'اینستاگرام DM',
+      next as Prisma.InputJsonValue,
+      Boolean(next.pageId && next.accessTokenEnc),
     );
   }
 

@@ -5,7 +5,9 @@ import {
   CreditCard,
   FileCheck2,
   Loader2,
+  Mail,
   MessageSquare,
+  Phone,
   Settings2,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -34,6 +36,7 @@ type IntegrationsView = {
     apiKeyMasked: string | null;
     configured: boolean;
     sender: string | null;
+    webhookUrl: string;
     status: 'active' | 'needs_setup';
     statusLabelFa: string;
   };
@@ -43,6 +46,46 @@ type IntegrationsView = {
     configured: boolean;
     taxMemoryId: string | null;
     status: 'active' | 'export_only';
+    statusLabelFa: string;
+    noticeFa: string;
+  };
+  whatsapp: {
+    phoneNumberId: string | null;
+    accessTokenMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  email: {
+    fromEmail: string | null;
+    apiKeyMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  voip: {
+    webhookSecretMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  telegram: {
+    botUsername: string | null;
+    botTokenMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup';
+    statusLabelFa: string;
+  };
+  instagram: {
+    pageId: string | null;
+    accessTokenMasked: string | null;
+    configured: boolean;
+    webhookUrl: string;
+    status: 'active' | 'needs_setup' | 'preview';
     statusLabelFa: string;
     noticeFa: string;
   };
@@ -100,6 +143,25 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
   const [moadianKey, setMoadianKey] = useState('');
   const [changeMoadianKey, setChangeMoadianKey] = useState(false);
 
+  const [whatsappPhoneId, setWhatsappPhoneId] = useState('');
+  const [whatsappToken, setWhatsappToken] = useState('');
+  const [changeWhatsappToken, setChangeWhatsappToken] = useState(false);
+
+  const [resendFromEmail, setResendFromEmail] = useState('');
+  const [resendApiKey, setResendApiKey] = useState('');
+  const [changeResendKey, setChangeResendKey] = useState(false);
+
+  const [voipWebhookSecret, setVoipWebhookSecret] = useState('');
+  const [changeVoipSecret, setChangeVoipSecret] = useState(false);
+
+  const [telegramUsername, setTelegramUsername] = useState('');
+  const [telegramToken, setTelegramToken] = useState('');
+  const [changeTelegramToken, setChangeTelegramToken] = useState(false);
+
+  const [instagramPageId, setInstagramPageId] = useState('');
+  const [instagramToken, setInstagramToken] = useState('');
+  const [changeInstagramToken, setChangeInstagramToken] = useState(false);
+
   async function load() {
     setLoading(true);
     try {
@@ -119,10 +181,24 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
       setChangeIdpay(!v.payment.idpayConfigured);
       setChangeSms(!v.sms.configured);
       setChangeMoadianKey(!v.moadian.apiKeyMasked);
+      setWhatsappPhoneId(v.whatsapp.phoneNumberId ?? '');
+      setChangeWhatsappToken(!v.whatsapp.accessTokenMasked);
+      setResendFromEmail(v.email.fromEmail ?? '');
+      setChangeResendKey(!v.email.apiKeyMasked);
+      setChangeVoipSecret(!v.voip.webhookSecretMasked);
+      setTelegramUsername(v.telegram.botUsername ?? '');
+      setChangeTelegramToken(!v.telegram.botTokenMasked);
+      setInstagramPageId(v.instagram.pageId ?? '');
+      setChangeInstagramToken(!v.instagram.accessTokenMasked);
       setZarinpalId('');
       setIdpayKey('');
       setSmsKey('');
       setMoadianKey('');
+      setWhatsappToken('');
+      setResendApiKey('');
+      setVoipWebhookSecret('');
+      setTelegramToken('');
+      setInstagramToken('');
     } catch {
       toast.error('اتصال برقرار نشد. دوباره تلاش کنید.');
     } finally {
@@ -164,6 +240,33 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
           intermediaryUrl: moadianUrl.trim() || null,
           ...(changeMoadianKey && moadianKey.trim() ? { apiKey: moadianKey.trim() } : {}),
         },
+        whatsapp: {
+          phoneNumberId: whatsappPhoneId.trim() || null,
+          ...(changeWhatsappToken && whatsappToken.trim()
+            ? { accessToken: whatsappToken.trim() }
+            : {}),
+        },
+        email: {
+          fromEmail: resendFromEmail.trim() || null,
+          ...(changeResendKey && resendApiKey.trim() ? { apiKey: resendApiKey.trim() } : {}),
+        },
+        voip: {
+          ...(changeVoipSecret && voipWebhookSecret.trim()
+            ? { webhookSecret: voipWebhookSecret.trim() }
+            : {}),
+        },
+        telegram: {
+          botUsername: telegramUsername.trim() || null,
+          ...(changeTelegramToken && telegramToken.trim()
+            ? { botToken: telegramToken.trim() }
+            : {}),
+        },
+        instagram: {
+          pageId: instagramPageId.trim() || null,
+          ...(changeInstagramToken && instagramToken.trim()
+            ? { accessToken: instagramToken.trim() }
+            : {}),
+        },
       };
 
       const res = await fetch('/api/settings/integrations', {
@@ -183,10 +286,20 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
       setChangeIdpay(false);
       setChangeSms(false);
       setChangeMoadianKey(false);
+      setChangeWhatsappToken(false);
+      setChangeResendKey(false);
+      setChangeVoipSecret(false);
+      setChangeTelegramToken(false);
+      setChangeInstagramToken(false);
       setZarinpalId('');
       setIdpayKey('');
       setSmsKey('');
       setMoadianKey('');
+      setWhatsappToken('');
+      setResendApiKey('');
+      setVoipWebhookSecret('');
+      setTelegramToken('');
+      setInstagramToken('');
     } catch {
       toast.error('اتصال برقرار نشد. دوباره تلاش کنید.');
     } finally {
@@ -389,6 +502,320 @@ export function IntegrationsSettingsForm({ role }: IntegrationsSettingsFormProps
           {!view?.sms.configured ? (
             <p className="rounded-md border border-amber-200/80 bg-amber-50/80 px-3 py-2 text-xs text-amber-900 sm:col-span-2 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
               بدون کلید، پیامک واقعی ارسال نمی‌شود؛ لینک پرداخت همچنان ساخته می‌شود.
+            </p>
+          ) : null}
+          {view?.sms.webhookUrl ? (
+            <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+              Webhook دریافت پیامک (کاوه‌نگار):{' '}
+              <span dir="ltr" className="font-mono break-all">
+                {view.sms.webhookUrl}
+              </span>
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+          <div className="space-y-1">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-green-100/80 text-green-800 dark:bg-green-950/40 dark:text-green-200">
+                <MessageSquare className="size-4" aria-hidden />
+              </span>
+              واتساپ Business
+            </CardTitle>
+            <CardDescription className="ms-10">
+              دریافت و ارسال پیام مشتری در CRM — Meta Cloud API.
+            </CardDescription>
+          </div>
+          {view ? (
+            <Badge variant={statusBadgeVariant(view.whatsapp.status)} className="shrink-0">
+              {view.whatsapp.statusLabelFa}
+            </Badge>
+          ) : null}
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="wa-phone-id">Phone Number ID</Label>
+            <Input
+              id="wa-phone-id"
+              dir="ltr"
+              className="text-start"
+              placeholder="123456789012345"
+              value={whatsappPhoneId}
+              onChange={(e) => setWhatsappPhoneId(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="wa-token">Access Token</Label>
+            {view?.whatsapp.accessTokenMasked && !changeWhatsappToken ? (
+              <MaskedSecretRow
+                masked={view.whatsapp.accessTokenMasked}
+                onChange={() => setChangeWhatsappToken(true)}
+              />
+            ) : (
+              <Input
+                id="wa-token"
+                type="password"
+                autoComplete="off"
+                dir="ltr"
+                className="text-start"
+                value={whatsappToken}
+                onChange={(e) => setWhatsappToken(e.target.value)}
+              />
+            )}
+          </div>
+          {view?.whatsapp.webhookUrl ? (
+            <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+              Webhook URL (در Meta Developer):{' '}
+              <span dir="ltr" className="font-mono break-all">
+                {view.whatsapp.webhookUrl}
+              </span>
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+          <div className="space-y-1">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-sky-100/80 text-sky-800 dark:bg-sky-950/40 dark:text-sky-200">
+                <Mail className="size-4" aria-hidden />
+              </span>
+              ایمیل (Resend)
+            </CardTitle>
+            <CardDescription className="ms-10">
+              ارسال و دریافت ایمیل مشتری در CRM — Inbound webhook Resend.
+            </CardDescription>
+          </div>
+          {view ? (
+            <Badge variant={statusBadgeVariant(view.email.status)} className="shrink-0">
+              {view.email.statusLabelFa}
+            </Badge>
+          ) : null}
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:col-span-2">
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="resend-from">ایمیل فرستنده (From)</Label>
+            <Input
+              id="resend-from"
+              type="email"
+              dir="ltr"
+              className="text-start"
+              placeholder="noreply@yourdomain.com"
+              value={resendFromEmail}
+              onChange={(e) => setResendFromEmail(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="resend-key">کلید API Resend</Label>
+            {view?.email.apiKeyMasked && !changeResendKey ? (
+              <MaskedSecretRow
+                masked={view.email.apiKeyMasked}
+                onChange={() => setChangeResendKey(true)}
+              />
+            ) : (
+              <Input
+                id="resend-key"
+                type="password"
+                autoComplete="off"
+                dir="ltr"
+                className="text-start"
+                value={resendApiKey}
+                onChange={(e) => setResendApiKey(e.target.value)}
+              />
+            )}
+          </div>
+          {view?.email.webhookUrl ? (
+            <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+              Webhook دریافت ایمیل (Resend):{' '}
+              <span dir="ltr" className="font-mono break-all">
+                {view.email.webhookUrl}
+              </span>
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+          <div className="space-y-1">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-violet-100/80 text-violet-800 dark:bg-violet-950/40 dark:text-violet-200">
+                <Phone className="size-4" aria-hidden />
+              </span>
+              تماس VoIP / PBX
+            </CardTitle>
+            <CardDescription className="ms-10">
+              ثبت خودکار تماس‌های ورودی و خروجی از مرکز تماس — webhook عمومی.
+            </CardDescription>
+          </div>
+          {view ? (
+            <Badge variant={statusBadgeVariant(view.voip.status)} className="shrink-0">
+              {view.voip.statusLabelFa}
+            </Badge>
+          ) : null}
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:col-span-2">
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="voip-secret">کلید امنیتی Webhook (اختیاری)</Label>
+            {view?.voip.webhookSecretMasked && !changeVoipSecret ? (
+              <MaskedSecretRow
+                masked={view.voip.webhookSecretMasked}
+                onChange={() => setChangeVoipSecret(true)}
+              />
+            ) : (
+              <Input
+                id="voip-secret"
+                type="password"
+                autoComplete="off"
+                dir="ltr"
+                className="text-start"
+                placeholder="secret-for-pbx-webhook"
+                value={voipWebhookSecret}
+                onChange={(e) => setVoipWebhookSecret(e.target.value)}
+              />
+            )}
+          </div>
+          {view?.voip.webhookUrl ? (
+            <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+              Webhook رویداد تماس (PBX / VoIP):{' '}
+              <span dir="ltr" className="font-mono break-all">
+                {view.voip.webhookUrl}
+              </span>
+              <span className="mt-2 block">
+                هدر اختیاری: <span dir="ltr" className="font-mono">X-Voip-Secret</span>
+              </span>
+            </p>
+          ) : null}
+          <p className="rounded-md border border-border/70 bg-muted/30 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+            فرمت JSON نمونه:{' '}
+            <span dir="ltr" className="font-mono break-all">
+              {`{"callId":"123","direction":"inbound","status":"completed","from":"0912…","to":"021…","duration":120}`}
+            </span>
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+          <div className="space-y-1">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-sky-100/80 text-sky-800 dark:bg-sky-950/40 dark:text-sky-200">
+                <MessageSquare className="size-4" aria-hidden />
+              </span>
+              تلگرام (ربات)
+            </CardTitle>
+            <CardDescription className="ms-10">
+              دریافت و ارسال پیام از طریق Telegram Bot API — webhook per-org.
+            </CardDescription>
+          </div>
+          {view ? (
+            <Badge variant={statusBadgeVariant(view.telegram.status)} className="shrink-0">
+              {view.telegram.statusLabelFa}
+            </Badge>
+          ) : null}
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:col-span-2">
+          <div className="space-y-2">
+            <Label htmlFor="telegram-username">نام کاربری ربات (اختیاری)</Label>
+            <Input
+              id="telegram-username"
+              dir="ltr"
+              className="text-start"
+              placeholder="@MyShopBot"
+              value={telegramUsername}
+              onChange={(e) => setTelegramUsername(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="telegram-token">توکن ربات</Label>
+            {view?.telegram.botTokenMasked && !changeTelegramToken ? (
+              <MaskedSecretRow
+                masked={view.telegram.botTokenMasked}
+                onChange={() => setChangeTelegramToken(true)}
+              />
+            ) : (
+              <Input
+                id="telegram-token"
+                type="password"
+                autoComplete="off"
+                dir="ltr"
+                className="text-start"
+                value={telegramToken}
+                onChange={(e) => setTelegramToken(e.target.value)}
+              />
+            )}
+          </div>
+          {view?.telegram.webhookUrl ? (
+            <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+              Webhook تلگرام:{' '}
+              <span dir="ltr" className="font-mono break-all">
+                {view.telegram.webhookUrl}
+              </span>
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+          <div className="space-y-1">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-pink-100/80 text-pink-800 dark:bg-pink-950/40 dark:text-pink-200">
+                <MessageSquare className="size-4" aria-hidden />
+              </span>
+              اینستاگرام DM
+            </CardTitle>
+            <CardDescription className="ms-10">
+              {view?.instagram.noticeFa ??
+                'پشتیبانی کامل DM اینستاگرام در حال توسعه — فعلاً webhook stub.'}
+            </CardDescription>
+          </div>
+          {view ? (
+            <Badge variant={statusBadgeVariant(view.instagram.status)} className="shrink-0">
+              {view.instagram.statusLabelFa}
+            </Badge>
+          ) : null}
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:col-span-2">
+          <div className="space-y-2">
+            <Label htmlFor="instagram-page">شناسه صفحه (Page ID)</Label>
+            <Input
+              id="instagram-page"
+              dir="ltr"
+              className="text-start"
+              placeholder="17841400000000000"
+              value={instagramPageId}
+              onChange={(e) => setInstagramPageId(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="instagram-token">توکن دسترسی (Access Token)</Label>
+            {view?.instagram.accessTokenMasked && !changeInstagramToken ? (
+              <MaskedSecretRow
+                masked={view.instagram.accessTokenMasked}
+                onChange={() => setChangeInstagramToken(true)}
+              />
+            ) : (
+              <Input
+                id="instagram-token"
+                type="password"
+                autoComplete="off"
+                dir="ltr"
+                className="text-start"
+                value={instagramToken}
+                onChange={(e) => setInstagramToken(e.target.value)}
+              />
+            )}
+          </div>
+          {view?.instagram.webhookUrl ? (
+            <p className="rounded-md border border-border/70 bg-muted/40 px-3 py-2 text-xs text-muted-foreground sm:col-span-2">
+              Webhook اینستاگرام (پیش‌نمایش):{' '}
+              <span dir="ltr" className="font-mono break-all">
+                {view.instagram.webhookUrl}
+              </span>
             </p>
           ) : null}
         </CardContent>

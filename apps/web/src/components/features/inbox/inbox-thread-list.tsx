@@ -1,0 +1,212 @@
+'use client';
+
+import type { InboxChannel, InboxThreadSummary } from '@kesbyar/shared';
+import { INBOX_CHANNEL_LABELS } from '@kesbyar/shared';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import { JalaliDate } from '@/components/shared/jalali-date';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+
+type MemberOption = {
+  userId: string;
+  name: string;
+};
+
+type InboxThreadListProps = {
+  canAssign?: boolean;
+};
+
+const CHANNEL_FILTERS: Array<{ value: InboxChannel | 'ALL'; label: string }> = [
+  { value: 'ALL', label: 'همه' },
+  { value: 'WHATSAPP', label: INBOX_CHANNEL_LABELS.WHATSAPP },
+  { value: 'SMS', label: INBOX_CHANNEL_LABELS.SMS },
+  { value: 'EMAIL', label: INBOX_CHANNEL_LABELS.EMAIL },
+  { value: 'PHONE', label: INBOX_CHANNEL_LABELS.PHONE },
+  { value: 'TELEGRAM', label: INBOX_CHANNEL_LABELS.TELEGRAM },
+  { value: 'INSTAGRAM', label: INBOX_CHANNEL_LABELS.INSTAGRAM },
+];
+
+const POLL_INTERVAL_MS = 15_000;
+
+export function InboxThreadList({ canAssign = false }: InboxThreadListProps) {
+  const [items, setItems] = useState<InboxThreadSummary[]>([]);
+  const [members, setMembers] = useState<MemberOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [assigningId, setAssigningId] = useState<string | null>(null);
+  const [channelFilter, setChannelFilter] = useState<InboxChannel | 'ALL'>('ALL');
+
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (channelFilter !== 'ALL') params.set('channel', channelFilter);
+      const res = await fetch(`/api/inbox?${params.toString()}`);
+      const data = await res.json();
+      if (data.success) {
+        setItems(data.data.items ?? []);
+      }
+    } finally {
+      if (!silent) setLoading(false);
+    }
+  }, [channelFilter]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      void load(true);
+    }, POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [load]);
+
+  useEffect(() => {
+    if (!canAssign) return;
+    async function loadMembers() {
+      const res = await fetch('/api/members');
+      const data = await res.json();
+      if (data.success) {
+        setMembers(
+          (data.data ?? []).map((m: { user: { id: string; name: string } }) => ({
+            userId: m.user.id,
+            name: m.user.name,
+          })),
+        );
+      }
+    }
+    void loadMembers();
+  }, [canAssign]);
+
+  async function handleAssign(threadId: string, assigneeId: string | null) {
+    setAssigningId(threadId);
+    try {
+      const res = await fetch(`/api/inbox/${threadId}/assign`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assigneeId: assigneeId || null }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        toast.error(data.error?.message ?? 'تخصیص ناموفق بود');
+        return;
+      }
+      setItems((prev) =>
+        prev.map((t) =>
+          t.id === threadId
+            ? {
+                ...t,
+                assigneeId: data.data.assigneeId,
+                assigneeName: data.data.assigneeName,
+              }
+            : t,
+        ),
+      );
+      toast.success('مسئول مکالمه به‌روز شد');
+    } catch {
+      toast.error('خطا در تخصیص');
+    } finally {
+      setAssigningId(null);
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader className="space-y-3">
+        <CardTitle className="text-base">مکالمات اخیر</CardTitle>
+        <div className="flex flex-wrap gap-2">
+          {CHANNEL_FILTERS.map((filter) => (
+            <Button
+              key={filter.value}
+              type="button"
+              size="sm"
+              variant={channelFilter === filter.value ? 'default' : 'outline'}
+              className={cn('h-8 text-xs')}
+              onClick={() => setChannelFilter(filter.value)}
+            >
+              {filter.label}
+            </Button>
+          ))}
+        </div>
+      </CardHeader>
+      <CardContent className="divide-y p-0">
+        {loading ? (
+          <p className="p-4 text-sm text-muted-foreground">در حال بارگذاری...</p>
+        ) : items.length === 0 ? (
+          <p className="p-4 text-sm text-muted-foreground">
+            هنوز مکالمه‌ای ثبت نشده. webhook کانال‌ها را در تنظیمات یکپارچه‌سازی پیکربندی کنید.
+          </p>
+        ) : (
+          items.map((thread) => (
+            <div key={thread.id} className="flex gap-3 p-4">
+              <div className="flex-1 space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="outline">
+                    {INBOX_CHANNEL_LABELS[thread.channel] ?? thread.channel}
+                  </Badge>
+                  {thread.unreadCount > 0 ? (
+                    <Badge variant="destructive" className="h-5 min-w-5 px-1.5 text-[10px]">
+                      {thread.unreadCount}
+                    </Badge>
+                  ) : null}
+                  <span className="font-medium">
+                    {thread.customerName ??
+                      thread.leadTitle ??
+                      thread.externalPhone ??
+                      thread.externalEmail ??
+                      '—'}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {thread.lastMessagePreview ?? '—'}
+                </p>
+                <div className="flex flex-wrap items-center gap-3 text-xs">
+                  {thread.customerId ? (
+                    <Link href={`/customers/${thread.customerId}`} className="text-primary hover:underline">
+                      مشتری
+                    </Link>
+                  ) : null}
+                  {thread.leadId ? (
+                    <Link href={`/leads/${thread.leadId}`} className="text-primary hover:underline">
+                      سرنخ
+                    </Link>
+                  ) : null}
+                  {canAssign ? (
+                    <label className="flex items-center gap-1 text-muted-foreground">
+                      <span>مسئول:</span>
+                      <select
+                        className="rounded border border-input bg-background px-2 py-0.5 text-xs"
+                        value={thread.assigneeId ?? ''}
+                        disabled={assigningId === thread.id}
+                        onChange={(e) =>
+                          void handleAssign(thread.id, e.target.value || null)
+                        }
+                      >
+                        <option value="">—</option>
+                        {members.map((m) => (
+                          <option key={m.userId} value={m.userId}>
+                            {m.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : thread.assigneeName ? (
+                    <span className="text-muted-foreground">مسئول: {thread.assigneeName}</span>
+                  ) : null}
+                </div>
+              </div>
+              <div className="shrink-0 text-xs text-muted-foreground">
+                {thread.lastMessageAt ? <JalaliDate date={thread.lastMessageAt} showTime /> : '—'}
+              </div>
+            </div>
+          ))
+        )}
+      </CardContent>
+    </Card>
+  );
+}

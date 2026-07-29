@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.6.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.9.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -62,6 +62,10 @@
 | آنبوردینگ | آماده | مسیر راه‌اندازی سازمان جدید |
 | PWA | آماده | نصب، SW، رسپانسیو موبایل |
 | ویکی و راهنما | آماده | `/help` + [Wiki](https://github.com/mjpt1/kasbyar/wiki) |
+| صندوق ورودی چندکاناله | آماده | واتساپ، SMS، ایمیل، VoIP، تلگرام، اینستاگرام |
+| KPI تیم و تخصیص مکالمه | آماده | داشبورد `/team`، assignee، round-robin |
+| اتوماسیون رویدادمحور | آماده | پیام ورودی، احساس منفی، تماس ازدست‌رفته |
+| Kanban سرنخ / پورتال مشتری | MVP | `/leads/kanban`، `/portal/[token]` |
 | حذف پوسته دمو | انجام‌شده | مسیرهای demo/reset/scenario از محصول واقعی حذف شدند |
 
 ---
@@ -223,13 +227,62 @@ npm run dev
 
 ## English (short)
 
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.6.0**.
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads**), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.9.0**.
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.6.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.9.0**.
+
+### v0.9.0 — تکمیل production صندوق ورودی
+
+- شمارش خوانده‌نشده بر اساس آخرین پیام ورودی
+- فیلتر کانال در UI و API (همه کانال‌های omnichannel)
+- polling خودکار ۱۵ ثانیه‌ای لیست مکالمات
+- `GET /api/inbox/health` — وضعیت پیکربندی کانال‌ها
+- `resolveInstagramAppSecret` + تأیید امضای webhook اینستاگرام
+- README و ویکی به‌روز با changelog v0.6.1→v0.9.0
+- نسخه root / web / mobile / shared روی **0.9.0**
+
+### v0.8.0 — MVPهای تکمیلی
+
+- Kanban سرنخ (`/leads/kanban`)، پورتال مشتری token-based
+- ingest کامل DM اینستاگرام، round-robin assignee
+- پخش recording تماس VoIP در thread
+- UI مودیان و coaching تیم
+
+### v0.7.0 — تلگرام، cron، تخصیص
+
+- کانال تلگرام Bot + webhook per-org
+- `assigneeId` روی thread + API PATCH assign
+- cron روزانه `/api/cron/automation` (vercel.json)
+- stub/ingest اینستاگرام
+
+### v0.6.6 — اتوماسیون رویدادمحور
+
+- تریگرهای `INBOUND_MESSAGE`, `NEGATIVE_SENTIMENT`, `MISSED_CALL`
+- `runEventAutomation()` در لایه automation
+
+### v0.6.5 — KPI مکالمه و AI
+
+- متریک‌های مکالمه، sentiment inbound، بینش مدیر LLM
+
+### v0.6.4 — VoIP
+
+- webhook تماس، click-to-call، thread کانال PHONE
+
+### v0.6.3 — SMS + Email
+
+- Kavenegar inbound/outbound، Resend inbound/outbound
+
+### v0.6.2 — WhatsApp inbox
+
+- Cloud API webhook، صفحه `/inbox`
+
+### v0.6.1 — KPI تیم
+
+- داشبورد `/team`، امتیاز rule-based، لاگ تماس دستی
 
 ### v0.6.0 — پک‌ها و مشاغل موج ۴
 
@@ -335,7 +388,12 @@ npm run dev
 6. `20260721120000_in_app_notifications`
 7. `20260722180000_iran_market_p0`
 8. `20260723120000_team_chat_support_modules`
-9. `20260727120000_wave4_vertical_packs` ← این انتشار
+9. `20260727120000_wave4_vertical_packs`
+10. `20260728120000_omnichannel_inbox`
+11. `20260728140000_inbox_sms_email`
+12. `20260728160000_inbox_automation_triggers`
+13. `20260728180000_inbox_thread_assignee`
+14. `20260728190000_instagram_portal`
 
 ---
 

@@ -3,8 +3,12 @@ import { FileText, History } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { CustomerPortalLinkButton } from '@/components/features/customers/customer-portal-link-button';
 import { CustomersEditForm } from '@/components/features/customers/customers-edit-form';
+import { LogActivityForm } from '@/components/features/activities/log-activity-form';
+import { InboxThreadPanel } from '@/components/features/inbox/inbox-thread-panel';
 import { EntityFilesPanel } from '@/components/features/files/entity-files-panel';
+import { ClickToCallLink } from '@/components/shared/click-to-call-link';
 import { PageHeader } from '@/components/layout/page-header';
 import { InlineEmpty } from '@/components/shared/inline-empty';
 import { JalaliDate } from '@/components/shared/jalali-date';
@@ -47,7 +51,8 @@ export default async function CustomerDetailPage({
         title={customer.name}
         description={customer.company ?? 'جزئیات مشتری'}
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <CustomerPortalLinkButton customerId={customer.id} />
             <CustomersEditForm customer={customer} />
             <Link
               href="/customers"
@@ -68,7 +73,7 @@ export default async function CustomerDetailPage({
             <div>
               <div className="text-muted-foreground">تلفن</div>
               <div dir="ltr" className="text-left">
-                {customer.phone ?? '—'}
+                {customer.phone ? <ClickToCallLink phone={customer.phone} /> : '—'}
               </div>
             </div>
             <div>
@@ -101,6 +106,29 @@ export default async function CustomerDetailPage({
         </Card>
 
         <div className="space-y-6 lg:col-span-2">
+          <LogActivityForm customerId={customer.id} />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/customer/${customer.id}`}
+            title="واتساپ مشتری"
+            channel="whatsapp"
+          />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/customer/${customer.id}/sms`}
+            title="پیامک مشتری"
+            channel="sms"
+          />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/customer/${customer.id}/email`}
+            title="ایمیل مشتری"
+            channel="email"
+          />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/customer/${customer.id}/phone`}
+            title="تاریخچه تماس"
+            channel="phone"
+            readOnly
+          />
+
           <Card>
             <CardHeader>
               <CardTitle className="text-base">فاکتورها</CardTitle>

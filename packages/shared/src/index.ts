@@ -16,3 +16,5 @@ export * from './copy/leads';
 export * from './modules';
 export * from './modules';
 export * from './copy';
+export * from './team';
+export * from './inbox';

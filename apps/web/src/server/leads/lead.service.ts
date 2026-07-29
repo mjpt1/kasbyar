@@ -44,6 +44,24 @@ export async function listLeads(
   return { items, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
 }
 
+export async function listLeadsForKanban(organizationId: string) {
+  const [stages, leads] = await Promise.all([
+    listPipelineStages(organizationId),
+    prisma.lead.findMany({
+      where: {
+        organizationId,
+        ...ACTIVE_RECORD_FILTER,
+        status: { notIn: ['WON', 'LOST'] },
+      },
+      orderBy: [{ nextFollowUpAt: 'asc' }, { createdAt: 'desc' }],
+      include: { stage: true },
+      take: 500,
+    }),
+  ]);
+
+  return { stages, leads };
+}
+
 export async function getLead(organizationId: string, id: string) {
   return prisma.lead.findFirst({
     where: { id, organizationId, ...ACTIVE_RECORD_FILTER },

@@ -29,6 +29,22 @@ export function isValidIranianMobile(value: string): boolean {
   return /^09\d{9}$/.test(normalizeIranianMobile(value));
 }
 
+/** فرمت واتساپ: 989121111111 */
+export function toWhatsAppPhone(value: string): string | null {
+  const normalized = normalizeIranianMobile(value);
+  if (!isValidIranianMobile(normalized)) return null;
+  return `98${normalized.slice(1)}`;
+}
+
+/** تبدیل شماره واتساپ به موبایل ایران */
+export function fromWhatsAppPhone(value: string): string {
+  const digits = toLatinDigits(value).replace(/\D/g, '');
+  if (digits.startsWith('98') && digits.length === 12) {
+    return `0${digits.slice(2)}`;
+  }
+  return normalizeIranianMobile(digits);
+}
+
 /** نرمال‌سازی کد ملی / شناسه — فقط ارقام لاتین */
 export function normalizeNationalId(value: string): string {
   return toLatinDigits(value).replace(/\D/g, '');

@@ -12,7 +12,7 @@ export type OrgModuleDefinition = {
   /** Settings path when module needs configuration after enable */
   settingsHref?: string;
   /** Linked IntegrationConfig.provider when category is integration */
-  integrationProvider?: 'payment' | 'kavenegar' | 'moadian';
+  integrationProvider?: 'payment' | 'kavenegar' | 'moadian' | 'whatsapp' | 'resend' | 'voip' | 'telegram' | 'instagram';
   /** Default enabled for new orgs */
   defaultEnabled: boolean;
 };
@@ -99,6 +99,51 @@ export const ORG_MODULE_CATALOG: OrgModuleDefinition[] = [
     category: 'operations',
     settingsHref: '/support',
     defaultEnabled: true,
+  },
+  {
+    key: 'customer_inbox',
+    nameFa: 'صندوق پیام مشتری (واتساپ)',
+    descriptionFa: 'دریافت و ارسال پیام واتساپ در پروفایل مشتری و سرنخ',
+    category: 'integration',
+    settingsHref: '/settings',
+    integrationProvider: 'whatsapp',
+    defaultEnabled: true,
+  },
+  {
+    key: 'email_resend',
+    nameFa: 'ایمیل (Resend)',
+    descriptionFa: 'ارسال و دریافت ایمیل مشتری در CRM',
+    category: 'integration',
+    settingsHref: '/settings',
+    integrationProvider: 'resend',
+    defaultEnabled: true,
+  },
+  {
+    key: 'voip_calls',
+    nameFa: 'تماس VoIP',
+    descriptionFa: 'ثبت خودکار تماس‌های ورودی/خروجی از مرکز تماس یا PBX',
+    category: 'integration',
+    settingsHref: '/settings',
+    integrationProvider: 'voip',
+    defaultEnabled: true,
+  },
+  {
+    key: 'telegram_inbox',
+    nameFa: 'تلگرام (ربات)',
+    descriptionFa: 'دریافت و ارسال پیام تلگرام در صندوق پیام CRM',
+    category: 'integration',
+    settingsHref: '/settings',
+    integrationProvider: 'telegram',
+    defaultEnabled: true,
+  },
+  {
+    key: 'instagram_dm',
+    nameFa: 'اینستاگرام DM',
+    descriptionFa: 'آماده‌سازی webhook و شناسه صفحه — پشتیبانی کامل DM به‌زودی',
+    category: 'integration',
+    settingsHref: '/settings',
+    integrationProvider: 'instagram',
+    defaultEnabled: false,
   },
 ];
 

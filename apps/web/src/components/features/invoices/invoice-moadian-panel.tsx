@@ -34,10 +34,11 @@ function statusVariant(
 
 export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadianPanelProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState<'prepare' | 'mark' | null>(null);
+  const [loading, setLoading] = useState<'prepare' | 'mark' | 'intermediary' | null>(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<ChecklistItem[]>([]);
   const [modeLabel, setModeLabel] = useState('');
+  const [mode, setMode] = useState<'export' | 'intermediary' | 'unconfigured'>('export');
   const [ready, setReady] = useState(false);
   const [payloadJson, setPayloadJson] = useState('');
 
@@ -54,6 +55,7 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
       setItems(data.data.readiness.items);
       setReady(data.data.readiness.ready);
       setModeLabel(data.data.modeLabelFa);
+      setMode(data.data.mode ?? 'export');
       setPayloadJson(JSON.stringify(data.data.payload, null, 2));
       router.refresh();
     } catch {
@@ -95,6 +97,28 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
     a.download = `moadian-${invoiceId}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  async function sendToIntermediary() {
+    setLoading('intermediary');
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}/moadian`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ manualUpload: false }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        toast.error(data.error?.message ?? 'ارسال به واسط ناموفق بود');
+        return;
+      }
+      toast.success(data.data.noticeFa ?? 'ارسال به واسط انجام شد');
+      router.refresh();
+    } catch {
+      toast.error('اتصال برقرار نشد. دوباره تلاش کنید.');
+    } finally {
+      setLoading(null);
+    }
   }
 
   async function markUploaded() {
@@ -171,23 +195,42 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
                 <Download className="size-4" aria-hidden />
                 دانلود JSON
               </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="min-h-9"
-                disabled={busy || !ready}
-                onClick={markUploaded}
-                aria-busy={loading === 'mark'}
-                title={!ready ? 'ابتدا موارد ناقص چک‌لیست را تکمیل کنید' : undefined}
-              >
-                {loading === 'mark' ? (
-                  <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-                ) : (
-                  <Upload className="size-4" aria-hidden />
-                )}
-                ثبت بارگذاری دستی
-              </Button>
+              {mode === 'intermediary' ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  className="min-h-9"
+                  disabled={busy || !ready}
+                  onClick={sendToIntermediary}
+                  aria-busy={loading === 'intermediary'}
+                  title={!ready ? 'ابتدا موارد ناقص چک‌لیست را تکمیل کنید' : undefined}
+                >
+                  {loading === 'intermediary' ? (
+                    <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
+                  ) : (
+                    <Upload className="size-4" aria-hidden />
+                  )}
+                  ارسال به واسط مؤدیان
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="min-h-9"
+                  disabled={busy || !ready}
+                  onClick={markUploaded}
+                  aria-busy={loading === 'mark'}
+                  title={!ready ? 'ابتدا موارد ناقص چک‌لیست را تکمیل کنید' : undefined}
+                >
+                  {loading === 'mark' ? (
+                    <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
+                  ) : (
+                    <Upload className="size-4" aria-hidden />
+                  )}
+                  ثبت بارگذاری دستی
+                </Button>
+              )}
             </>
           ) : null}
         </div>
@@ -195,6 +238,16 @@ export function InvoiceMoadianPanel({ invoiceId, moadianStatus }: InvoiceMoadian
         {open ? (
           <div className="space-y-3 rounded-lg border border-border/80 bg-muted/20 p-4 text-sm">
             <p className="text-muted-foreground">{modeLabel}</p>
+            {mode === 'intermediary' ? (
+              <p className="text-xs text-emerald-800 dark:text-emerald-200">
+                واسط پیکربندی شده — می‌توانید مستقیم «ارسال به واسط مؤدیان» را بزنید.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                برای ارسال خودکار، MOADIAN_INTERMEDIARY_URL و کلید API را در تنظیمات سازمان وارد
+                کنید.
+              </p>
+            )}
             <ul className="space-y-2" role="list" aria-label="چک‌لیست آمادگی مؤدیان">
               {items.map((item) => (
                 <li

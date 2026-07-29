@@ -9,6 +9,7 @@ export const INTEGRATION_CATEGORIES = {
   STORAGE: 'storage',
   SMS: 'sms',
   EMAIL: 'email',
+  VOIP: 'voip',
   NOTIFICATION: 'notification',
   ANALYTICS: 'analytics',
   ERP: 'erp',
@@ -30,6 +31,10 @@ export const PROVIDER_IDS = {
   NOTIFICATION_NOOP: 'noop',
   SMS_KAVENEGAR: 'kavenegar',
   EMAIL_RESEND: 'resend',
+  WHATSAPP_CLOUD: 'whatsapp_cloud',
+  TELEGRAM_BOT: 'telegram_bot',
+  INSTAGRAM_DM: 'instagram_dm',
+  VOIP_WEBHOOK: 'voip_webhook',
   // Analytics
   ANALYTICS_LOG: 'log',
   ANALYTICS_POSTHOG: 'posthog',

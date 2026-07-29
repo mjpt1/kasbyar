@@ -130,6 +130,9 @@ export const AUTOMATION_TRIGGER_LABELS: Record<string, string> = {
   TASK_DUE: 'سررسید وظیفه',
   PAYMENT_RECEIVED: 'دریافت پرداخت',
   CUSTOMER_CREATED: 'مشتری جدید',
+  INBOUND_MESSAGE: 'پیام ورودی مشتری',
+  NEGATIVE_SENTIMENT: 'احساس منفی مشتری',
+  MISSED_CALL: 'تماس از دست‌رفته',
 };
 
 export const AUTOMATION_ACTION_LABELS: Record<string, string> = {

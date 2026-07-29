@@ -40,6 +40,21 @@ function integrationConfigured(
   if (provider === 'moadian') {
     return integrations.moadian.configured;
   }
+  if (provider === 'whatsapp') {
+    return integrations.whatsapp.configured;
+  }
+  if (provider === 'resend') {
+    return integrations.email.configured;
+  }
+  if (provider === 'voip') {
+    return integrations.voip.configured;
+  }
+  if (provider === 'telegram') {
+    return integrations.telegram.configured;
+  }
+  if (provider === 'instagram') {
+    return integrations.instagram.configured;
+  }
   return false;
 }
 
@@ -50,7 +65,12 @@ function integrationActiveFromConfigs(
   if (!provider) return true;
   if (provider === 'payment') return configs.paymentActive;
   if (provider === 'kavenegar') return configs.smsActive;
-  return configs.moadianActive;
+  if (provider === 'moadian') return configs.moadianActive;
+  if (provider === 'whatsapp') return configs.whatsappActive;
+  if (provider === 'resend') return configs.resendActive;
+  if (provider === 'telegram') return configs.telegramActive;
+  if (provider === 'instagram') return configs.instagramActive;
+  return configs.voipActive;
 }
 
 async function loadIntegrationFlags(organizationId: string) {
@@ -63,6 +83,11 @@ async function loadIntegrationFlags(organizationId: string) {
     paymentActive: byProvider[ORG_INTEGRATION.PAYMENT] ?? true,
     smsActive: byProvider[ORG_INTEGRATION.KAVENEGAR] ?? true,
     moadianActive: byProvider[ORG_INTEGRATION.MOADIAN] ?? true,
+    whatsappActive: byProvider[ORG_INTEGRATION.WHATSAPP] ?? true,
+    resendActive: byProvider[ORG_INTEGRATION.RESEND] ?? true,
+    voipActive: byProvider[ORG_INTEGRATION.VOIP] ?? true,
+    telegramActive: byProvider[ORG_INTEGRATION.TELEGRAM] ?? true,
+    instagramActive: byProvider[ORG_INTEGRATION.INSTAGRAM] ?? false,
   };
 }
 
@@ -123,14 +148,34 @@ async function setIntegrationActive(
       ? ORG_INTEGRATION.PAYMENT
       : provider === 'kavenegar'
         ? ORG_INTEGRATION.KAVENEGAR
-        : ORG_INTEGRATION.MOADIAN;
+        : provider === 'moadian'
+          ? ORG_INTEGRATION.MOADIAN
+          : provider === 'whatsapp'
+            ? ORG_INTEGRATION.WHATSAPP
+            : provider === 'resend'
+              ? ORG_INTEGRATION.RESEND
+              : provider === 'telegram'
+                ? ORG_INTEGRATION.TELEGRAM
+                : provider === 'instagram'
+                  ? ORG_INTEGRATION.INSTAGRAM
+                  : ORG_INTEGRATION.VOIP;
 
   const label =
     provider === 'payment'
       ? 'درگاه پرداخت'
       : provider === 'kavenegar'
         ? 'پیامک کاوه‌نگار'
-        : 'سامانه مؤدیان';
+        : provider === 'moadian'
+          ? 'سامانه مؤدیان'
+          : provider === 'whatsapp'
+            ? 'واتساپ Business'
+            : provider === 'resend'
+              ? 'ایمیل Resend'
+              : provider === 'telegram'
+                ? 'ربات تلگرام'
+                : provider === 'instagram'
+                  ? 'اینستاگرام DM'
+                  : 'تماس VoIP';
 
   await prisma.integrationConfig.upsert({
     where: {

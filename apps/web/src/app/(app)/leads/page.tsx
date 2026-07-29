@@ -1,10 +1,12 @@
 import { LEAD_LABELS } from '@kesbyar/shared';
 import { Suspense } from 'react';
-import { Target } from 'lucide-react';
+import { Columns3, Target } from 'lucide-react';
+import Link from 'next/link';
 
 import { LeadsCreateForm } from '@/components/features/leads/leads-create-form';
 import { LeadsTable } from '@/components/features/leads/leads-table';
 import { PageHeader } from '@/components/layout/page-header';
+import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/shared/empty-state';
 import { ListPagination } from '@/components/shared/list-pagination';
 import { ListSearch } from '@/components/shared/list-search';
@@ -47,6 +49,14 @@ export default async function LeadsPage({
       <PageHeader
         title={LEAD_LABELS.plural}
         description={`${total} ${LEAD_LABELS.singular} در ${LEAD_LABELS.pipeline}`}
+        actions={
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/leads/kanban">
+              <Columns3 className="size-4" aria-hidden />
+              کانبان
+            </Link>
+          </Button>
+        }
       />
       <Suspense fallback={<LoadingState label="در حال آماده‌سازی جستجو…" className="py-4" />}>
         <ListSearch placeholder="جستجو بر اساس عنوان یا تماس..." />

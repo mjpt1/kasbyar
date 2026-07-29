@@ -4,7 +4,10 @@ import { notFound } from 'next/navigation';
 
 import { LeadsEditPanel } from '@/components/features/leads/leads-edit-panel';
 import { LeadsFollowUpForm } from '@/components/features/leads/leads-follow-up-form';
+import { LogActivityForm } from '@/components/features/activities/log-activity-form';
+import { InboxThreadPanel } from '@/components/features/inbox/inbox-thread-panel';
 import { EntityFilesPanel } from '@/components/features/files/entity-files-panel';
+import { ClickToCallLink } from '@/components/shared/click-to-call-link';
 import { PageHeader } from '@/components/layout/page-header';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { LeadStatusBadge } from '@/components/shared/status-badges';
@@ -80,7 +83,11 @@ export default async function LeadDetailPage({
               <div>
                 <div className="text-muted-foreground">تلفن</div>
                 <div dir="ltr" className="text-left">
-                  {lead.contactPhone ?? '—'}
+                  {lead.contactPhone ? (
+                    <ClickToCallLink phone={lead.contactPhone} />
+                  ) : (
+                    '—'
+                  )}
                 </div>
               </div>
               <div>
@@ -119,6 +126,16 @@ export default async function LeadDetailPage({
         </div>
 
         <div className="space-y-6 lg:col-span-2">
+          <LogActivityForm leadId={lead.id} />
+          <InboxThreadPanel apiPath={`/api/inbox/lead/${lead.id}`} title="واتساپ سرنخ" channel="whatsapp" />
+          <InboxThreadPanel apiPath={`/api/inbox/lead/${lead.id}/sms`} title="پیامک سرنخ" channel="sms" />
+          <InboxThreadPanel apiPath={`/api/inbox/lead/${lead.id}/email`} title="ایمیل سرنخ" channel="email" />
+          <InboxThreadPanel
+            apiPath={`/api/inbox/lead/${lead.id}/phone`}
+            title="تاریخچه تماس"
+            channel="phone"
+            readOnly
+          />
           <LeadsFollowUpForm leadId={lead.id} />
 
           <Card>
