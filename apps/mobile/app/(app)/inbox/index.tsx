@@ -1,4 +1,5 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { useAuthCredentials } from '@/auth/AuthContext';
 import { ListRow, OfflineBanner } from '@/components/ui';
@@ -41,6 +42,7 @@ function threadTitle(thread: InboxThread): string {
 }
 
 export default function InboxScreen() {
+  const router = useRouter();
   const auth = useAuthCredentials();
   const { data, loading, error, reload, fromCache, cachedAt } = useCachedQuery<InboxResponse>(
     '/api/inbox?page=1',
@@ -67,10 +69,7 @@ export default function InboxScreen() {
 
   return (
     <Screen>
-      <ScreenHeader
-        title="صندوق پیام"
-        subtitle="مکالمات omnichannel — برای پاسخ کامل از وب‌اپ استفاده کنید"
-      />
+      <ScreenHeader title="صندوق پیام" subtitle="مکالمات omnichannel — مشاهده و پاسخ" />
       <OfflineBanner visible={fromCache} cachedAt={cachedAt} />
       <FlatList
         data={items}
@@ -87,6 +86,7 @@ export default function InboxScreen() {
             ]
               .filter(Boolean)
               .join(' · ')}
+            onPress={() => router.push(`/(app)/inbox/${item.id}`)}
           />
         )}
         ListEmptyComponent={
@@ -94,7 +94,7 @@ export default function InboxScreen() {
         }
       />
       <Text style={styles.hint}>
-        ارسال پاسخ و تخصیص مسئول در نسخه وب (/inbox) در دسترس است.
+        پاسخ واتساپ، پیامک، ایمیل، تلگرام و اینستاگرام از همین اپ ارسال می‌شود. تماس VoIP فقط خواندنی است.
       </Text>
     </Screen>
   );

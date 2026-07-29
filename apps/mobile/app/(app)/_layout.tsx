@@ -66,6 +66,7 @@ export default function AppTabsLayout() {
       <Tabs.Screen name="invoices/[id]" options={{ href: null }} />
       <Tabs.Screen name="chat/index" options={{ href: null }} />
       <Tabs.Screen name="inbox/index" options={{ href: null }} />
+      <Tabs.Screen name="inbox/[threadId]" options={{ href: null }} />
       <Tabs.Screen name="support/index" options={{ href: null }} />
       <Tabs.Screen name="tasks/index" options={{ href: null }} />
       <Tabs.Screen name="payments/index" options={{ href: null }} />
