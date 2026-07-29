@@ -2,7 +2,7 @@
 
 import { formatPlanPrice, listPublicPlans, PLAN_FEATURE_LABELS, PLAN_QUOTA_LABELS } from '@kesbyar/shared';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,20 @@ export function PricingPlansGrid({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [billingOnline, setBillingOnline] = useState(false);
   const mayChange = canChange && canManageBilling(role);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const res = await fetch('/api/billing/checkout');
+        const data = await res.json();
+        if (data.success) setBillingOnline(Boolean(data.data?.configured));
+      } catch {
+        /* ignore */
+      }
+    })();
+  }, []);
 
   async function selectPlan(planCode: string) {
     if (!mayChange) {
@@ -33,8 +46,28 @@ export function PricingPlansGrid({
     }
     if (planCode === currentPlanCode) return;
 
+    const plan = plans.find((p) => p.code === planCode);
+    const isPaid = plan && plan.priceMonthlyIrr > 0;
+
     setLoading(planCode);
     try {
+      if (isPaid && billingOnline) {
+        const res = await fetch('/api/billing/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ planCode, billingPeriod: 'MONTHLY' }),
+        });
+        const data = await res.json();
+        if (!data.success) {
+          toast.error(data.error?.message ?? 'شروع پرداخت ناموفق بود');
+          return;
+        }
+        if (data.data.checkoutUrl) {
+          window.location.href = data.data.checkoutUrl;
+          return;
+        }
+      }
+
       const res = await fetch('/api/billing/change-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,7 +78,11 @@ export function PricingPlansGrid({
         toast.error(data.error?.message ?? 'تغییر طرح ناموفق بود');
         return;
       }
-      toast.success('طرح با موفقیت به‌روزرسانی شد');
+      toast.success(
+        isPaid && !billingOnline
+          ? 'طرح به‌روزرسانی شد (پرداخت آنلاین هنوز پیکربندی نشده)'
+          : 'طرح با موفقیت به‌روزرسانی شد',
+      );
       router.refresh();
     } catch {
       toast.error('خطا در ارتباط با سرور');
@@ -116,7 +153,9 @@ export function PricingPlansGrid({
                   ? 'طرح فعلی'
                   : loading === plan.code
                     ? 'در حال ثبت...'
-                    : 'انتخاب طرح'}
+                    : plan.priceMonthlyIrr > 0 && billingOnline
+                      ? 'خرید و پرداخت'
+                      : 'انتخاب طرح'}
               </Button>
             </CardContent>
           </Card>

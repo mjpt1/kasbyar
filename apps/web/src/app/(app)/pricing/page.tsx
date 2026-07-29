@@ -15,7 +15,7 @@ export default async function PricingPage() {
     <div className="space-y-8">
       <PageHeader
         title="طرح‌ها و قیمت‌گذاری"
-        description="مقایسه طرح‌ها و انتخاب مناسب کسب‌وکار شما — پرداخت آنلاین به‌زودی"
+        description="مقایسه طرح‌ها — پرداخت آنلاین با درگاه پلتفرم در صورت پیکربندی"
         actions={
           <Button asChild variant="outline" size="sm">
             <Link href="/settings/billing">وضعیت اشتراک</Link>
@@ -34,8 +34,8 @@ export default async function PricingPage() {
       />
 
       <p className="text-center text-xs text-muted-foreground">
-        تغییر طرح بلافاصله در فضای کاری شما اعمال می‌شود. پرداخت آنلاین طرح‌ها به‌زودی
-        از طریق درگاه پرداخت فعال می‌شود.
+        طرح‌های پولی: در صورت پیکربندی درگاه (BILLING_* در Vercel) به صفحه پرداخت هدایت می‌شوید.
+        در غیر این صورت تغییر طرح بلافاصله اعمال می‌شود.
       </p>
     </div>
   );

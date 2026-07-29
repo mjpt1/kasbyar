@@ -43,7 +43,8 @@ export function getBillingProvider(explicitId?: string | null): BillingProvider 
   switch (id) {
     case PROVIDER_IDS.BILLING_ZARINPAL:
     case PROVIDER_IDS.BILLING_IDPAY:
-      // post-V1: return zarinpalBillingProvider
+      // Subscription checkout: /api/billing/checkout (platform env keys).
+      // Invoice IPG: per-org keys via payments/gateways.
       cached = manualBillingProvider;
       return cached;
     case PROVIDER_IDS.BILLING_MANUAL:

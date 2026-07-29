@@ -4,6 +4,7 @@ import { getSpecialty, listSpecialties, PACK_REGISTRY, type IndustryPackId } fro
 import { prisma } from '@/lib/prisma';
 import { AppError, ForbiddenError, NotFoundError } from '@/lib/errors';
 import { getDefaultHomePath } from '@/lib/permissions';
+import { sendNotification, isSmsProviderConfiguredForOrg } from '@/server/notifications/notification.adapter';
 
 const PACK_IDS = new Set(Object.keys(PACK_REGISTRY));
 
@@ -70,6 +71,9 @@ export async function completeOnboarding(
     },
   });
 
+  // Optional welcome SMS when Kavenegar is configured (non-blocking)
+  void sendWelcomeSmsIfConfigured(organizationId, role, updated.name).catch(() => {});
+
   return {
     organization: updated,
     homePath: getDefaultHomePath(
@@ -102,4 +106,31 @@ export function assertPackSpecialtyMatch(pack: string, specialtyId: string) {
     throw new AppError('تخصص با بسته هم‌خوان نیست', 'VALIDATION_ERROR', 400);
   }
   return specialty;
+}
+
+async function sendWelcomeSmsIfConfigured(
+  organizationId: string,
+  role: string,
+  orgName: string,
+) {
+  if (role !== 'OWNER' && role !== 'ADMIN') return;
+
+  const smsReady = await isSmsProviderConfiguredForOrg(organizationId);
+  if (!smsReady) return;
+
+  const membership = await prisma.membership.findFirst({
+    where: { organizationId, role: { in: ['OWNER', 'ADMIN'] }, isActive: true },
+    include: { user: { select: { phone: true, name: true } } },
+    orderBy: { joinedAt: 'asc' },
+  });
+  const phone = membership?.user.phone?.trim();
+  if (!phone) return;
+
+  await sendNotification({
+    organizationId,
+    channel: 'sms',
+    recipient: phone,
+    body: `${membership?.user.name ?? 'مدیر'} عزیز،\nراه‌اندازی ${orgName} در کسب‌یار تکمیل شد.\nموفق باشید!`,
+    tags: { kind: 'onboarding_welcome' },
+  });
 }
