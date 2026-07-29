@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.12.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.15.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -235,7 +235,29 @@ npm run dev
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.12.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.15.0**.
+
+### v0.15.0 — موبایل production
+
+- `eas.json`، `docs/MOBILE_RELEASE.md` (کافه‌بازار/مایکت)
+- تنظیمات موبایل: وضعیت کانال‌ها + لینک وب
+- لینک کانبان سرنخ → نسخه وب
+
+### v0.14.0 — عمق AI
+
+- citation حافظه در UI دستیار
+- پیشنهاد پاسخ inbox (`/api/inbox/[threadId]/suggest-reply`)
+
+### v0.13.0 — پایلوت و درآمد
+
+- اشتراک SaaS: checkout Zarinpal/IDPay (`BILLING_*`)
+- `scripts/pilot-setup.mjs`، SMS خوش‌آمدگویی آنبوردینگ
+- `/pricing` با پرداخت آنلاین
+
+### v0.12.1 — go-live ops
+
+- `docs/GO_LIVE_CHECKLIST.md`، `pilot-3-org-runbook.md`
+- به‌روزرسانی محدودیت‌های پایلوت و ویکی
 
 ### v0.12.0 — پورتال نشست‌دار، کانبان پیشرفته، SSE، CSV، اتوماسیون پیام
 

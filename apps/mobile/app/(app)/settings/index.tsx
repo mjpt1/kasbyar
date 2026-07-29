@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, Switch, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, Text, Switch, View } from 'react-native';
 
 import { useAuth, useAuthCredentials, useSession } from '@/auth/AuthContext';
 import { OfflineBanner, PrimaryButton } from '@/components/ui';
@@ -13,12 +13,21 @@ import { colors, spacing } from '@/theme';
 
 type SettingsData = Record<string, unknown>;
 
+type ChannelHealth = {
+  channel: string;
+  configured?: boolean;
+  statusLabelFa?: string;
+};
+
+type InboxHealthResponse = { channels?: ChannelHealth[] };
+
 export default function SettingsScreen() {
   const auth = useAuthCredentials();
   const session = useSession();
   const { logout } = useAuth();
   const { data, loading, error, reload, fromCache, cachedAt } =
     useCachedQuery<SettingsData>('/api/settings', auth);
+  const { data: inboxHealth } = useCachedQuery<InboxHealthResponse>('/api/inbox/health', auth);
   const [pushEnabled, setPushEnabled] = useState(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
   const [pushMsg, setPushMsg] = useState<string | null>(null);
@@ -93,6 +102,23 @@ export default function SettingsScreen() {
             <Text style={styles.row}>فعال‌سازی Push</Text>
           </View>
           {pushMsg ? <Text style={styles.msg}>{pushMsg}</Text> : null}
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>یکپارچه‌سازی‌ها (وضعیت)</Text>
+          {inboxHealth?.channels?.length ? (
+            inboxHealth.channels.map((ch) => (
+              <Text key={ch.channel} style={styles.row}>
+                {ch.channel}: {ch.statusLabelFa ?? (ch.configured ? 'فعال' : 'غیرفعال')}
+              </Text>
+            ))
+          ) : (
+            <Text style={styles.muted}>برای جزئیات بیشتر به نسخه وب مراجعه کنید.</Text>
+          )}
+          <PrimaryButton
+            label="تنظیمات کامل در وب"
+            onPress={() => void Linking.openURL('https://kasbyar.vercel.app/settings/integrations')}
+          />
         </View>
 
         {data ? (

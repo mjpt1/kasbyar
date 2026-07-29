@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Linking, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { apiPost } from '@/api/client';
@@ -122,6 +122,12 @@ export default function LeadsScreen() {
       <ScreenHeader title="سرنخ‌های فروش" subtitle="ایجاد و پیگیری سریع" />
       <OfflineBanner visible={fromCache} cachedAt={cachedAt} />
       <PrimaryButton label="سرنخ جدید" onPress={() => setCreating(true)} />
+      <Text
+        style={styles.kanbanLink}
+        onPress={() => void Linking.openURL('https://kasbyar.vercel.app/leads/kanban')}
+      >
+        نمای کانبان (نسخه وب) ←
+      </Text>
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
@@ -150,4 +156,10 @@ const styles = StyleSheet.create({
   },
   error: { color: colors.danger, textAlign: 'center', marginBottom: spacing.sm },
   link: { color: colors.primary, textAlign: 'center', marginTop: spacing.md },
+  kanbanLink: {
+    color: colors.primaryDark,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    fontSize: 13,
+  },
 });
