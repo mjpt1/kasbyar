@@ -11,6 +11,16 @@
 | ویکی محصول | [GitHub Wiki](https://github.com/mjpt1/kasbyar/wiki) |
 | اپ اندروید | [apps/mobile](apps/mobile) — Expo / React Native |
 
+### ورود سریع (دمو)
+
+برای تست نسخه آنلاین بدون نصب محلی:
+
+| فیلد | مقدار |
+|------|--------|
+| آدرس | https://kasbyar.vercel.app |
+| ایمیل | `demo@kesbyar.ir` |
+| رمز عبور | `demo1234` |
+
 ---
 
 ## کسب‌یار چیست؟
@@ -233,6 +243,7 @@ npm run dev
 
 ## English (short)
 
+**Demo login:** [https://kasbyar.vercel.app](https://kasbyar.vercel.app) — `demo@kesbyar.ir` / `demo1234`
 **KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.15.0** (SaaS `/pricing` checkout, inbox AI suggest-reply, EAS mobile release docs).
 
 ---
