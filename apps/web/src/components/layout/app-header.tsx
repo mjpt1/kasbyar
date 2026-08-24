@@ -22,15 +22,24 @@ export function AppHeader({
     <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
       <div className="min-w-0">
         {title ? (
-          <h1 className="truncate text-lg font-bold sm:text-xl">{title}</h1>
+          <>
+            <p className="truncate text-[0.6875rem] font-medium text-muted-foreground">
+              {organizationName}
+            </p>
+            <h1 className="mt-0.5 truncate text-lg font-bold tracking-tight sm:text-xl">
+              {title}
+            </h1>
+          </>
         ) : (
-          <h1 className="truncate text-lg font-bold sm:text-xl">{organizationName}</h1>
+          <h1 className="truncate text-lg font-bold tracking-tight sm:text-xl">
+            {organizationName}
+          </h1>
         )}
         {description ? (
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{description}</p>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
         {showNotifications ? <NotificationBell /> : null}
         <ConversationNavLink />
         <Button variant="outline" size="sm" className="shrink-0" asChild>

@@ -1,7 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export function StatCard({
@@ -18,22 +19,29 @@ export function StatCard({
   icon?: LucideIcon;
 }) {
   const content = (
-    <Card
-      className={cn(
-        'ky-pack-card transition-colors',
-        href && 'hover:border-primary/40 hover:bg-primary/5',
-      )}
-    >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        {Icon ? <Icon className="h-4 w-4 text-primary/70" aria-hidden /> : null}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold tracking-tight">{value}</div>
-        {subtitle ? (
-          <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
+    <Card className={cn('ky-pack-card ky-metric h-full')}>
+      <div className="flex items-start gap-3 p-4 sm:p-5">
+        {Icon ? (
+          <span className="ky-metric-icon" aria-hidden>
+            <Icon className="size-[1.05rem]" />
+          </span>
         ) : null}
-      </CardContent>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium text-muted-foreground">{title}</p>
+          <p className="ky-metric-value mt-1.5">{value}</p>
+          {subtitle ? (
+            <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground/90">
+              {subtitle}
+            </p>
+          ) : null}
+        </div>
+        {href ? (
+          <ChevronLeft
+            className="mt-0.5 size-4 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-primary"
+            aria-hidden
+          />
+        ) : null}
+      </div>
     </Card>
   );
 
@@ -41,7 +49,7 @@ export function StatCard({
     return (
       <Link
         href={href}
-        className="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="ky-metric-link group block rounded-[var(--radius)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {content}
       </Link>

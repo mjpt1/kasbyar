@@ -5,13 +5,16 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:active:scale-100',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        default:
+          'bg-primary text-primary-foreground shadow-[0_1px_2px_hsl(var(--foreground)/0.08),0_6px_16px_hsl(var(--primary)/0.24)] hover:bg-primary/90 hover:shadow-[0_1px_2px_hsl(var(--foreground)/0.08),0_10px_22px_hsl(var(--primary)/0.3)]',
+        destructive:
+          'bg-destructive text-destructive-foreground shadow-[0_6px_16px_hsl(var(--destructive)/0.24)] hover:bg-destructive/90',
+        outline:
+          'border border-input bg-background/80 shadow-[var(--elevation-1)] hover:border-primary/40 hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',

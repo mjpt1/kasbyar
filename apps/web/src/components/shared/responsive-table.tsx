@@ -29,7 +29,10 @@ export function ResponsiveTable({ columns, rows, className }: ResponsiveTablePro
     <div className={cn(className)}>
       <div className="space-y-3 md:hidden">
         {rows.map((row) => (
-          <div key={row.id} className="rounded-xl border bg-card p-3 shadow-sm">
+          <div
+            key={row.id}
+            className="rounded-[var(--radius)] border bg-card p-3 shadow-[var(--elevation-1)]"
+          >
             <dl className="space-y-2.5">
               {mobileColumns.map((col) => (
                 <div
@@ -45,29 +48,37 @@ export function ResponsiveTable({ columns, rows, className }: ResponsiveTablePro
         ))}
       </div>
 
-      <div className="hidden overflow-x-auto md:block">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b bg-muted/50">
-              {columns.map((col) => (
-                <th key={col.key} className="p-3 text-right font-medium">
-                  {col.header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-b hover:bg-muted/30">
+      <div className="hidden overflow-hidden rounded-[var(--radius)] border bg-card shadow-[var(--elevation-1)] md:block">
+        <div className="overflow-x-auto">
+          <table className="ky-num w-full text-sm">
+            <thead>
+              <tr className="border-b bg-muted/60">
                 {columns.map((col) => (
-                  <td key={col.key} className={cn('p-3 align-middle', col.className)}>
-                    {row.cells[col.key]}
-                  </td>
+                  <th
+                    key={col.key}
+                    className="whitespace-nowrap p-3 text-right text-xs font-semibold text-muted-foreground"
+                  >
+                    {col.header}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="border-b border-border/60 transition-colors last:border-0 hover:bg-primary/[0.04]"
+                >
+                  {columns.map((col) => (
+                    <td key={col.key} className={cn('p-3 align-middle', col.className)}>
+                      {row.cells[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

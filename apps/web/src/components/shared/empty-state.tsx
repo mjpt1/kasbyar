@@ -28,11 +28,17 @@ export function EmptyState({
   onAction,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/10 py-16 text-center">
-      <div className="mb-4 rounded-full bg-muted p-4">
-        <Icon className="h-8 w-8 text-muted-foreground" aria-hidden />
+    <div
+      className="flex flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-border bg-card/40 px-6 py-16 text-center"
+      style={{
+        backgroundImage:
+          'radial-gradient(ellipse 60% 50% at 50% 0%, hsl(var(--primary)/0.06), transparent 70%)',
+      }}
+    >
+      <div className="mb-4 grid size-16 place-items-center rounded-full bg-primary/10 ring-8 ring-primary/5">
+        <Icon className="size-7 text-primary/70" aria-hidden />
       </div>
-      <h3 className="text-lg font-semibold">{title}</h3>
+      <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 max-w-sm text-sm text-muted-foreground">{description}</p>
       {actionLabel && actionHref ? (
         <Button className="mt-6" asChild>
