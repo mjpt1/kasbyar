@@ -2,13 +2,23 @@ import type { IndustryPackId } from './types';
 import { PACK_REGISTRY } from './registry';
 
 /**
- * Visual theme family — more granular than nav family so clinic ≠ beauty
- * even when both share the care nav profile.
+ * Visual theme family — pack base + specialty overrides for occupation-aligned colors
+ * (e.g. hospital blue/red, aesthetic clinic pink).
  */
 export type PackThemeId =
   | 'general'
   | 'clinic'
+  | 'hospital'
+  | 'dental'
   | 'beauty'
+  | 'spa'
+  | 'barber'
+  | 'pharmacy'
+  | 'florist'
+  | 'cosmetics'
+  | 'jewelry'
+  | 'cafe'
+  | 'bakery'
   | 'retail'
   | 'food'
   | 'real_estate'
@@ -148,39 +158,399 @@ const THEMES: Record<PackThemeId, PackThemeDefinition> = {
     },
   },
 
+  hospital: {
+    id: 'hospital',
+    labelFa: 'بیمارستان',
+    vibeFa: 'آبی بیمارستانی / اکسنت قرمز اورژانس',
+    layout: 'calendar_forward',
+    density: 'compact',
+    radius: '0.5rem',
+    hsl: {
+      primary: '214 72% 42%',
+      primaryForeground: '0 0% 100%',
+      secondary: '214 35% 93%',
+      secondaryForeground: '214 45% 22%',
+      accent: '0 72% 94%',
+      accentForeground: '0 55% 38%',
+      muted: '214 28% 95%',
+      mutedForeground: '214 14% 40%',
+      ring: '214 72% 42%',
+      border: '214 22% 84%',
+      sidebar: '214 40% 97%',
+      sidebarForeground: '214 45% 22%',
+      panelSoft: '214 45% 95%',
+    },
+    glow: {
+      a: 'rgba(120, 160, 210, 0.32)',
+      b: 'rgba(230, 150, 150, 0.18)',
+      c: 'rgba(200, 220, 240, 0.22)',
+    },
+    mobile: {
+      primary: '#1E5FA8',
+      primaryDark: '#164A85',
+      accent: '#E8A0A0',
+      surface: '#0d1624',
+      surfaceAlt: '#1a2740',
+    },
+  },
+
+  dental: {
+    id: 'dental',
+    labelFa: 'دندانپزشکی',
+    vibeFa: 'آبی روشن کلینیکی / سفید تمیز',
+    layout: 'calendar_forward',
+    density: 'comfortable',
+    radius: '0.65rem',
+    hsl: {
+      primary: '199 78% 42%',
+      primaryForeground: '0 0% 100%',
+      secondary: '199 40% 94%',
+      secondaryForeground: '199 35% 24%',
+      accent: '180 30% 94%',
+      accentForeground: '180 25% 30%',
+      muted: '200 30% 96%',
+      mutedForeground: '200 12% 42%',
+      ring: '199 78% 42%',
+      border: '199 22% 86%',
+      sidebar: '199 45% 98%',
+      sidebarForeground: '199 35% 24%',
+      panelSoft: '199 50% 96%',
+    },
+    glow: {
+      a: 'rgba(140, 200, 230, 0.3)',
+      b: 'rgba(200, 230, 240, 0.22)',
+      c: 'rgba(230, 240, 245, 0.2)',
+    },
+    mobile: {
+      primary: '#1890C0',
+      primaryDark: '#126E94',
+      accent: '#B8E0EC',
+      surface: '#0e1a22',
+      surfaceAlt: '#1a2e3a',
+    },
+  },
+
   beauty: {
     id: 'beauty',
     labelFa: 'زیبایی',
-    vibeFa: 'رز ملایم / کرم گرم / گوشه‌های نرم',
+    vibeFa: 'صورتی رز / کرم گرم — سالن و کلینیک زیبایی',
     layout: 'soft_gallery',
     density: 'airy',
     radius: '1.25rem',
     hsl: {
-      primary: '340 42% 58%',
+      primary: '330 58% 58%',
       primaryForeground: '0 0% 100%',
-      secondary: '340 40% 95%',
-      secondaryForeground: '340 25% 32%',
+      secondary: '330 45% 95%',
+      secondaryForeground: '330 30% 30%',
       accent: '15 55% 94%',
       accentForeground: '15 35% 38%',
-      muted: '340 30% 96%',
-      mutedForeground: '340 12% 42%',
-      ring: '340 42% 58%',
-      border: '340 22% 88%',
-      sidebar: '340 45% 98%',
-      sidebarForeground: '340 25% 32%',
-      panelSoft: '340 40% 96%',
+      muted: '330 35% 96%',
+      mutedForeground: '330 14% 42%',
+      ring: '330 58% 58%',
+      border: '330 25% 88%',
+      sidebar: '330 50% 98%',
+      sidebarForeground: '330 30% 30%',
+      panelSoft: '330 45% 96%',
     },
     glow: {
-      a: 'rgba(240, 180, 195, 0.35)',
-      b: 'rgba(245, 220, 210, 0.28)',
-      c: 'rgba(250, 230, 235, 0.22)',
+      a: 'rgba(245, 160, 190, 0.38)',
+      b: 'rgba(250, 210, 220, 0.3)',
+      c: 'rgba(255, 230, 235, 0.24)',
     },
     mobile: {
-      primary: '#C96B8A',
-      primaryDark: '#A34E6C',
-      accent: '#F5D5DC',
+      primary: '#D45A8C',
+      primaryDark: '#B04070',
+      accent: '#F8D0E0',
       surface: '#1f1418',
       surfaceAlt: '#332028',
+    },
+  },
+
+  spa: {
+    id: 'spa',
+    labelFa: 'اسپا',
+    vibeFa: 'سبز مریم‌گلی / آرامش طبیعی',
+    layout: 'soft_gallery',
+    density: 'airy',
+    radius: '1.35rem',
+    hsl: {
+      primary: '152 28% 38%',
+      primaryForeground: '0 0% 100%',
+      secondary: '152 30% 93%',
+      secondaryForeground: '152 25% 22%',
+      accent: '40 35% 93%',
+      accentForeground: '40 30% 32%',
+      muted: '150 22% 95%',
+      mutedForeground: '150 10% 40%',
+      ring: '152 28% 38%',
+      border: '152 18% 84%',
+      sidebar: '152 28% 97%',
+      sidebarForeground: '152 25% 22%',
+      panelSoft: '152 30% 95%',
+    },
+    glow: {
+      a: 'rgba(160, 200, 175, 0.3)',
+      b: 'rgba(220, 210, 180, 0.22)',
+      c: 'rgba(200, 220, 205, 0.2)',
+    },
+    mobile: {
+      primary: '#458A68',
+      primaryDark: '#346B50',
+      accent: '#D4C9A8',
+      surface: '#121a16',
+      surfaceAlt: '#243028',
+    },
+  },
+
+  barber: {
+    id: 'barber',
+    labelFa: 'آرایشگاه مردانه',
+    vibeFa: 'زغال / نیلی کلاسیک',
+    layout: 'soft_gallery',
+    density: 'comfortable',
+    radius: '0.55rem',
+    hsl: {
+      primary: '220 28% 28%',
+      primaryForeground: '0 0% 98%',
+      secondary: '220 18% 92%',
+      secondaryForeground: '220 25% 22%',
+      accent: '0 55% 92%',
+      accentForeground: '0 45% 35%',
+      muted: '220 15% 94%',
+      mutedForeground: '220 10% 40%',
+      ring: '220 28% 28%',
+      border: '220 14% 82%',
+      sidebar: '220 20% 96%',
+      sidebarForeground: '220 25% 22%',
+      panelSoft: '220 18% 94%',
+    },
+    glow: {
+      a: 'rgba(80, 100, 130, 0.28)',
+      b: 'rgba(200, 140, 140, 0.15)',
+      c: 'rgba(180, 190, 210, 0.18)',
+    },
+    mobile: {
+      primary: '#334155',
+      primaryDark: '#1E293B',
+      accent: '#E8B4B4',
+      surface: '#0f1218',
+      surfaceAlt: '#1e2430',
+    },
+  },
+
+  pharmacy: {
+    id: 'pharmacy',
+    labelFa: 'داروخانه',
+    vibeFa: 'سبز داروخانه / صلیب پزشکی',
+    layout: 'dense_kpi',
+    density: 'compact',
+    radius: '0.5rem',
+    hsl: {
+      primary: '152 55% 32%',
+      primaryForeground: '0 0% 100%',
+      secondary: '152 35% 92%',
+      secondaryForeground: '152 40% 20%',
+      accent: '0 65% 94%',
+      accentForeground: '0 50% 36%',
+      muted: '150 25% 95%',
+      mutedForeground: '150 12% 38%',
+      ring: '152 55% 32%',
+      border: '152 20% 82%',
+      sidebar: '152 30% 97%',
+      sidebarForeground: '152 40% 20%',
+      panelSoft: '152 35% 94%',
+    },
+    glow: {
+      a: 'rgba(100, 180, 130, 0.3)',
+      b: 'rgba(220, 150, 150, 0.15)',
+      c: 'rgba(180, 210, 190, 0.2)',
+    },
+    mobile: {
+      primary: '#248A55',
+      primaryDark: '#1A6B41',
+      accent: '#E8B0B0',
+      surface: '#0e1a14',
+      surfaceAlt: '#1a2e24',
+    },
+  },
+
+  florist: {
+    id: 'florist',
+    labelFa: 'گل‌فروشی',
+    vibeFa: 'سبز برگ / صورتی گلبرگ',
+    layout: 'soft_gallery',
+    density: 'airy',
+    radius: '1.1rem',
+    hsl: {
+      primary: '140 40% 36%',
+      primaryForeground: '0 0% 100%',
+      secondary: '140 35% 93%',
+      secondaryForeground: '140 30% 22%',
+      accent: '340 55% 94%',
+      accentForeground: '340 40% 38%',
+      muted: '100 25% 95%',
+      mutedForeground: '140 12% 40%',
+      ring: '140 40% 36%',
+      border: '140 20% 84%',
+      sidebar: '100 30% 97%',
+      sidebarForeground: '140 30% 22%',
+      panelSoft: '100 35% 95%',
+    },
+    glow: {
+      a: 'rgba(140, 190, 140, 0.3)',
+      b: 'rgba(240, 180, 200, 0.25)',
+      c: 'rgba(210, 230, 200, 0.2)',
+    },
+    mobile: {
+      primary: '#3A8F4A',
+      primaryDark: '#2B6E38',
+      accent: '#F0C0D0',
+      surface: '#121a12',
+      surfaceAlt: '#243024',
+    },
+  },
+
+  cosmetics: {
+    id: 'cosmetics',
+    labelFa: 'لوازم آرایشی',
+    vibeFa: 'سرخابی براق / فروشگاهی',
+    layout: 'dense_kpi',
+    density: 'comfortable',
+    radius: '0.85rem',
+    hsl: {
+      primary: '320 55% 48%',
+      primaryForeground: '0 0% 100%',
+      secondary: '320 40% 94%',
+      secondaryForeground: '320 30% 28%',
+      accent: '280 35% 94%',
+      accentForeground: '280 30% 35%',
+      muted: '320 28% 96%',
+      mutedForeground: '320 12% 42%',
+      ring: '320 55% 48%',
+      border: '320 22% 86%',
+      sidebar: '320 40% 98%',
+      sidebarForeground: '320 30% 28%',
+      panelSoft: '320 40% 96%',
+    },
+    glow: {
+      a: 'rgba(210, 120, 180, 0.32)',
+      b: 'rgba(200, 170, 220, 0.22)',
+      c: 'rgba(240, 210, 230, 0.2)',
+    },
+    mobile: {
+      primary: '#B83D8E',
+      primaryDark: '#8F2E6E',
+      accent: '#E8C8E0',
+      surface: '#1a1018',
+      surfaceAlt: '#2e1e2a',
+    },
+  },
+
+  jewelry: {
+    id: 'jewelry',
+    labelFa: 'طلا و جواهر',
+    vibeFa: 'طلایی عمیق / مشکی لوکس',
+    layout: 'dense_kpi',
+    density: 'comfortable',
+    radius: '0.6rem',
+    hsl: {
+      primary: '42 70% 42%',
+      primaryForeground: '0 0% 100%',
+      secondary: '42 35% 92%',
+      secondaryForeground: '40 40% 20%',
+      accent: '40 20% 18%',
+      accentForeground: '42 40% 90%',
+      muted: '40 20% 94%',
+      mutedForeground: '40 12% 38%',
+      ring: '42 70% 42%',
+      border: '42 25% 80%',
+      sidebar: '40 25% 96%',
+      sidebarForeground: '40 40% 20%',
+      panelSoft: '42 40% 94%',
+    },
+    glow: {
+      a: 'rgba(210, 170, 80, 0.35)',
+      b: 'rgba(80, 70, 50, 0.15)',
+      c: 'rgba(230, 210, 150, 0.2)',
+    },
+    mobile: {
+      primary: '#B8860B',
+      primaryDark: '#8B6508',
+      accent: '#2A2418',
+      surface: '#14110c',
+      surfaceAlt: '#2a2418',
+    },
+  },
+
+  cafe: {
+    id: 'cafe',
+    labelFa: 'کافه',
+    vibeFa: 'قهوه‌ای گرم / کرم شیر',
+    layout: 'order_board',
+    density: 'comfortable',
+    radius: '0.9rem',
+    hsl: {
+      primary: '25 45% 32%',
+      primaryForeground: '40 40% 96%',
+      secondary: '35 40% 92%',
+      secondaryForeground: '25 35% 22%',
+      accent: '18 55% 90%',
+      accentForeground: '18 40% 30%',
+      muted: '30 25% 94%',
+      mutedForeground: '25 12% 40%',
+      ring: '25 45% 32%',
+      border: '30 20% 84%',
+      sidebar: '35 30% 96%',
+      sidebarForeground: '25 35% 22%',
+      panelSoft: '35 35% 94%',
+    },
+    glow: {
+      a: 'rgba(160, 110, 70, 0.3)',
+      b: 'rgba(220, 190, 150, 0.25)',
+      c: 'rgba(200, 170, 140, 0.18)',
+    },
+    mobile: {
+      primary: '#6B4423',
+      primaryDark: '#4A2F18',
+      accent: '#E8C9A8',
+      surface: '#1a120c',
+      surfaceAlt: '#2e2018',
+    },
+  },
+
+  bakery: {
+    id: 'bakery',
+    labelFa: 'نانوایی',
+    vibeFa: 'گندمی گرم / کره و عسل',
+    layout: 'order_board',
+    density: 'comfortable',
+    radius: '0.85rem',
+    hsl: {
+      primary: '32 70% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '40 50% 92%',
+      secondaryForeground: '32 40% 22%',
+      accent: '20 60% 92%',
+      accentForeground: '20 40% 32%',
+      muted: '38 35% 95%',
+      mutedForeground: '32 12% 40%',
+      ring: '32 70% 45%',
+      border: '36 28% 84%',
+      sidebar: '40 40% 97%',
+      sidebarForeground: '32 40% 22%',
+      panelSoft: '38 45% 95%',
+    },
+    glow: {
+      a: 'rgba(220, 160, 80, 0.32)',
+      b: 'rgba(240, 200, 140, 0.25)',
+      c: 'rgba(230, 190, 150, 0.2)',
+    },
+    mobile: {
+      primary: '#C47A1A',
+      primaryDark: '#9A5E12',
+      accent: '#F0D4A8',
+      surface: '#1a140c',
+      surfaceAlt: '#2e2418',
     },
   },
 
@@ -539,17 +909,79 @@ export const PACK_THEME_MAP: Record<IndustryPackId, PackThemeId> = {
   TRAVEL_AGENCY: 'travel',
 };
 
-export function getPackThemeId(packId: string): PackThemeId {
+/**
+ * Specialty → theme overrides so occupation colors match the job
+ * (hospital ≠ aesthetic clinic even when both use CLINIC pack).
+ */
+export const SPECIALTY_THEME_MAP: Record<string, PackThemeId> = {
+  // CLINIC
+  hospital: 'hospital',
+  'dental-clinic': 'dental',
+  'aesthetic-laser': 'beauty',
+  'dermatology-clinic': 'beauty',
+  'midwifery-clinic': 'beauty',
+  'psychology-clinic': 'spa',
+  'physiotherapy-clinic': 'clinic',
+  'veterinary-clinic': 'field',
+  'medical-lab': 'clinic',
+  'medical-office': 'clinic',
+  'treatment-center': 'clinic',
+  'optometry-clinic': 'dental',
+
+  // BEAUTY_SALON
+  'beauty-salon': 'beauty',
+  'nail-salon': 'beauty',
+  'makeup-studio': 'beauty',
+  'barber-shop': 'barber',
+  'spa-center': 'spa',
+
+  // RETAIL
+  pharmacy: 'pharmacy',
+  'flower-shop': 'florist',
+  'cosmetics-store': 'cosmetics',
+  'jewelry-store': 'jewelry',
+  supermarket: 'retail',
+  'clothing-store': 'retail',
+  'pet-shop': 'florist',
+  optician: 'dental',
+
+  // FOOD
+  cafe: 'cafe',
+  'juice-bar': 'cafe',
+  bakery: 'bakery',
+  restaurant: 'food',
+  'fast-food': 'food',
+  catering: 'food',
+
+  // FITNESS / EDUCATION hints
+  gym: 'schedule',
+  'yoga-studio': 'spa',
+  'pilates-studio': 'spa',
+};
+
+export function getPackThemeId(
+  packId: string,
+  specialtyId?: string | null,
+): PackThemeId {
+  if (specialtyId && SPECIALTY_THEME_MAP[specialtyId]) {
+    return SPECIALTY_THEME_MAP[specialtyId];
+  }
   const id = packId as IndustryPackId;
   return PACK_THEME_MAP[id] ?? 'general';
 }
 
-export function getPackTheme(packId: string): PackThemeDefinition {
-  return THEMES[getPackThemeId(packId)];
+export function getPackTheme(
+  packId: string,
+  specialtyId?: string | null,
+): PackThemeDefinition {
+  return THEMES[getPackThemeId(packId, specialtyId)];
 }
 
-export function getPackLayoutModel(packId: string): PackLayoutModel {
-  return getPackTheme(packId).layout;
+export function getPackLayoutModel(
+  packId: string,
+  specialtyId?: string | null,
+): PackLayoutModel {
+  return getPackTheme(packId, specialtyId).layout;
 }
 
 export function listPackThemes(): PackThemeDefinition[] {

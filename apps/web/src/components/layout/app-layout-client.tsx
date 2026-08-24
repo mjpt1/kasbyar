@@ -35,13 +35,14 @@ export function AppLayoutClient({
   children,
 }: AppLayoutClientProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const theme = getPackTheme(industryPack);
+  const theme = getPackTheme(industryPack, industrySpecialty);
   const themeVars = packThemeToCssVars(theme) as CSSProperties;
 
   return (
     <div
       className="flex min-h-0 flex-1 overflow-hidden"
       data-pack={industryPack}
+      data-specialty={industrySpecialty ?? undefined}
       data-pack-theme={theme.id}
       data-layout={theme.layout}
       data-density={theme.density}

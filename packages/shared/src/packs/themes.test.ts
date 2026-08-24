@@ -8,6 +8,7 @@ import {
   getPackThemeId,
   listPackThemes,
   PACK_THEME_MAP,
+  SPECIALTY_THEME_MAP,
   packThemeToCssVars,
   type PackThemeId,
 } from './themes';
@@ -34,6 +35,33 @@ describe('pack visual themes', () => {
     expect(getPackTheme('CLINIC').radius).not.toBe(getPackTheme('BEAUTY_SALON').radius);
   });
 
+  it('aligns specialty colors with occupations', () => {
+    expect(getPackThemeId('CLINIC', 'hospital')).toBe('hospital');
+    expect(getPackThemeId('CLINIC', 'aesthetic-laser')).toBe('beauty');
+    expect(getPackThemeId('CLINIC', 'dental-clinic')).toBe('dental');
+    expect(getPackThemeId('BEAUTY_SALON', 'barber-shop')).toBe('barber');
+    expect(getPackThemeId('BEAUTY_SALON', 'spa-center')).toBe('spa');
+    expect(getPackThemeId('RETAIL', 'pharmacy')).toBe('pharmacy');
+    expect(getPackThemeId('RETAIL', 'flower-shop')).toBe('florist');
+    expect(getPackThemeId('FOOD_SERVICE', 'cafe')).toBe('cafe');
+    expect(getPackThemeId('FOOD_SERVICE', 'bakery')).toBe('bakery');
+
+    expect(getPackTheme('CLINIC', 'hospital').hsl.primary).not.toBe(
+      getPackTheme('CLINIC', 'aesthetic-laser').hsl.primary,
+    );
+    expect(getPackTheme('CLINIC', 'aesthetic-laser').vibeFa).toMatch(/صورتی|رز/);
+    expect(getPackTheme('CLINIC', 'hospital').vibeFa).toMatch(/آبی|قرمز/);
+  });
+
+  it('falls back to pack theme when specialty has no override', () => {
+    expect(getPackThemeId('CLINIC', 'unknown-specialty')).toBe('clinic');
+    expect(getPackThemeId('RETAIL', null)).toBe('retail');
+  });
+
+  it('only maps known specialty ids', () => {
+    expect(Object.keys(SPECIALTY_THEME_MAP).length).toBeGreaterThan(15);
+  });
+
   it('assigns distinct layout models to key verticals', () => {
     const layouts = [
       getPackLayoutModel('CLINIC'),
@@ -47,8 +75,7 @@ describe('pack visual themes', () => {
   });
 
   it('exposes CSS vars with primary and radius for every theme', () => {
-    const ids = listPackThemes().map((t) => t.id);
-    expect(ids.length).toBeGreaterThanOrEqual(10);
+    expect(listPackThemes().length).toBeGreaterThanOrEqual(10);
     for (const theme of listPackThemes()) {
       const vars = packThemeToCssVars(theme);
       expect(vars['--primary']).toMatch(/\d/);
@@ -64,8 +91,11 @@ describe('pack visual themes', () => {
     expect(getPackLayoutModel('RETAIL')).toBe('dense_kpi');
   });
 
-  it('covers all PackThemeId values used in the map', () => {
-    const used = new Set(Object.values(PACK_THEME_MAP));
+  it('covers all PackThemeId values used in the maps', () => {
+    const used = new Set([
+      ...Object.values(PACK_THEME_MAP),
+      ...Object.values(SPECIALTY_THEME_MAP),
+    ]);
     const defined = new Set(listPackThemes().map((t) => t.id));
     for (const id of used) {
       expect(defined.has(id as PackThemeId)).toBe(true);

@@ -35,8 +35,8 @@ const DENSITY_RADIUS: Record<string, typeof radius> = {
 };
 
 /** Resolve pack-aware mobile palette (same source as web data-pack themes). */
-export function getPackMobileTheme(packId: string) {
-  const theme = getPackTheme(packId);
+export function getPackMobileTheme(packId: string, specialtyId?: string | null) {
+  const theme = getPackTheme(packId, specialtyId);
   return {
     colors: {
       ...colors,

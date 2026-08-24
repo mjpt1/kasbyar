@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.17.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.18.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -244,13 +244,20 @@ npm run dev
 ## English (short)
 
 **Demo login:** [https://kasbyar.vercel.app](https://kasbyar.vercel.app) — `demo@kesbyar.ir` / `demo1234`
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.17.0** (pack visual themes + layout personalities).
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.18.0** (occupation-aligned specialty colors + pack themes).
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.17.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.18.0**.
+
+### v0.18.0 — رنگ‌های هم‌خوان با شغل (تخصص)
+
+- تم بصری دیگر فقط بر اساس پک نیست؛ **تخصص سازمان** رنگ را عوض می‌کند
+- نمونه‌ها: بیمارستان آبی/قرمز اورژانس، کلینیک زیبایی صورتی، دندانپزشکی آبی روشن، داروخانه سبز، گل‌فروشی سبز+صورتی، کافه قهوه‌ای، نانوایی گندمی، اسپا مریم‌گلی، آرایشگاه مردانه زغالی
+- `data-specialty` روی شل وب؛ موبایل هم specialty را به پالت تب‌بار می‌دهد
+- نسخه root / web / mobile / shared: **0.18.0**
 
 ### v0.17.0 — تم بصری و مدل چیدمان هر بسته
 

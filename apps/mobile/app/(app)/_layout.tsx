@@ -6,7 +6,10 @@ import { getPackMobileTheme } from '@/theme';
 
 export default function AppTabsLayout() {
   const session = useSession();
-  const packTheme = getPackMobileTheme(session?.industryPack ?? 'GENERAL');
+  const packTheme = getPackMobileTheme(
+    session?.industryPack ?? 'GENERAL',
+    session?.industrySpecialty,
+  );
   const { colors } = packTheme;
 
   return (
