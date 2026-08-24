@@ -5,16 +5,24 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import type { z } from 'zod';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { appointmentSchema } from '@/lib/validators';
 
-type FormValues = z.infer<typeof appointmentSchema>;
+const beautyAppointmentSchema = z.object({
+  customerId: z.string().min(1, 'مراجع الزامی است'),
+  serviceName: z.string().min(1, 'نام خدمت الزامی است'),
+  scheduledAt: z.coerce.date({ invalid_type_error: 'زمان نوبت نامعتبر است' }),
+  durationMin: z.coerce.number().int().min(15).max(480).optional(),
+  stylistName: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof beautyAppointmentSchema>;
 
 interface CustomerOption {
   id: string;
@@ -26,7 +34,7 @@ function toDatetimeLocalValue(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-export function AppointmentsCreateForm({ organizationId: _orgId }: { organizationId: string }) {
+export function BeautyAppointmentsCreateForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [customers, setCustomers] = useState<CustomerOption[]>([]);
@@ -37,12 +45,13 @@ export function AppointmentsCreateForm({ organizationId: _orgId }: { organizatio
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    resolver: zodResolver(appointmentSchema),
+    resolver: zodResolver(beautyAppointmentSchema),
     defaultValues: {
       customerId: '',
+      serviceName: '',
       scheduledAt: new Date(),
-      durationMin: 30,
-      reason: '',
+      durationMin: 60,
+      stylistName: '',
       notes: '',
     },
   });
@@ -59,7 +68,7 @@ export function AppointmentsCreateForm({ organizationId: _orgId }: { organizatio
 
   async function onSubmit(values: FormValues) {
     try {
-      const res = await fetch('/api/packs/clinic/appointments', {
+      const res = await fetch('/api/packs/beauty', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,9 +84,10 @@ export function AppointmentsCreateForm({ organizationId: _orgId }: { organizatio
       toast.success('نوبت ثبت شد');
       reset({
         customerId: '',
+        serviceName: '',
         scheduledAt: new Date(),
-        durationMin: 30,
-        reason: '',
+        durationMin: 60,
+        stylistName: '',
         notes: '',
       });
       setOpen(false);
@@ -98,18 +108,18 @@ export function AppointmentsCreateForm({ organizationId: _orgId }: { organizatio
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">ثبت نوبت</CardTitle>
+        <CardTitle className="text-base">ثبت نوبت زیبایی</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="customerId">بیمار</Label>
+            <Label htmlFor="customerId">مراجع</Label>
             <select
               id="customerId"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               {...register('customerId')}
             >
-              <option value="">انتخاب بیمار...</option>
+              <option value="">انتخاب مراجع...</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -118,6 +128,13 @@ export function AppointmentsCreateForm({ organizationId: _orgId }: { organizatio
             </select>
             {errors.customerId ? (
               <p className="text-sm text-destructive">{errors.customerId.message}</p>
+            ) : null}
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="serviceName">خدمت</Label>
+            <Input id="serviceName" placeholder="مثلاً رنگ مو" {...register('serviceName')} />
+            {errors.serviceName ? (
+              <p className="text-sm text-destructive">{errors.serviceName.message}</p>
             ) : null}
           </div>
           <div className="space-y-2">
@@ -139,8 +156,8 @@ export function AppointmentsCreateForm({ organizationId: _orgId }: { organizatio
             <Input id="durationMin" type="number" {...register('durationMin')} />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="reason">علت مراجعه</Label>
-            <Input id="reason" {...register('reason')} />
+            <Label htmlFor="stylistName">پرسنل</Label>
+            <Input id="stylistName" {...register('stylistName')} />
           </div>
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="notes">یادداشت</Label>

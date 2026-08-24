@@ -2,6 +2,7 @@ import {
   ORG_MODULE_BY_KEY,
   ORG_MODULE_CATALOG,
   isOrgModuleEnabled,
+  isOrgModuleRelevantForPack,
   type OrgModuleDefinition,
 } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
@@ -113,29 +114,37 @@ function statusForModule(
 }
 
 export async function listOrgModules(organizationId: string): Promise<OrgModuleListItem[]> {
-  const [toggles, integrations, integrationFlags] = await Promise.all([
+  const [toggles, integrations, integrationFlags, org] = await Promise.all([
     getOrgModuleToggles(organizationId),
     getOrgIntegrationsPublicView(organizationId),
     loadIntegrationFlags(organizationId),
+    prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { industryPack: true },
+    }),
   ]);
 
-  return ORG_MODULE_CATALOG.map((def) => {
-    const enabled = isOrgModuleEnabled(toggles, def.key);
-    const configured = integrationConfigured(integrations, def.integrationProvider);
-    const { statusLabel, statusVariant } = statusForModule(
-      def,
-      enabled,
-      configured,
-      integrationFlags,
-    );
-    return {
-      ...def,
-      enabled,
-      configured,
-      statusLabel,
-      statusVariant,
-    };
-  });
+  const pack = org?.industryPack ?? 'GENERAL';
+
+  return ORG_MODULE_CATALOG.filter((def) => isOrgModuleRelevantForPack(def.key, pack)).map(
+    (def) => {
+      const enabled = isOrgModuleEnabled(toggles, def.key);
+      const configured = integrationConfigured(integrations, def.integrationProvider);
+      const { statusLabel, statusVariant } = statusForModule(
+        def,
+        enabled,
+        configured,
+        integrationFlags,
+      );
+      return {
+        ...def,
+        enabled,
+        configured,
+        statusLabel,
+        statusVariant,
+      };
+    },
+  );
 }
 
 async function setIntegrationActive(

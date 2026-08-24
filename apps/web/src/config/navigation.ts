@@ -60,7 +60,14 @@ import {
   Wrench,
 } from 'lucide-react';
 
-import { getPackDefinition, getPackNavItems, getSpecialty, LEAD_LABELS, type IndustryPackId, isOrgModuleEnabled, ORG_MODULE_NAV } from '@kesbyar/shared';
+import {
+  getPackDefinition,
+  getPackNavItems,
+  getSpecialty,
+  LEAD_LABELS,
+  type IndustryPackId,
+  isNavHrefModuleEnabled,
+} from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 import { canAccessPath } from '@/lib/permissions';
@@ -141,27 +148,31 @@ const COLLAB_NAV_ITEMS: NavItem[] = [
   { href: '/support', label: 'پشتیبانی', icon: LifeBuoy, section: COLLAB_SECTION },
 ];
 
-const CORE_OPS_ITEMS: NavItem[] = [
-  { href: '/customers', label: 'مشتریان', icon: Users },
-  { href: '/leads', label: LEAD_LABELS.plural, icon: Target },
-  { href: '/invoices', label: 'فاکتورها', icon: Receipt },
-  { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
-  { href: '/tasks', label: 'وظایف', icon: CheckSquare },
-  { href: '/reports', label: 'گزارش‌ها', icon: BarChart3 },
-  { href: '/team', label: 'عملکرد تیم', icon: UsersRound },
-  { href: '/activity', label: 'فعالیت‌ها', icon: Activity },
-  { href: '/files', label: 'فایل‌ها', icon: FolderOpen },
-  { href: '/settings', label: 'تنظیمات', icon: Settings },
-];
+function getCoreOpsItems(industryPack: string, industrySpecialty?: string | null): NavItem[] {
+  const specialty = getSpecialty(industrySpecialty);
+  const customersLabel =
+    specialty?.labels.customers ?? getPackDefinition(industryPack as IndustryPackId).labels.customers;
 
-const CORE_NAV_ITEMS: NavItem[] = [
+  return [
+    { href: '/customers', label: customersLabel, icon: Users },
+    { href: '/leads', label: LEAD_LABELS.plural, icon: Target },
+    { href: '/invoices', label: 'فاکتورها', icon: Receipt },
+    { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
+    { href: '/tasks', label: 'وظایف', icon: CheckSquare },
+    { href: '/reports', label: 'گزارش‌ها', icon: BarChart3 },
+    { href: '/team', label: 'عملکرد تیم', icon: UsersRound },
+    { href: '/activity', label: 'فعالیت‌ها', icon: Activity },
+    { href: '/files', label: 'فایل‌ها', icon: FolderOpen },
+    { href: '/settings', label: 'تنظیمات', icon: Settings },
+  ];
+}
+
+/** @deprecated Use getNavItems(industryPack) — snapshot without pack labels */
+export const APP_NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
   ...AI_NAV_ITEMS,
-  ...CORE_OPS_ITEMS,
+  ...getCoreOpsItems('GENERAL'),
 ];
-
-/** @deprecated Use getNavItems(industryPack) */
-export const APP_NAV_ITEMS = CORE_NAV_ITEMS;
 
 export function getNavItems(
   industryPack: string,
@@ -177,33 +188,31 @@ export function getNavItems(
           label: specialty.label,
           icon: PACK_ICON_MAP[specialty.icon] ?? LayoutDashboard,
           packOnly: true,
+          section: 'بسته تخصصی',
         },
       ]
     : [];
 
+  // Only the active org's industry pack — never other verticals
   const packItems = getPackNavItems(industryPack).map((item) => ({
     href: item.href,
     label: item.label,
     icon: PACK_ICON_MAP[item.icon] ?? LayoutDashboard,
     packOnly: true,
+    section: specialty ? undefined : 'بسته تخصصی',
   }));
 
-  // Dashboard + AI first (always visible), then specialty/pack, then CRM/ops
   const items: NavItem[] = [
-    CORE_NAV_ITEMS[0]!,
+    { href: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
     ...AI_NAV_ITEMS,
     ...COLLAB_NAV_ITEMS,
     ...specialtyItem,
     ...packItems,
-    ...CORE_OPS_ITEMS,
+    ...getCoreOpsItems(industryPack, industrySpecialty),
   ];
 
   const filteredByModule = moduleToggles
-    ? items.filter((item) => {
-        const moduleKey = Object.entries(ORG_MODULE_NAV).find(([, href]) => href === item.href)?.[0];
-        if (!moduleKey) return true;
-        return isOrgModuleEnabled(moduleToggles, moduleKey);
-      })
+    ? items.filter((item) => isNavHrefModuleEnabled(moduleToggles, item.href))
     : items;
 
   if (!role) return filteredByModule;

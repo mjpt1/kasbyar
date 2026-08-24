@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { AppointmentCancelButton } from '@/components/features/appointments/appointment-cancel-button';
+import { BeautyAppointmentsCreateForm } from '@/components/features/beauty/appointments-create-form';
 import { PageHeader } from '@/components/layout/page-header';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { AppointmentStatusBadge } from '@/components/shared/status-badges';
@@ -20,31 +22,31 @@ export default async function BeautyAppointmentsPage({
   return (
     <div className="space-y-6">
       <PageHeader title="نوبت‌ها" description={`${total} نوبت ثبت‌شده`} />
+      <BeautyAppointmentsCreateForm />
 
       <div className="space-y-3">
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground">هنوز نوبتی ثبت نشده است.</p>
         ) : (
           items.map((appt) => (
-            <Link
-              key={appt.id}
-              href={`/customers/${appt.customer.id}`}
-              className="ky-list-row bg-card p-4 hover:bg-muted/50"
-            >
-              <div>
+            <div key={appt.id} className="ky-list-row bg-card p-4">
+              <Link href={`/customers/${appt.customer.id}`} className="min-w-0 flex-1 hover:opacity-90">
                 <div className="font-medium">{appt.customer.name}</div>
                 <div className="text-sm text-muted-foreground">
                   {appt.serviceName}
                   {appt.stylistName ? ` — ${appt.stylistName}` : ''}
                 </div>
-              </div>
-              <div className="text-left">
+              </Link>
+              <div className="flex flex-col items-end gap-2 text-left">
                 <AppointmentStatusBadge status={appt.status} />
-                <div className="mt-1 text-sm">
+                <div className="text-sm">
                   <JalaliDate date={appt.scheduledAt} showTime />
                 </div>
+                {appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED' ? (
+                  <AppointmentCancelButton appointmentId={appt.id} pack="beauty" />
+                ) : null}
               </div>
-            </Link>
+            </div>
           ))
         )}
       </div>

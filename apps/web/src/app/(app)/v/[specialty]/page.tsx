@@ -167,6 +167,20 @@ export default async function SpecialtyDashboardPage({
                 </Button>
               </>
             )}
+            {(specialty.basePack === 'CLINIC' || specialty.basePack === 'BEAUTY_SALON') && (
+              <Button asChild variant="outline" size="sm" className="justify-start">
+                <Link
+                  href={
+                    specialty.basePack === 'CLINIC'
+                      ? '/clinic/appointments'
+                      : '/beauty/appointments'
+                  }
+                >
+                  <CheckSquare className="ms-2 h-4 w-4" />
+                  نوبت‌دهی
+                </Link>
+              </Button>
+            )}
             <Button asChild variant="ghost" size="sm" className="justify-start">
               <Link href="/dashboard">
                 <ArrowLeft className="ms-2 h-4 w-4" />

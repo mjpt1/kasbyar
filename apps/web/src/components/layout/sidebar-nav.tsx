@@ -30,11 +30,12 @@ export function SidebarNav({
   industrySpecialty = null,
   role,
   isSuperAdmin = false,
+  moduleToggles,
   onNavigate,
   className,
 }: SidebarNavProps) {
   const pathname = usePathname();
-  const navItems = getNavItems(industryPack, role, industrySpecialty);
+  const navItems = getNavItems(industryPack, role, industrySpecialty, moduleToggles);
 
   return (
     <div className={cn('flex h-full flex-col', className)}>

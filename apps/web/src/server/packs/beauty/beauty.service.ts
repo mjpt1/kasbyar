@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
+import { requireCustomerInOrg } from '@/server/tenant/tenant-scope';
 
 function startOfToday() {
   const d = new Date();
@@ -45,8 +46,24 @@ export async function createBeautyAppointment(
   organizationId: string,
   data: Omit<Prisma.BeautyAppointmentUncheckedCreateInput, 'organizationId'>,
 ) {
+  await requireCustomerInOrg(organizationId, data.customerId);
+
   return prisma.beautyAppointment.create({
     data: { ...data, organizationId },
+    include: { customer: { select: { id: true, name: true, phone: true } } },
+  });
+}
+
+export async function updateBeautyAppointment(
+  organizationId: string,
+  id: string,
+  data: Prisma.BeautyAppointmentUpdateInput,
+) {
+  const existing = await prisma.beautyAppointment.findFirst({ where: { id, organizationId } });
+  if (!existing) return null;
+  return prisma.beautyAppointment.update({
+    where: { id },
+    data,
     include: { customer: { select: { id: true, name: true, phone: true } } },
   });
 }

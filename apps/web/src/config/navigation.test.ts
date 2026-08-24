@@ -67,4 +67,43 @@ describe('getNavItems AI OS', () => {
     expect(hrefs).toContain('/retail/products');
     expect(hrefs).not.toContain('/v/clothing-store');
   });
+
+  it('never shows other vertical packs when switching workspace pack', () => {
+    const clinic = getNavItems('CLINIC', 'OWNER', 'dental-clinic').map((i) => i.href);
+    expect(clinic).toContain('/clinic/appointments');
+    expect(clinic).not.toContain('/retail');
+    expect(clinic).not.toContain('/beauty');
+    expect(clinic).not.toContain('/travel');
+
+    const beauty = getNavItems('BEAUTY_SALON', 'OWNER', 'beauty-salon').map((i) => i.href);
+    expect(beauty).toContain('/beauty/appointments');
+    expect(beauty).not.toContain('/clinic');
+    expect(beauty).not.toContain('/retail');
+  });
+
+  it('hides module-gated nav when toggles disable them', () => {
+    const toggles = {
+      ai_assistant: false,
+      ai_briefing: false,
+      automation: false,
+      internal_chat: false,
+      support_tickets: false,
+      customer_inbox: false,
+      inventory: true,
+    };
+    const hrefs = getNavItems('CLINIC', 'OWNER', null, toggles).map((i) => i.href);
+    expect(hrefs).not.toContain('/conversation');
+    expect(hrefs).not.toContain('/memory');
+    expect(hrefs).not.toContain('/command');
+    expect(hrefs).not.toContain('/chat');
+    expect(hrefs).not.toContain('/inbox');
+    expect(hrefs).toContain('/customers');
+    expect(hrefs).toContain('/invoices');
+    expect(hrefs).toContain('/clinic/appointments');
+  });
+
+  it('uses pack/specialty customer labels in CRM nav', () => {
+    const clinic = getNavItems('CLINIC', 'OWNER', 'dental-clinic');
+    expect(clinic.find((i) => i.href === '/customers')?.label).toBe('بیماران');
+  });
 });

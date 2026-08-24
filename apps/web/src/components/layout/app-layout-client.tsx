@@ -80,6 +80,7 @@ export function AppLayoutClient({
                 industrySpecialty={industrySpecialty}
                 role={role}
                 isSuperAdmin={isSuperAdmin}
+                moduleToggles={moduleToggles}
                 onNavigate={() => setMobileOpen(false)}
               />
             </div>

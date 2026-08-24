@@ -2,6 +2,7 @@ import {
   ORG_MODULE_CATALOG,
   buildDefaultModuleToggles,
   isOrgModuleEnabled,
+  isOrgModuleRelevantForPack,
 } from '@kesbyar/shared';
 
 import { prisma } from '@/lib/prisma';
@@ -97,9 +98,18 @@ export async function setOrgModuleEnabled(
 }
 
 export async function listOrgModulesForUi(organizationId: string) {
-  const toggles = await getOrgModuleToggles(organizationId);
-  return ORG_MODULE_CATALOG.map((mod) => ({
-    ...mod,
-    enabled: isOrgModuleEnabled(toggles, mod.key),
-  }));
+  const [toggles, org] = await Promise.all([
+    getOrgModuleToggles(organizationId),
+    prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { industryPack: true },
+    }),
+  ]);
+  const pack = org?.industryPack ?? 'GENERAL';
+  return ORG_MODULE_CATALOG.filter((mod) => isOrgModuleRelevantForPack(mod.key, pack)).map(
+    (mod) => ({
+      ...mod,
+      enabled: isOrgModuleEnabled(toggles, mod.key),
+    }),
+  );
 }

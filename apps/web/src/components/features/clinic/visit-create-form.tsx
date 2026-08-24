@@ -137,7 +137,9 @@ export function VisitCreateForm({
             <Input
               id="visitDate"
               type="datetime-local"
-              {...register('visitDate', { valueAsDate: true })}
+              {...register('visitDate', {
+                setValueAs: (v) => (v ? new Date(String(v)) : undefined),
+              })}
             />
           </div>
           <div className="space-y-2">
@@ -145,7 +147,9 @@ export function VisitCreateForm({
             <Input
               id="followUpAt"
               type="datetime-local"
-              {...register('followUpAt', { valueAsDate: true })}
+              {...register('followUpAt', {
+                setValueAs: (v) => (v ? new Date(String(v)) : null),
+              })}
             />
           </div>
           <div className="space-y-2 md:col-span-2">

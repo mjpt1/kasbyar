@@ -2,8 +2,7 @@ import {
   LEAD_LABELS,
   getPackNavItems,
   getSpecialty,
-  ORG_MODULE_NAV,
-  isOrgModuleEnabled,
+  isNavHrefModuleEnabled,
 } from '@kesbyar/shared';
 import type { SessionContext } from '@kesbyar/shared';
 
@@ -97,21 +96,25 @@ export function getMobileMenuItems(
     icon: 'layers',
   }));
 
+  const coreOps = CORE_ITEMS.filter(
+    (item) => !item.section && item.id !== 'dashboard' && item.id !== 'admin',
+  ).map((item) =>
+    item.id === 'customers' && specialty
+      ? { ...item, label: specialty.labels.customers }
+      : item,
+  );
+
   const merged = [
     CORE_ITEMS[0]!,
     ...CORE_ITEMS.filter((item) => item.section === 'هوشمند'),
     ...CORE_ITEMS.filter((item) => item.section === 'همکاری'),
     ...specialtyItems,
     ...packItems,
-    ...CORE_ITEMS.filter((item) => !item.section && item.id !== 'dashboard' && item.id !== 'admin'),
+    ...coreOps,
   ];
 
   const filtered = moduleToggles
-    ? merged.filter((item) => {
-        const moduleKey = Object.entries(ORG_MODULE_NAV).find(([, href]) => href === item.href)?.[0];
-        if (!moduleKey) return true;
-        return isOrgModuleEnabled(moduleToggles, moduleKey);
-      })
+    ? merged.filter((item) => isNavHrefModuleEnabled(moduleToggles, item.href))
     : merged;
 
   if (session.isSuperAdmin) {
