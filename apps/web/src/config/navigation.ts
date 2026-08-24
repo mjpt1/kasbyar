@@ -62,10 +62,12 @@ import {
 
 import {
   getPackDefinition,
+  getPackNavItemLabel,
   getPackNavItems,
   getSpecialty,
   LEAD_LABELS,
   type IndustryPackId,
+  isCoreNavHrefEnabledForPack,
   isNavHrefModuleEnabled,
 } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
@@ -151,14 +153,21 @@ const COLLAB_NAV_ITEMS: NavItem[] = [
 function getCoreOpsItems(industryPack: string, industrySpecialty?: string | null): NavItem[] {
   const specialty = getSpecialty(industrySpecialty);
   const customersLabel =
-    specialty?.labels.customers ?? getPackDefinition(industryPack as IndustryPackId).labels.customers;
+    specialty?.labels.customers ??
+    getPackNavItemLabel(
+      industryPack,
+      'customers',
+      getPackDefinition(industryPack as IndustryPackId).labels.customers,
+    );
+  const leadsLabel = getPackNavItemLabel(industryPack, 'leads', LEAD_LABELS.plural);
+  const tasksLabel = getPackNavItemLabel(industryPack, 'tasks', 'وظایف');
 
   return [
     { href: '/customers', label: customersLabel, icon: Users },
-    { href: '/leads', label: LEAD_LABELS.plural, icon: Target },
+    { href: '/leads', label: leadsLabel, icon: Target },
     { href: '/invoices', label: 'فاکتورها', icon: Receipt },
     { href: '/payments', label: 'پرداخت‌ها', icon: Wallet },
-    { href: '/tasks', label: 'وظایف', icon: CheckSquare },
+    { href: '/tasks', label: tasksLabel, icon: CheckSquare },
     { href: '/reports', label: 'گزارش‌ها', icon: BarChart3 },
     { href: '/team', label: 'عملکرد تیم', icon: UsersRound },
     { href: '/activity', label: 'فعالیت‌ها', icon: Activity },
@@ -211,9 +220,14 @@ export function getNavItems(
     ...getCoreOpsItems(industryPack, industrySpecialty),
   ];
 
+  // Pack profile ∩ org module toggles ∩ role
+  const filteredByPack = items.filter((item) =>
+    isCoreNavHrefEnabledForPack(industryPack, item.href),
+  );
+
   const filteredByModule = moduleToggles
-    ? items.filter((item) => isNavHrefModuleEnabled(moduleToggles, item.href))
-    : items;
+    ? filteredByPack.filter((item) => isNavHrefModuleEnabled(moduleToggles, item.href))
+    : filteredByPack;
 
   if (!role) return filteredByModule;
 

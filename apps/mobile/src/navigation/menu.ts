@@ -1,7 +1,9 @@
 import {
   LEAD_LABELS,
+  getPackNavItemLabel,
   getPackNavItems,
   getSpecialty,
+  isCoreNavHrefEnabledForPack,
   isNavHrefModuleEnabled,
 } from '@kesbyar/shared';
 import type { SessionContext } from '@kesbyar/shared';
@@ -76,6 +78,7 @@ export function getMobileMenuItems(
   moduleToggles?: Record<string, boolean>,
 ): MobileMenuItem[] {
   const specialty = getSpecialty(session.industrySpecialty);
+  const pack = session.industryPack;
   const specialtyItems: MobileMenuItem[] = specialty
     ? [
         {
@@ -88,7 +91,7 @@ export function getMobileMenuItems(
       ]
     : [];
 
-  const packItems: MobileMenuItem[] = getPackNavItems(session.industryPack).map((item) => ({
+  const packItems: MobileMenuItem[] = getPackNavItems(pack).map((item) => ({
     id: `pack-${item.href}`,
     label: item.label,
     href: item.href,
@@ -98,11 +101,21 @@ export function getMobileMenuItems(
 
   const coreOps = CORE_ITEMS.filter(
     (item) => !item.section && item.id !== 'dashboard' && item.id !== 'admin',
-  ).map((item) =>
-    item.id === 'customers' && specialty
-      ? { ...item, label: specialty.labels.customers }
-      : item,
-  );
+  ).map((item) => {
+    if (item.id === 'customers') {
+      const label =
+        specialty?.labels.customers ??
+        getPackNavItemLabel(pack, 'customers', item.label);
+      return { ...item, label };
+    }
+    if (item.id === 'leads') {
+      return { ...item, label: getPackNavItemLabel(pack, 'leads', item.label) };
+    }
+    if (item.id === 'tasks') {
+      return { ...item, label: getPackNavItemLabel(pack, 'tasks', item.label) };
+    }
+    return item;
+  });
 
   const merged = [
     CORE_ITEMS[0]!,
@@ -113,9 +126,13 @@ export function getMobileMenuItems(
     ...coreOps,
   ];
 
+  const filteredByPack = merged.filter((item) =>
+    isCoreNavHrefEnabledForPack(pack, item.href),
+  );
+
   const filtered = moduleToggles
-    ? merged.filter((item) => isNavHrefModuleEnabled(moduleToggles, item.href))
-    : merged;
+    ? filteredByPack.filter((item) => isNavHrefModuleEnabled(moduleToggles, item.href))
+    : filteredByPack;
 
   if (session.isSuperAdmin) {
     filtered.push(CORE_ITEMS.find((i) => i.id === 'admin')!);
@@ -169,7 +186,7 @@ export function featureApiPath(webPath: string): string {
 
   const packMatch = webPath.match(/^\/([\w-]+)\/([\w-]+)/);
   if (packMatch) {
-    const [, pack, resource] = packMatch;
+    const [, packSeg, resource] = packMatch;
     const packApiMap: Record<string, string> = {
       clinic: 'clinic',
       retail: 'retail',
@@ -197,9 +214,8 @@ export function featureApiPath(webPath: string): string {
       'home-services': 'home-services',
       distribution: 'distribution',
     };
-    const apiPack = packApiMap[pack];
+    const apiPack = packApiMap[packSeg];
     if (apiPack) {
-      // wave4 packs use a single collection endpoint (not /jobs subpath)
       if (
         [
           'logistics',

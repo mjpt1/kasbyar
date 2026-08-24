@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Boxes, Package } from 'lucide-react';
+import { Boxes, Package, Receipt, Users, Wallet } from 'lucide-react';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -15,9 +15,27 @@ export default async function RetailHomePage() {
     <div className="space-y-6">
       <PageHeader
         title="فروشگاه"
-        description="محصولات و موجودی"
+        description="محصولات، موجودی، فروش و مشتریان"
         actions={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link href="/customers">
+                <Users className="ms-2 h-4 w-4" />
+                مشتریان
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/invoices">
+                <Receipt className="ms-2 h-4 w-4" />
+                فاکتورها
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/payments">
+                <Wallet className="ms-2 h-4 w-4" />
+                پرداخت‌ها
+              </Link>
+            </Button>
             <Button asChild variant="outline" size="sm">
               <Link href="/retail/products">
                 <Package className="ms-2 h-4 w-4" />

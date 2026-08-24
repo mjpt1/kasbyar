@@ -54,6 +54,45 @@ describe('getNavItems AI OS', () => {
     expect(hrefs.indexOf('/command')).toBeLessThan(hrefs.indexOf('/clinic'));
   });
 
+  it('hides chat and leads for clinic/beauty pack profiles', () => {
+    const clinic = getNavItems('CLINIC', 'OWNER').map((i) => i.href);
+    expect(clinic).not.toContain('/chat');
+    expect(clinic).not.toContain('/leads');
+    expect(clinic).not.toContain('/inbox');
+    expect(clinic).not.toContain('/forecast');
+    expect(clinic).toContain('/customers');
+    expect(clinic).toContain('/clinic/appointments');
+    expect(clinic).toContain('/command');
+
+    const beauty = getNavItems('BEAUTY_SALON', 'OWNER').map((i) => i.href);
+    expect(beauty).not.toContain('/chat');
+    expect(beauty).not.toContain('/leads');
+    expect(beauty).toContain('/beauty/appointments');
+  });
+
+  it('keeps retail without leads/chat/tasks clutter', () => {
+    const hrefs = getNavItems('RETAIL', 'OWNER').map((i) => i.href);
+    expect(hrefs).not.toContain('/leads');
+    expect(hrefs).not.toContain('/chat');
+    expect(hrefs).not.toContain('/tasks');
+    expect(hrefs).toContain('/customers');
+    expect(hrefs).toContain('/invoices');
+    expect(hrefs).toContain('/retail/inventory');
+  });
+
+  it('keeps fuller CRM for GENERAL including leads and chat', () => {
+    const hrefs = getNavItems('GENERAL', 'OWNER').map((i) => i.href);
+    expect(hrefs).toContain('/leads');
+    expect(hrefs).toContain('/chat');
+    expect(hrefs).toContain('/inbox');
+    expect(hrefs).toContain('/forecast');
+  });
+
+  it('enables leads for real-estate and agency packs', () => {
+    expect(getNavItems('REAL_ESTATE', 'OWNER').map((i) => i.href)).toContain('/leads');
+    expect(getNavItems('LAW_FIRM', 'OWNER').map((i) => i.href)).toContain('/chat');
+  });
+
   it('shows specialty dashboard link when industrySpecialty is set', () => {
     const items = getNavItems('GENERAL', 'OWNER', 'freelancer');
     const hrefs = items.map((i) => i.href);

@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.15.1** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.16.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -244,13 +244,22 @@ npm run dev
 ## English (short)
 
 **Demo login:** [https://kasbyar.vercel.app](https://kasbyar.vercel.app) — `demo@kesbyar.ir` / `demo1234`
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.15.1** (workspace-scoped nav + appointment booking fixes).
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.16.0** (industry-specific panel profiles).
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.15.1**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.16.0**.
+
+### v0.16.0 — پنل اختصاصی هر کسب‌وکار
+
+- پروفایل ناوبری data-driven در `@kesbyar/shared` بر اساس خانواده بسته (کلینیک، زیبایی، خرده‌فروشی، فروش لید، آژانس، خدمات میدانی، …)
+- منوی وب و موبایل: اشتراک پروفایل بسته ∩ سوئیچ ماژول سازمان — گفتگو/لید/صندوق فقط جایی که صنعت واقعاً نیاز دارد
+- داشبورد عمومی و تخصصی: ویجت‌ها و میانبرهای ماژول‌های مخفی نمایش داده نمی‌شوند
+- برچسب‌های فارسی متناسب بسته (بیماران، مراجعان، درخواست رزرو، …)
+- پیشخوان خرده‌فروشی: میانبر مشتریان / فاکتور / پرداخت کنار موجودی
+- نسخه root / web / mobile / shared: **0.16.0**
 
 ### v0.15.1 — فضای کاری و نوبت‌دهی
 

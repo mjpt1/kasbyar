@@ -1,4 +1,9 @@
-import { formatCurrency, LEAD_LABELS } from '@kesbyar/shared';
+import {
+  formatCurrency,
+  getPackNavItemLabel,
+  isPackNavKeyEnabled,
+  LEAD_LABELS,
+} from '@kesbyar/shared';
 import {
   AlertCircle,
   CalendarClock,
@@ -26,6 +31,15 @@ import { getDashboardDetails, getSalesTrend } from '@/server/dashboard/dashboard
 
 export default async function DashboardPage() {
   const session = await requireSession();
+  const pack = session.industryPack;
+  const showLeads = isPackNavKeyEnabled(pack, 'leads');
+  const showTasks = isPackNavKeyEnabled(pack, 'tasks');
+  const showConversation = isPackNavKeyEnabled(pack, 'conversation');
+  const showPayments = isPackNavKeyEnabled(pack, 'payments');
+  const customersLabel = getPackNavItemLabel(pack, 'customers', 'مشتریان');
+  const leadsActiveLabel = getPackNavItemLabel(pack, 'leads', LEAD_LABELS.active);
+  const leadsStaleLabel = getPackNavItemLabel(pack, 'leads', LEAD_LABELS.stale);
+
   const [{ stats, overdue, staleLeads, recentActivity, upcomingTasks }, salesTrend] =
     await Promise.all([
       getDashboardDetails(session.organizationId),
@@ -41,13 +55,15 @@ export default async function DashboardPage() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <StatCard
-          title="فروش امروز"
-          value={formatCurrency(stats.todaySales)}
-          subtitle="مجموع پرداخت‌های ثبت‌شده امروز"
-          href="/payments"
-          icon={TrendingUp}
-        />
+        {showPayments ? (
+          <StatCard
+            title="فروش امروز"
+            value={formatCurrency(stats.todaySales)}
+            subtitle="مجموع پرداخت‌های ثبت‌شده امروز"
+            href="/payments"
+            icon={TrendingUp}
+          />
+        ) : null}
         <StatCard
           title="فاکتورهای باز"
           value={String(stats.openInvoices)}
@@ -62,22 +78,26 @@ export default async function DashboardPage() {
           href="/invoices"
           icon={AlertCircle}
         />
+        {showLeads ? (
+          <StatCard
+            title={leadsActiveLabel}
+            value={String(stats.activeLeads)}
+            subtitle="در قیف فروش"
+            href="/leads"
+            icon={Target}
+          />
+        ) : null}
+        {showTasks ? (
+          <StatCard
+            title="وظایف در انتظار"
+            value={String(stats.pendingTasks)}
+            subtitle="باز و در حال انجام"
+            href="/tasks"
+            icon={CheckSquare}
+          />
+        ) : null}
         <StatCard
-          title={LEAD_LABELS.active}
-          value={String(stats.activeLeads)}
-          subtitle="در قیف فروش"
-          href="/leads"
-          icon={Target}
-        />
-        <StatCard
-          title="وظایف در انتظار"
-          value={String(stats.pendingTasks)}
-          subtitle="باز و در حال انجام"
-          href="/tasks"
-          icon={CheckSquare}
-        />
-        <StatCard
-          title="مشتریان جدید این ماه"
+          title={`${customersLabel} جدید این ماه`}
           value={String(stats.newCustomersThisMonth)}
           href="/customers"
           icon={Users}
@@ -97,8 +117,8 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      <div className={`grid gap-6 ${showConversation ? 'lg:grid-cols-3' : 'lg:grid-cols-1'}`}>
+        <div className={`space-y-6 ${showConversation ? 'lg:col-span-2' : ''}`}>
           <Card>
             <CardHeader>
               <CardTitle className="text-base">فاکتورهای سررسید گذشته</CardTitle>
@@ -133,65 +153,69 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">{LEAD_LABELS.stale}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {staleLeads.length === 0 ? (
-                <InlineEmpty
-                  icon={Target}
-                  message={`${LEAD_LABELS.singular} بدون پیگیری ندارید.`}
-                  hint={`${LEAD_LABELS.plural} جدید را از همان بخش مدیریت کنید.`}
-                />
-              ) : (
-                <div className="space-y-2">
-                  {staleLeads.map((lead) => (
-                    <Link
-                      key={lead.id}
-                      href={`/leads/${lead.id}`}
-                      className="block rounded-md border p-3 hover:bg-muted/50"
-                    >
-                      <div className="font-medium">{lead.title}</div>
-                      {lead.contactPhone ? (
-                        <div className="text-sm text-muted-foreground">{lead.contactPhone}</div>
-                      ) : null}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {showLeads ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">{leadsStaleLabel}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {staleLeads.length === 0 ? (
+                  <InlineEmpty
+                    icon={Target}
+                    message={`${LEAD_LABELS.singular} بدون پیگیری ندارید.`}
+                    hint={`${LEAD_LABELS.plural} جدید را از همان بخش مدیریت کنید.`}
+                  />
+                ) : (
+                  <div className="space-y-2">
+                    {staleLeads.map((lead) => (
+                      <Link
+                        key={lead.id}
+                        href={`/leads/${lead.id}`}
+                        className="block rounded-md border p-3 hover:bg-muted/50"
+                      >
+                        <div className="font-medium">{lead.title}</div>
+                        {lead.contactPhone ? (
+                          <div className="text-sm text-muted-foreground">{lead.contactPhone}</div>
+                        ) : null}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : null}
         </div>
 
-        <ConversationPanel />
+        {showConversation ? <ConversationPanel /> : null}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">وظایف پیشِ رو</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {upcomingTasks.length === 0 ? (
-              <InlineEmpty
-                icon={CalendarClock}
-                message="وظیفه‌ای در هفتهٔ پیشِ رو ندارید."
-              />
-            ) : (
-              upcomingTasks.map((task) => (
-                <div key={task.id} className="rounded-md border p-3">
-                  <div className="font-medium">{task.title}</div>
-                  {task.dueDate ? (
-                    <div className="text-sm text-muted-foreground">
-                      سررسید: <JalaliDate date={task.dueDate} />
-                    </div>
-                  ) : null}
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
+        {showTasks ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">وظایف پیشِ رو</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {upcomingTasks.length === 0 ? (
+                <InlineEmpty
+                  icon={CalendarClock}
+                  message="وظیفه‌ای در هفتهٔ پیشِ رو ندارید."
+                />
+              ) : (
+                upcomingTasks.map((task) => (
+                  <div key={task.id} className="rounded-md border p-3">
+                    <div className="font-medium">{task.title}</div>
+                    {task.dueDate ? (
+                      <div className="text-sm text-muted-foreground">
+                        سررسید: <JalaliDate date={task.dueDate} />
+                      </div>
+                    ) : null}
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        ) : null}
 
         <Card>
           <CardHeader>
@@ -199,16 +223,23 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             {recentActivity.length === 0 ? (
-              <InlineEmpty message="هنوز فعالیتی ثبت نشده." hint={`با ثبت مشتری، فاکتور یا ${LEAD_LABELS.singular} فعالیت‌ها اینجا نمایش داده می‌شوند.`} />
+              <InlineEmpty
+                message="هنوز فعالیتی ثبت نشده."
+                hint={
+                  showLeads
+                    ? `با ثبت مشتری، فاکتور یا ${LEAD_LABELS.singular} فعالیت‌ها اینجا نمایش داده می‌شوند.`
+                    : 'با ثبت مشتری و فاکتور فعالیت‌ها اینجا نمایش داده می‌شوند.'
+                }
+              />
             ) : (
               recentActivity.map((act) => (
-              <div key={act.id} className="rounded-md border p-3">
-                <div className="font-medium">{act.title}</div>
-                <div className="text-xs text-muted-foreground">
-                  <JalaliDate date={act.createdAt} showTime />
+                <div key={act.id} className="rounded-md border p-3">
+                  <div className="font-medium">{act.title}</div>
+                  <div className="text-xs text-muted-foreground">
+                    <JalaliDate date={act.createdAt} showTime />
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
             )}
           </CardContent>
         </Card>

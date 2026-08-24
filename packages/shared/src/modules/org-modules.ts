@@ -1,3 +1,7 @@
+import {
+  ORG_MODULE_TO_PACK_NAV_KEY,
+  isPackNavKeyEnabled,
+} from '../packs/nav-profiles';
 import { ORG_MODULE_BY_KEY, ORG_MODULE_CATALOG } from './catalog';
 
 /**
@@ -29,9 +33,9 @@ export const ORG_MODULE_NAV: Record<string, string> = Object.fromEntries(
   Object.entries(ORG_MODULE_NAV_PATHS).map(([key, paths]) => [key, paths[0]!]),
 );
 
-/** Modules that only make sense for certain industry packs */
+/** Modules that only make sense for certain industry packs (hard allowlist) */
 export const ORG_MODULE_PACK_SCOPE: Partial<Record<string, readonly string[]>> = {
-  inventory: ['RETAIL'],
+  inventory: ['RETAIL', 'WHOLESALE', 'DISTRIBUTION'],
 };
 
 export function resolveOrgModuleForPath(pathname: string): string | null {
@@ -63,14 +67,22 @@ export function isNavHrefModuleEnabled(
   return isOrgModuleEnabled(toggles, moduleKey);
 }
 
-/** Whether a module should appear in the platform catalog for this pack */
+/**
+ * Whether a module should appear in the platform catalog for this pack.
+ * Intersection of hard pack scope + pack nav profile (chat/inbox/AI, etc.).
+ */
 export function isOrgModuleRelevantForPack(
   moduleKey: string,
   industryPack: string | null | undefined,
 ): boolean {
+  const pack = industryPack ?? 'GENERAL';
   const allowed = ORG_MODULE_PACK_SCOPE[moduleKey];
-  if (!allowed) return true;
-  return Boolean(industryPack && allowed.includes(industryPack));
+  if (allowed && !allowed.includes(pack)) return false;
+
+  const navKey = ORG_MODULE_TO_PACK_NAV_KEY[moduleKey];
+  if (navKey && !isPackNavKeyEnabled(pack, navKey)) return false;
+
+  return true;
 }
 
 export function buildDefaultModuleToggles(): Record<string, boolean> {

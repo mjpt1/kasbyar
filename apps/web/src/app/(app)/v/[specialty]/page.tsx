@@ -10,7 +10,14 @@ import {
   Users,
 } from 'lucide-react';
 
-import { canAccessSpecialtyDashboard, getPackDefinition, getSpecialty } from '@kesbyar/shared';
+import {
+  canAccessSpecialtyDashboard,
+  getPackDefinition,
+  getPackNavItemLabel,
+  getSpecialty,
+  isPackNavKeyEnabled,
+  LEAD_LABELS,
+} from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -34,19 +41,28 @@ export default async function SpecialtyDashboardPage({
 
   const org = await prisma.organization.findUnique({
     where: { id: session.organizationId },
-    select: { industrySpecialty: true },
+    select: { industrySpecialty: true, industryPack: true },
   });
 
   if (!canAccessSpecialtyDashboard(org?.industrySpecialty, specialtyId)) {
     redirect('/dashboard');
   }
 
+  const packId = org?.industryPack ?? specialty.basePack;
   const [widgets, basePack] = await Promise.all([
     getSpecialtyDashboardWidgets(session.organizationId, specialty),
     Promise.resolve(getPackDefinition(specialty.basePack)),
   ]);
 
   const packHome = basePack.homeRoute;
+  const showLeads = isPackNavKeyEnabled(packId, 'leads');
+  const showTasks = isPackNavKeyEnabled(packId, 'tasks');
+  const showConversation = isPackNavKeyEnabled(packId, 'conversation');
+  const leadsLabel = getPackNavItemLabel(
+    packId,
+    'leads',
+    specialtyId === 'freelancer' ? 'فرصت پروژه' : LEAD_LABELS.plural,
+  );
 
   return (
     <div className="space-y-6">
@@ -124,11 +140,7 @@ export default async function SpecialtyDashboardPage({
 
         <Card className="border-violet-100/80 bg-violet-50/40 dark:border-violet-900/40 dark:bg-violet-950/20">
           <CardHeader>
-            <CardTitle className="text-base">
-              {specialtyId === 'freelancer' || specialtyId === 'software-house'
-                ? 'دسترسی سریع پروژه'
-                : 'دسترسی سریع CRM'}
-            </CardTitle>
+            <CardTitle className="text-base">دسترسی سریع</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
             <Button asChild variant="outline" size="sm" className="justify-start">
@@ -137,36 +149,44 @@ export default async function SpecialtyDashboardPage({
                 {specialty.labels.customers}
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm" className="justify-start">
-              <Link href="/leads">
-                <Target className="ms-2 h-4 w-4" />
-                {specialtyId === 'freelancer' ? 'فرصت پروژه' : 'سرنخ‌های فروش'}
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="sm" className="justify-start">
-              <Link href="/invoices">
-                <Receipt className="ms-2 h-4 w-4" />
-                فاکتورها
-              </Link>
-            </Button>
-            {(specialtyId === 'freelancer' ||
+            {showLeads ? (
+              <Button asChild variant="outline" size="sm" className="justify-start">
+                <Link href="/leads">
+                  <Target className="ms-2 h-4 w-4" />
+                  {leadsLabel}
+                </Link>
+              </Button>
+            ) : null}
+            {isPackNavKeyEnabled(packId, 'invoices') ? (
+              <Button asChild variant="outline" size="sm" className="justify-start">
+                <Link href="/invoices">
+                  <Receipt className="ms-2 h-4 w-4" />
+                  فاکتورها
+                </Link>
+              </Button>
+            ) : null}
+            {showTasks &&
+            (specialtyId === 'freelancer' ||
               specialtyId === 'software-house' ||
-              specialty.basePack === 'GENERAL') && (
-              <>
-                <Button asChild variant="outline" size="sm" className="justify-start">
-                  <Link href="/tasks">
-                    <CheckSquare className="ms-2 h-4 w-4" />
-                    {specialtyId === 'software-house' ? 'تسک‌های تحویل' : 'کارها و پروژه‌ها'}
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm" className="justify-start">
-                  <Link href="/conversation">
-                    <MessageSquare className="ms-2 h-4 w-4" />
-                    اتاق فرمان
-                  </Link>
-                </Button>
-              </>
-            )}
+              specialty.basePack === 'GENERAL') ? (
+              <Button asChild variant="outline" size="sm" className="justify-start">
+                <Link href="/tasks">
+                  <CheckSquare className="ms-2 h-4 w-4" />
+                  {specialtyId === 'software-house' ? 'تسک‌های تحویل' : 'کارها و پروژه‌ها'}
+                </Link>
+              </Button>
+            ) : null}
+            {showConversation &&
+            (specialtyId === 'freelancer' ||
+              specialtyId === 'software-house' ||
+              specialty.basePack === 'GENERAL') ? (
+              <Button asChild variant="outline" size="sm" className="justify-start">
+                <Link href="/conversation">
+                  <MessageSquare className="ms-2 h-4 w-4" />
+                  دستیار
+                </Link>
+              </Button>
+            ) : null}
             {(specialty.basePack === 'CLINIC' || specialty.basePack === 'BEAUTY_SALON') && (
               <Button asChild variant="outline" size="sm" className="justify-start">
                 <Link
