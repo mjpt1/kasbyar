@@ -1,16 +1,21 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-import { colors } from '@/theme';
+import { useSession } from '@/auth/AuthContext';
+import { getPackMobileTheme } from '@/theme';
 
 export default function AppTabsLayout() {
+  const session = useSession();
+  const packTheme = getPackMobileTheme(session?.industryPack ?? 'GENERAL');
+  const { colors } = packTheme;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
           backgroundColor: colors.surface,
-          borderTopColor: colors.border,
+          borderTopColor: colors.border ?? '#475569',
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,

@@ -20,7 +20,7 @@ export default async function BeautyHomePage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title="سالن زیبایی"
         description="نوبت خدمات و مراجعان"
@@ -34,20 +34,20 @@ export default async function BeautyHomePage() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+      <div className="ky-pack-stats">
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">نوبت‌های امروز</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.todayCount}</CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">نوبت‌های باز</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.openCount}</CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">۷ روز آینده</CardTitle>
           </CardHeader>
@@ -55,10 +55,10 @@ export default async function BeautyHomePage() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="ky-pack-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="h-4 w-4 text-primary" />
             برنامه امروز
           </CardTitle>
         </CardHeader>
@@ -67,7 +67,11 @@ export default async function BeautyHomePage() {
             <p className="text-sm text-muted-foreground">نوبتی برای امروز ثبت نشده است.</p>
           ) : (
             todayAppointments.map((appt) => (
-              <div key={appt.id} className="ky-list-row p-3">
+              <div
+                key={appt.id}
+                className="ky-list-row rounded-[var(--radius)] border border-border/60 p-3"
+                style={{ backgroundColor: 'hsl(var(--panel-soft) / 0.55)' }}
+              >
                 <div>
                   <div className="font-medium">{appt.customer.name}</div>
                   <div className="text-sm text-muted-foreground">

@@ -12,7 +12,7 @@ export default async function RetailHomePage() {
   const signals = await getRetailDashboardSignals(session.organizationId);
 
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title="فروشگاه"
         description="محصولات، موجودی، فروش و مشتریان"
@@ -52,24 +52,56 @@ export default async function RetailHomePage() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+      <div className="ky-pack-stats">
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">کم‌موجود</CardTitle>
           </CardHeader>
-          <CardContent className="text-2xl font-bold text-amber-600">{signals.lowStockCount}</CardContent>
+          <CardContent className="text-2xl font-bold text-amber-600">
+            {signals.lowStockCount}
+          </CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">گردش ۷ روز</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.movementCount}</CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">محصول فعال</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.activeProductCount}</CardContent>
+        </Card>
+        <Card className="ky-pack-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">فاکتور</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm font-medium text-primary">
+            <Link href="/invoices" className="hover:underline">
+              ثبت سریع
+            </Link>
+          </CardContent>
+        </Card>
+        <Card className="ky-pack-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">پرداخت</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm font-medium text-primary">
+            <Link href="/payments" className="hover:underline">
+              صندوق
+            </Link>
+          </CardContent>
+        </Card>
+        <Card className="ky-pack-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">مشتری</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm font-medium text-primary">
+            <Link href="/customers" className="hover:underline">
+              فهرست
+            </Link>
+          </CardContent>
         </Card>
       </div>
     </div>

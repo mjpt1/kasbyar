@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Pastel KesbYar — soft sky / mint / peach */
+    /* Pastel KesbYar — soft sky / mint / peach (GENERAL default) */
     --background: 260 33% 98%;
     --foreground: 225 16% 29%;
     --card: 0 0% 100%;
@@ -25,6 +25,12 @@
     --input: 210 25% 88%;
     --ring: 200 38% 58%;
     --radius: 0.9rem;
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 225 16% 29%;
+    --panel-soft: 200 40% 96%;
+    --pack-glow-a: rgba(245, 198, 194, 0.28);
+    --pack-glow-b: rgba(168, 201, 184, 0.22);
+    --pack-glow-c: rgba(185, 212, 240, 0.18);
   }
 
   * {
@@ -45,9 +51,9 @@
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     background-image:
-      radial-gradient(ellipse 75% 48% at 100% 0%, rgba(245, 198, 194, 0.28), transparent 55%),
-      radial-gradient(ellipse 55% 42% at 0% 100%, rgba(168, 201, 184, 0.22), transparent 50%),
-      radial-gradient(ellipse 40% 35% at 50% 40%, rgba(185, 212, 240, 0.18), transparent 60%);
+      radial-gradient(ellipse 75% 48% at 100% 0%, var(--pack-glow-a), transparent 55%),
+      radial-gradient(ellipse 55% 42% at 0% 100%, var(--pack-glow-b), transparent 50%),
+      radial-gradient(ellipse 40% 35% at 50% 40%, var(--pack-glow-c), transparent 60%);
     background-attachment: fixed;
   }
 
@@ -199,5 +205,160 @@
 
   .admin-pack-4 {
     background: linear-gradient(160deg, rgba(221, 208, 240, 0.4), rgba(255, 255, 255, 0.7));
+  }
+
+  /* ── Pack visual themes (tokens set via data-pack-theme + inline CSS vars) ── */
+
+  .ky-pack-sidebar {
+    background-color: hsl(var(--sidebar));
+    color: hsl(var(--sidebar-foreground));
+  }
+
+  .ky-pack-header {
+    background-color: hsl(var(--background) / 0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .ky-pack-main {
+    background-color: hsl(var(--muted) / 0.35);
+    background-image:
+      radial-gradient(ellipse 70% 45% at 100% 0%, var(--pack-glow-a), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 0% 100%, var(--pack-glow-b), transparent 50%),
+      radial-gradient(ellipse 35% 30% at 50% 45%, var(--pack-glow-c), transparent 60%);
+  }
+
+  .ky-pack-panel {
+    @apply space-y-6;
+  }
+
+  .ky-pack-card {
+    background: linear-gradient(
+      145deg,
+      hsl(var(--panel-soft)),
+      hsl(var(--card))
+    );
+    border-radius: var(--radius);
+  }
+
+  /* Density */
+  [data-density='compact'] .ky-pack-main {
+    padding-block: 0.65rem;
+  }
+
+  [data-density='compact'] .ky-dash-stats,
+  [data-density='compact'] .ky-pack-stats {
+    gap: 0.5rem;
+  }
+
+  [data-density='airy'] .ky-dash-stats,
+  [data-density='airy'] .ky-pack-stats {
+    gap: 1.25rem;
+  }
+
+  /* Layout personalities — stats grids */
+  .ky-dash-stats,
+  .ky-pack-stats {
+    @apply grid gap-4;
+  }
+
+  [data-layout='balanced'] .ky-dash-stats,
+  [data-layout='balanced'] .ky-pack-stats {
+    @apply md:grid-cols-2 xl:grid-cols-3;
+  }
+
+  [data-layout='calendar_forward'] .ky-dash-shell {
+    @apply grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)];
+  }
+
+  [data-layout='calendar_forward'] .ky-dash-stats,
+  [data-layout='calendar_forward'] .ky-pack-stats {
+    @apply grid-cols-2 md:grid-cols-2;
+  }
+
+  [data-layout='calendar_forward'] .ky-pack-hero {
+    @apply order-first lg:col-span-1;
+    border-radius: var(--radius);
+    background: linear-gradient(
+      160deg,
+      hsl(var(--panel-soft)),
+      hsl(var(--card)) 60%
+    );
+    border: 1px solid hsl(var(--border));
+  }
+
+  [data-layout='soft_gallery'] .ky-dash-stats,
+  [data-layout='soft_gallery'] .ky-pack-stats {
+    @apply md:grid-cols-3;
+  }
+
+  [data-layout='soft_gallery'] .ky-dash-stats > *,
+  [data-layout='soft_gallery'] .ky-pack-stats > * {
+    border-radius: var(--radius);
+    box-shadow: 0 10px 28px hsl(var(--primary) / 0.08);
+    background: linear-gradient(
+      160deg,
+      hsl(var(--panel-soft)),
+      hsl(var(--card))
+    );
+  }
+
+  [data-layout='dense_kpi'] .ky-dash-stats,
+  [data-layout='dense_kpi'] .ky-pack-stats {
+    @apply grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6;
+  }
+
+  [data-layout='dense_kpi'] .ky-dash-stats > *,
+  [data-layout='dense_kpi'] .ky-pack-stats > * {
+    border-radius: var(--radius);
+    padding: 0;
+  }
+
+  [data-layout='order_board'] .ky-dash-shell,
+  [data-layout='order_board'] .ky-pack-shell {
+    @apply grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)];
+  }
+
+  [data-layout='order_board'] .ky-dash-stats,
+  [data-layout='order_board'] .ky-pack-stats {
+    @apply grid-cols-1 gap-2;
+  }
+
+  [data-layout='pipeline'] .ky-dash-stats,
+  [data-layout='pipeline'] .ky-pack-stats {
+    @apply md:grid-cols-3;
+  }
+
+  [data-layout='pipeline'] .ky-pack-hero {
+    @apply grid gap-3 md:grid-cols-3;
+  }
+
+  [data-layout='matter_list'] .ky-dash-stats,
+  [data-layout='matter_list'] .ky-pack-stats {
+    @apply md:grid-cols-2 xl:grid-cols-4;
+  }
+
+  [data-layout='schedule_grid'] .ky-dash-stats,
+  [data-layout='schedule_grid'] .ky-pack-stats {
+    @apply grid-cols-2 md:grid-cols-4;
+  }
+
+  [data-layout='job_board'] .ky-dash-stats,
+  [data-layout='job_board'] .ky-pack-stats {
+    @apply grid-cols-2 gap-2 md:grid-cols-4;
+  }
+
+  [data-layout='booking_flow'] .ky-dash-stats,
+  [data-layout='booking_flow'] .ky-pack-stats {
+    @apply md:grid-cols-3;
+  }
+
+  [data-layout='booking_flow'] .ky-pack-hero {
+    border-radius: var(--radius);
+    background: linear-gradient(
+      120deg,
+      hsl(var(--panel-soft)),
+      hsl(var(--secondary))
+    );
+    border: 1px solid hsl(var(--border));
   }
 }

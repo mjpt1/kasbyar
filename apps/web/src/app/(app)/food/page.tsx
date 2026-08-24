@@ -29,7 +29,7 @@ export default async function FoodHomePage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title="غذا و نوشیدنی"
         description="منو، سفارش سالن و آماده‌سازی"
@@ -51,56 +51,62 @@ export default async function FoodHomePage() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">سفارش باز</CardTitle>
+      <div className="ky-pack-shell">
+        <div className="ky-pack-stats">
+          <Card className="ky-pack-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">سفارش باز</CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-bold text-amber-600">
+              {signals.openCount}
+            </CardContent>
+          </Card>
+          <Card className="ky-pack-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">سفارش امروز</CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-bold">{signals.todayCount}</CardContent>
+          </Card>
+          <Card className="ky-pack-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">آیتم منو</CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-bold">{signals.menuCount}</CardContent>
+          </Card>
+        </div>
+
+        <Card className="ky-pack-hero">
+          <CardHeader>
+            <CardTitle className="text-base">برد سفارش‌ها</CardTitle>
           </CardHeader>
-          <CardContent className="text-2xl font-bold text-amber-600">{signals.openCount}</CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">سفارش امروز</CardTitle>
-          </CardHeader>
-          <CardContent className="text-2xl font-bold">{signals.todayCount}</CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">آیتم منو</CardTitle>
-          </CardHeader>
-          <CardContent className="text-2xl font-bold">{signals.menuCount}</CardContent>
+          <CardContent className="space-y-3">
+            {recentOrders.length === 0 ? (
+              <p className="text-sm text-muted-foreground">سفارشی ثبت نشده است.</p>
+            ) : (
+              recentOrders.map((order) => (
+                <div key={order.id} className="ky-list-row p-3">
+                  <div>
+                    <div className="font-medium">
+                      {order.tableLabel ?? order.customer?.name ?? 'سفارش سالن'}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {order.itemsSummary ?? formatCurrency(Number(order.totalAmount))}
+                    </div>
+                  </div>
+                  <div className="text-left">
+                    <Badge variant="secondary">
+                      {FOOD_ORDER_LABELS[order.status] ?? order.status}
+                    </Badge>
+                    <div className="mt-1 text-sm">
+                      <JalaliDate date={order.orderedAt} showTime />
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">آخرین سفارش‌ها</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {recentOrders.length === 0 ? (
-            <p className="text-sm text-muted-foreground">سفارشی ثبت نشده است.</p>
-          ) : (
-            recentOrders.map((order) => (
-              <div key={order.id} className="ky-list-row p-3">
-                <div>
-                  <div className="font-medium">
-                    {order.tableLabel ?? order.customer?.name ?? 'سفارش سالن'}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {order.itemsSummary ?? formatCurrency(Number(order.totalAmount))}
-                  </div>
-                </div>
-                <div className="text-left">
-                  <Badge variant="secondary">{FOOD_ORDER_LABELS[order.status] ?? order.status}</Badge>
-                  <div className="mt-1 text-sm">
-                    <JalaliDate date={order.orderedAt} showTime />
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }

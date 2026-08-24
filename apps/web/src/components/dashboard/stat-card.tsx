@@ -20,13 +20,13 @@ export function StatCard({
   const content = (
     <Card
       className={cn(
-        'transition-colors',
+        'ky-pack-card transition-colors',
         href && 'hover:border-primary/40 hover:bg-primary/5',
       )}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        {Icon ? <Icon className="h-4 w-4 text-muted-foreground" aria-hidden /> : null}
+        {Icon ? <Icon className="h-4 w-4 text-primary/70" aria-hidden /> : null}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-tight">{value}</div>
@@ -39,7 +39,10 @@ export function StatCard({
 
   if (href) {
     return (
-      <Link href={href} className="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      <Link
+        href={href}
+        className="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         {content}
       </Link>
     );

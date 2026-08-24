@@ -5,3 +5,4 @@ export * from './specialties';
 export * from './specialty-access';
 export * from './wave4';
 export * from './nav-profiles';
+export * from './themes';

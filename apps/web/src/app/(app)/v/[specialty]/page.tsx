@@ -65,7 +65,7 @@ export default async function SpecialtyDashboardPage({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title={specialty.label}
         description={specialty.description}
@@ -89,12 +89,9 @@ export default async function SpecialtyDashboardPage({
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="ky-pack-stats">
         {widgets.map((widget) => (
-          <Card
-            key={widget.key}
-            className="border-white/80 bg-gradient-to-br from-sky-50/90 via-white to-rose-50/70 shadow-sm dark:from-sky-950/30 dark:via-card dark:to-rose-950/20"
-          >
+          <Card key={widget.key} className="ky-pack-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {widget.title}
@@ -125,7 +122,7 @@ export default async function SpecialtyDashboardPage({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <Card className="border-emerald-100/80 bg-emerald-50/40 dark:border-emerald-900/40 dark:bg-emerald-950/20">
+        <Card className="ky-pack-card">
           <CardHeader>
             <CardTitle className="text-base">نکات عملیاتی</CardTitle>
           </CardHeader>
@@ -138,7 +135,7 @@ export default async function SpecialtyDashboardPage({
           </CardContent>
         </Card>
 
-        <Card className="border-violet-100/80 bg-violet-50/40 dark:border-violet-900/40 dark:bg-violet-950/20">
+        <Card className="ky-pack-card border-s-4 border-s-primary">
           <CardHeader>
             <CardTitle className="text-base">دسترسی سریع</CardTitle>
           </CardHeader>

@@ -1,5 +1,6 @@
 import {
   formatCurrency,
+  getPackLayoutModel,
   getPackNavItemLabel,
   isPackNavKeyEnabled,
   LEAD_LABELS,
@@ -32,6 +33,7 @@ import { getDashboardDetails, getSalesTrend } from '@/server/dashboard/dashboard
 export default async function DashboardPage() {
   const session = await requireSession();
   const pack = session.industryPack;
+  const layout = getPackLayoutModel(pack);
   const showLeads = isPackNavKeyEnabled(pack, 'leads');
   const showTasks = isPackNavKeyEnabled(pack, 'tasks');
   const showConversation = isPackNavKeyEnabled(pack, 'conversation');
@@ -46,69 +48,123 @@ export default async function DashboardPage() {
       getSalesTrend(session.organizationId),
     ]);
 
+  const statsBlock = (
+    <div className="ky-dash-stats">
+      {showPayments ? (
+        <StatCard
+          title="فروش امروز"
+          value={formatCurrency(stats.todaySales)}
+          subtitle="مجموع پرداخت‌های ثبت‌شده امروز"
+          href="/payments"
+          icon={TrendingUp}
+        />
+      ) : null}
+      <StatCard
+        title="فاکتورهای باز"
+        value={String(stats.openInvoices)}
+        subtitle="پیش‌نویس، ارسال‌شده و جزئی"
+        href="/invoices"
+        icon={Receipt}
+      />
+      <StatCard
+        title="مطالبات سررسید گذشته"
+        value={formatCurrency(stats.overdueReceivables)}
+        subtitle="نیازمند پیگیری"
+        href="/invoices"
+        icon={AlertCircle}
+      />
+      {showLeads ? (
+        <StatCard
+          title={leadsActiveLabel}
+          value={String(stats.activeLeads)}
+          subtitle="در قیف فروش"
+          href="/leads"
+          icon={Target}
+        />
+      ) : null}
+      {showTasks ? (
+        <StatCard
+          title="وظایف در انتظار"
+          value={String(stats.pendingTasks)}
+          subtitle="باز و در حال انجام"
+          href="/tasks"
+          icon={CheckSquare}
+        />
+      ) : null}
+      <StatCard
+        title={`${customersLabel} جدید این ماه`}
+        value={String(stats.newCustomersThisMonth)}
+        href="/customers"
+        icon={Users}
+      />
+    </div>
+  );
+
+  const scheduleHero =
+    layout === 'calendar_forward' || layout === 'schedule_grid' ? (
+      <Card className="ky-pack-hero">
+        <CardHeader>
+          <CardTitle className="text-base">
+            {layout === 'calendar_forward' ? 'برنامه و پیگیری امروز' : 'جدول زمانی'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {showTasks && upcomingTasks.length > 0 ? (
+            upcomingTasks.slice(0, 5).map((task) => (
+              <div key={task.id} className="rounded-md border border-border/70 bg-card/80 p-3">
+                <div className="font-medium">{task.title}</div>
+                {task.dueDate ? (
+                  <div className="text-sm text-muted-foreground">
+                    سررسید: <JalaliDate date={task.dueDate} />
+                  </div>
+                ) : null}
+              </div>
+            ))
+          ) : (
+            <InlineEmpty
+              icon={CalendarClock}
+              message="آیتم زمان‌بندی‌شده‌ای برای نمایش نیست."
+              hint="نوبت‌ها و وظایف اینجا برجسته می‌شوند."
+            />
+          )}
+        </CardContent>
+      </Card>
+    ) : null;
+
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title="داشبورد"
         description={`وضعیت عملیات ${session.organizationName}`}
         actions={<HelpLink section="dashboard" />}
       />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {showPayments ? (
-          <StatCard
-            title="فروش امروز"
-            value={formatCurrency(stats.todaySales)}
-            subtitle="مجموع پرداخت‌های ثبت‌شده امروز"
-            href="/payments"
-            icon={TrendingUp}
-          />
-        ) : null}
-        <StatCard
-          title="فاکتورهای باز"
-          value={String(stats.openInvoices)}
-          subtitle="پیش‌نویس، ارسال‌شده و جزئی"
-          href="/invoices"
-          icon={Receipt}
-        />
-        <StatCard
-          title="مطالبات سررسید گذشته"
-          value={formatCurrency(stats.overdueReceivables)}
-          subtitle="نیازمند پیگیری"
-          href="/invoices"
-          icon={AlertCircle}
-        />
-        {showLeads ? (
-          <StatCard
-            title={leadsActiveLabel}
-            value={String(stats.activeLeads)}
-            subtitle="در قیف فروش"
-            href="/leads"
-            icon={Target}
-          />
-        ) : null}
-        {showTasks ? (
-          <StatCard
-            title="وظایف در انتظار"
-            value={String(stats.pendingTasks)}
-            subtitle="باز و در حال انجام"
-            href="/tasks"
-            icon={CheckSquare}
-          />
-        ) : null}
-        <StatCard
-          title={`${customersLabel} جدید این ماه`}
-          value={String(stats.newCustomersThisMonth)}
-          href="/customers"
-          icon={Users}
-        />
-      </div>
+      {layout === 'calendar_forward' || layout === 'order_board' ? (
+        <div className="ky-dash-shell">
+          {layout === 'calendar_forward' ? scheduleHero : statsBlock}
+          {layout === 'calendar_forward' ? statsBlock : (
+            <div className="ky-pack-hero space-y-4">
+              <PackDashboardWidgets organizationId={session.organizationId} />
+              <OperationalInsightCard organizationId={session.organizationId} />
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {scheduleHero}
+          {statsBlock}
+        </>
+      )}
 
-      <PackDashboardWidgets organizationId={session.organizationId} />
+      {layout !== 'order_board' ? (
+        <PackDashboardWidgets organizationId={session.organizationId} />
+      ) : null}
 
-      <OperationalInsightCard organizationId={session.organizationId} />
+      {layout !== 'order_board' ? (
+        <OperationalInsightCard organizationId={session.organizationId} />
+      ) : null}
 
-      <Card>
+      <Card className="ky-pack-card">
         <CardHeader>
           <CardTitle className="text-base">روند فروش ۷ روز اخیر</CardTitle>
         </CardHeader>
@@ -119,7 +175,7 @@ export default async function DashboardPage() {
 
       <div className={`grid gap-6 ${showConversation ? 'lg:grid-cols-3' : 'lg:grid-cols-1'}`}>
         <div className={`space-y-6 ${showConversation ? 'lg:col-span-2' : ''}`}>
-          <Card>
+          <Card className="ky-pack-card">
             <CardHeader>
               <CardTitle className="text-base">فاکتورهای سررسید گذشته</CardTitle>
             </CardHeader>
@@ -154,7 +210,7 @@ export default async function DashboardPage() {
           </Card>
 
           {showLeads ? (
-            <Card>
+            <Card className="ky-pack-card">
               <CardHeader>
                 <CardTitle className="text-base">{leadsStaleLabel}</CardTitle>
               </CardHeader>
@@ -190,8 +246,8 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {showTasks ? (
-          <Card>
+        {showTasks && layout !== 'calendar_forward' ? (
+          <Card className="ky-pack-card">
             <CardHeader>
               <CardTitle className="text-base">وظایف پیشِ رو</CardTitle>
             </CardHeader>
@@ -217,7 +273,7 @@ export default async function DashboardPage() {
           </Card>
         ) : null}
 
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader>
             <CardTitle className="text-base">آخرین فعالیت‌ها</CardTitle>
           </CardHeader>

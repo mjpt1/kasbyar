@@ -19,7 +19,7 @@ export default async function RealEstateHomePage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title="املاک"
         description="فایل ملک، بازدید و وضعیت معامله"
@@ -41,31 +41,33 @@ export default async function RealEstateHomePage() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+      <div className="ky-pack-hero">
+        <Card className="ky-pack-card border-s-4 border-s-primary">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">فایل موجود</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.availableCount}</CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card border-s-4 border-s-amber-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">رزرو شده</CardTitle>
           </CardHeader>
-          <CardContent className="text-2xl font-bold text-amber-600">{signals.reservedCount}</CardContent>
+          <CardContent className="text-2xl font-bold text-amber-600">
+            {signals.reservedCount}
+          </CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card border-s-4 border-s-secondary-foreground/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">بازدید ۷ روز آینده</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">بازدید ۷ روز</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.upcomingShowingCount}</CardContent>
         </Card>
       </div>
 
-      <Card>
+      <Card className="ky-pack-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Building2 className="h-4 w-4" />
+            <Building2 className="h-4 w-4 text-primary" />
             بازدیدهای پیشِ رو
           </CardTitle>
         </CardHeader>

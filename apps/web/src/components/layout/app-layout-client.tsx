@@ -1,8 +1,9 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { getPackTheme, packThemeToCssVars } from '@kesbyar/shared';
 
 import { SidebarNav } from '@/components/layout/sidebar-nav';
 import { Button } from '@/components/ui/button';
@@ -34,10 +35,19 @@ export function AppLayoutClient({
   children,
 }: AppLayoutClientProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = getPackTheme(industryPack);
+  const themeVars = packThemeToCssVars(theme) as CSSProperties;
 
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden">
-      <aside className="hidden h-full w-64 shrink-0 flex-col overflow-hidden border-e bg-card md:flex">
+    <div
+      className="flex min-h-0 flex-1 overflow-hidden"
+      data-pack={industryPack}
+      data-pack-theme={theme.id}
+      data-layout={theme.layout}
+      data-density={theme.density}
+      style={themeVars}
+    >
+      <aside className="ky-pack-sidebar hidden h-full w-64 shrink-0 flex-col overflow-hidden border-e md:flex">
         <SidebarNav
           organizationName={organizationName}
           organizationId={organizationId}
@@ -58,7 +68,7 @@ export function AppLayoutClient({
             aria-label="بستن منو"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute inset-y-0 right-0 flex w-[min(100%,18rem)] flex-col bg-card shadow-xl">
+          <aside className="ky-pack-sidebar absolute inset-y-0 right-0 flex w-[min(100%,18rem)] flex-col shadow-xl">
             <div className="flex shrink-0 items-center justify-between border-b p-3">
               <span className="text-sm font-medium">منو</span>
               <Button
@@ -89,7 +99,7 @@ export function AppLayoutClient({
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="shrink-0 border-b bg-background px-3 py-3 sm:px-6 sm:py-4">
+        <div className="ky-pack-header shrink-0 border-b px-3 py-3 sm:px-6 sm:py-4">
           <div className="flex items-start gap-2 sm:gap-3">
             <Button
               type="button"
@@ -107,7 +117,7 @@ export function AppLayoutClient({
         </div>
         <main
           className={cn(
-            'min-h-0 flex-1 overflow-y-auto overflow-x-hidden bg-muted/20 p-3 sm:p-6',
+            'ky-pack-main min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6',
             'pb-[max(1rem,env(safe-area-inset-bottom))]',
           )}
         >

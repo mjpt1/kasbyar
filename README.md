@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.16.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.17.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -244,13 +244,22 @@ npm run dev
 ## English (short)
 
 **Demo login:** [https://kasbyar.vercel.app](https://kasbyar.vercel.app) — `demo@kesbyar.ir` / `demo1234`
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.16.0** (industry-specific panel profiles).
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.17.0** (pack visual themes + layout personalities).
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.16.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.17.0**.
+
+### v0.17.0 — تم بصری و مدل چیدمان هر بسته
+
+- تم توکن‌محور per-pack در `@kesbyar/shared` (رنگ، شعاع، تراکم، glow) — کلینیک ≠ زیبایی ≠ فروشگاه ≠ رستوران ≠ املاک …
+- شل وب: `data-pack` / `data-pack-theme` / `data-layout` روی ریشه پنل؛ سایدبار و کارت‌ها از CSS variables پیروی می‌کنند
+- مدل‌های چیدمان متمایز: تقویم‌محور، گالری نرم، KPI متراکم، برد سفارش، پایپ‌لاین فایل/سرنخ
+- موبایل: پالت تب‌بار از همان نقشه تم بسته
+- تست پوشش کامل: هر `IndustryPackId` به یک تم نگاشت می‌شود
+- نسخه root / web / mobile / shared: **0.17.0**
 
 ### v0.16.0 — پنل اختصاصی هر کسب‌وکار
 
