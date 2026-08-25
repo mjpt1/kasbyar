@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Boxes, Package, Receipt, Users, Wallet } from 'lucide-react';
+import { getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -9,13 +10,14 @@ import { requirePackPage } from '@/server/packs/require-pack-page';
 
 export default async function RetailHomePage() {
   const { session } = await requirePackPage('RETAIL');
+  const surface = getPackDashboardSurface('RETAIL', session.industrySpecialty);
   const signals = await getRetailDashboardSignals(session.organizationId);
 
   return (
     <div className="ky-pack-panel space-y-6">
       <PageHeader
-        title="فروشگاه"
-        description="محصولات، موجودی، فروش و مشتریان"
+        title={surface.titleFa}
+        description={surface.descriptionFa}
         actions={
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm">
@@ -43,9 +45,9 @@ export default async function RetailHomePage() {
               </Link>
             </Button>
             <Button asChild size="sm">
-              <Link href="/retail/inventory">
+              <Link href={surface.primaryCta?.href ?? '/retail/inventory'}>
                 <Boxes className="ms-2 h-4 w-4" />
-                موجودی
+                {surface.primaryCta?.labelFa ?? 'موجودی'}
               </Link>
             </Button>
           </div>

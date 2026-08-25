@@ -62,9 +62,11 @@ import {
 
 import {
   getPackDefinition,
+  getPackHomeHref,
   getPackNavItemLabel,
   getPackNavItems,
   getSpecialty,
+  isVerticalPack,
   LEAD_LABELS,
   type IndustryPackId,
   isCoreNavHrefEnabledForPack,
@@ -190,29 +192,45 @@ export function getNavItems(
   moduleToggles?: Record<string, boolean>,
 ): NavItem[] {
   const specialty = getSpecialty(industrySpecialty);
-  const specialtyItem: NavItem[] = specialty
-    ? [
-        {
-          href: specialty.homePath,
-          label: specialty.label,
-          icon: PACK_ICON_MAP[specialty.icon] ?? LayoutDashboard,
-          packOnly: true,
-          section: 'بسته تخصصی',
-        },
-      ]
-    : [];
+  const packDef = getPackDefinition(industryPack as IndustryPackId);
+  const packHomeHref = getPackHomeHref(industryPack);
+  // Specialty preview is the better landing when set; else vertical pack home.
+  const homeHref = specialty?.homePath ?? packHomeHref;
+  const homeLabel =
+    specialty?.label ??
+    (isVerticalPack(industryPack)
+      ? (packDef.navItems[0]?.label ?? 'پیشخوان')
+      : 'داشبورد');
+  const homeIcon = specialty
+    ? (PACK_ICON_MAP[specialty.icon] ?? LayoutDashboard)
+    : (PACK_ICON_MAP[packDef.navItems[0]?.icon ?? ''] ?? LayoutDashboard);
 
-  // Only the active org's industry pack — never other verticals
-  const packItems = getPackNavItems(industryPack).map((item) => ({
-    href: item.href,
-    label: item.label,
-    icon: PACK_ICON_MAP[item.icon] ?? LayoutDashboard,
-    packOnly: true,
-    section: specialty ? undefined : 'بسته تخصصی',
-  }));
+  const specialtyItem: NavItem[] =
+    specialty && specialty.homePath !== homeHref
+      ? [
+          {
+            href: specialty.homePath,
+            label: specialty.label,
+            icon: PACK_ICON_MAP[specialty.icon] ?? LayoutDashboard,
+            packOnly: true,
+            section: 'بسته تخصصی',
+          },
+        ]
+      : [];
+
+  // Only the active org's industry pack — never other verticals; skip home duplicate
+  const packItems = getPackNavItems(industryPack)
+    .filter((item) => item.href !== homeHref)
+    .map((item) => ({
+      href: item.href,
+      label: item.label,
+      icon: PACK_ICON_MAP[item.icon] ?? LayoutDashboard,
+      packOnly: true,
+      section: specialty ? undefined : 'بسته تخصصی',
+    }));
 
   const items: NavItem[] = [
-    { href: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
+    { href: homeHref, label: homeLabel, icon: homeIcon },
     ...AI_NAV_ITEMS,
     ...COLLAB_NAV_ITEMS,
     ...specialtyItem,

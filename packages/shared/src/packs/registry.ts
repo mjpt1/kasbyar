@@ -297,6 +297,11 @@ export function getPackDefinition(packId: string): PackDefinition {
   return PACK_REGISTRY[packId as IndustryPackId] ?? PACK_REGISTRY.GENERAL;
 }
 
+/** Primary in-app home for a pack — vertical previews, else generic CRM dashboard. */
+export function getPackHomeHref(packId: string): string {
+  return getPackDefinition(packId).homeRoute ?? '/dashboard';
+}
+
 export function isVerticalPack(packId: string): boolean {
   return packId !== 'GENERAL';
 }

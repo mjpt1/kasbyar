@@ -1,11 +1,26 @@
 import { describe, expect, it } from 'vitest';
 
-import { getPackDefinition, getPackNavItems, isVerticalPack } from './registry';
+import {
+  getPackDefinition,
+  getPackHomeHref,
+  getPackNavItems,
+  isVerticalPack,
+} from './registry';
+import { getPackDashboardSurface } from './dashboard-surfaces';
 
 describe('pack registry', () => {
   it('returns empty nav for GENERAL', () => {
     expect(getPackNavItems('GENERAL')).toEqual([]);
     expect(isVerticalPack('GENERAL')).toBe(false);
+  });
+
+  it('maps pack home href to vertical route (not generic dashboard)', () => {
+    expect(getPackHomeHref('GENERAL')).toBe('/dashboard');
+    expect(getPackHomeHref('CLINIC')).toBe('/clinic');
+    expect(getPackHomeHref('BEAUTY_SALON')).toBe('/beauty');
+    expect(getPackHomeHref('RETAIL')).toBe('/retail');
+    expect(getPackHomeHref('FOOD_SERVICE')).toBe('/food');
+    expect(getPackHomeHref('unknown-pack')).toBe('/dashboard');
   });
 
   it('exposes clinic pack routes', () => {
@@ -89,5 +104,34 @@ describe('pack registry', () => {
     );
     expect(getPackDefinition('HOSPITALITY').homeRoute).toBe('/hospitality');
     expect(getPackDefinition('DISTRIBUTION').labels.customer).toBe('فروشگاه');
+  });
+});
+
+describe('getPackDashboardSurface', () => {
+  it('returns family-aware copy for vertical packs', () => {
+    const clinic = getPackDashboardSurface('CLINIC');
+    expect(clinic.titleFa).toBe('کلینیک');
+    expect(clinic.descriptionFa).toMatch(/نوبت/);
+    expect(clinic.primaryCta?.href).toBe('/clinic/appointments');
+    expect(clinic.endUserActions.length).toBeGreaterThan(0);
+
+    const beauty = getPackDashboardSurface('BEAUTY_SALON');
+    expect(beauty.titleFa).toBe('سالن زیبایی');
+
+    const retail = getPackDashboardSurface('RETAIL');
+    expect(retail.titleFa).toBe('فروشگاه');
+
+    const food = getPackDashboardSurface('FOOD_SERVICE');
+    expect(food.titleFa).toBe('غذا و نوشیدنی');
+
+    const general = getPackDashboardSurface('GENERAL');
+    expect(general.titleFa).toBe('داشبورد');
+  });
+
+  it('applies specialty overrides for hospital vs dental and retail niches', () => {
+    expect(getPackDashboardSurface('CLINIC', 'hospital').titleFa).toMatch(/بیمارستان/);
+    expect(getPackDashboardSurface('CLINIC', 'dental-clinic').titleFa).toMatch(/دندان/);
+    expect(getPackDashboardSurface('FOOD_SERVICE', 'cafe').titleFa).toMatch(/کافه/);
+    expect(getPackDashboardSurface('RETAIL', 'pharmacy').titleFa).toMatch(/داروخانه/);
   });
 });

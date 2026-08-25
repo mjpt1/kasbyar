@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Calendar, Sparkles } from 'lucide-react';
+import { getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { JalaliDate } from '@/components/shared/jalali-date';
@@ -14,6 +15,7 @@ import { requirePackPage } from '@/server/packs/require-pack-page';
 
 export default async function BeautyHomePage() {
   const { session } = await requirePackPage('BEAUTY_SALON');
+  const surface = getPackDashboardSurface('BEAUTY_SALON', session.industrySpecialty);
   const [signals, todayAppointments] = await Promise.all([
     getBeautyDashboardSignals(session.organizationId),
     listTodayBeautyAppointments(session.organizationId),
@@ -22,13 +24,13 @@ export default async function BeautyHomePage() {
   return (
     <div className="ky-pack-panel space-y-6">
       <PageHeader
-        title="سالن زیبایی"
-        description="نوبت خدمات و مراجعان"
+        title={surface.titleFa}
+        description={surface.descriptionFa}
         actions={
           <Button asChild size="sm">
-            <Link href="/beauty/appointments">
+            <Link href={surface.primaryCta?.href ?? '/beauty/appointments'}>
               <Calendar className="ms-2 h-4 w-4" />
-              همه نوبت‌ها
+              {surface.primaryCta?.labelFa ?? 'همه نوبت‌ها'}
             </Link>
           </Button>
         }

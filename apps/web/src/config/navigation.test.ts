@@ -26,10 +26,25 @@ describe('getNavItems AI OS', () => {
       expect(hrefs).toContain(href);
     }
 
-    // Dashboard, then AI section — before CRM ops
+    // Pack home (or generic dashboard), then AI section — before CRM ops
     expect(hrefs[0]).toBe('/dashboard');
     expect(hrefs[1]).toBe('/command');
     expect(hrefs.indexOf('/command')).toBeLessThan(hrefs.indexOf('/customers'));
+  });
+
+  it('uses vertical pack home as first nav item (not /dashboard)', () => {
+    const clinic = getNavItems('CLINIC', 'OWNER');
+    expect(clinic[0]?.href).toBe('/clinic');
+    expect(clinic[0]?.label).toBe('کلینیک');
+    expect(clinic.filter((i) => i.href === '/clinic')).toHaveLength(1);
+    expect(clinic.map((i) => i.href)).not.toContain('/dashboard');
+
+    const beauty = getNavItems('BEAUTY_SALON', 'OWNER');
+    expect(beauty[0]?.href).toBe('/beauty');
+    expect(beauty.filter((i) => i.href === '/beauty')).toHaveLength(1);
+
+    const retail = getNavItems('RETAIL', 'OWNER');
+    expect(retail[0]?.href).toBe('/retail');
   });
 
   it('shows all AI pages for STAFF', () => {
@@ -48,10 +63,19 @@ describe('getNavItems AI OS', () => {
     }
   });
 
-  it('keeps AI above pack links so specialty orgs still surface them', () => {
+  it('keeps AI above secondary pack links so specialty orgs still surface them', () => {
     const items = getNavItems('CLINIC', 'OWNER');
     const hrefs = items.map((i) => i.href);
-    expect(hrefs.indexOf('/command')).toBeLessThan(hrefs.indexOf('/clinic'));
+    // Home is /clinic at index 0; AI comes before appointments / patients
+    expect(hrefs.indexOf('/command')).toBeLessThan(hrefs.indexOf('/clinic/appointments'));
+    expect(hrefs.indexOf('/command')).toBeLessThan(hrefs.indexOf('/customers'));
+  });
+
+  it('prefers specialty home and does not duplicate it', () => {
+    const items = getNavItems('CLINIC', 'OWNER', 'hospital');
+    expect(items[0]?.href).toBe('/v/hospital');
+    expect(items.filter((i) => i.href === '/v/hospital')).toHaveLength(1);
+    expect(items.map((i) => i.href)).toContain('/clinic');
   });
 
   it('hides chat and leads for clinic/beauty pack profiles', () => {

@@ -1,5 +1,7 @@
 import {
   formatCurrency,
+  getPackDashboardSurface,
+  getPackDefinition,
   getPackLayoutModel,
   getPackNavItemLabel,
   isPackNavKeyEnabled,
@@ -15,6 +17,7 @@ import {
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import { PackDashboardWidgets } from '@/components/dashboard/pack-dashboard-widgets';
 import { StatCard } from '@/components/dashboard/stat-card';
@@ -33,6 +36,12 @@ import { getDashboardDetails, getSalesTrend } from '@/server/dashboard/dashboard
 export default async function DashboardPage() {
   const session = await requireSession();
   const pack = session.industryPack;
+  const homeRoute = getPackDefinition(pack).homeRoute;
+  if (homeRoute) {
+    redirect(homeRoute);
+  }
+
+  const surface = getPackDashboardSurface(pack, session.industrySpecialty);
   const layout = getPackLayoutModel(pack);
   const showLeads = isPackNavKeyEnabled(pack, 'leads');
   const showTasks = isPackNavKeyEnabled(pack, 'tasks');
@@ -134,17 +143,18 @@ export default async function DashboardPage() {
   return (
     <div className="ky-pack-panel space-y-6">
       <PageHeader
-        title="داشبورد"
-        description={`وضعیت عملیات ${session.organizationName}`}
+        title={surface.titleFa}
+        description={`${surface.descriptionFa} — ${session.organizationName}`}
         actions={<HelpLink section="dashboard" />}
       />
+
+      <PackDashboardWidgets organizationId={session.organizationId} />
 
       {layout === 'calendar_forward' || layout === 'order_board' ? (
         <div className="ky-dash-shell">
           {layout === 'calendar_forward' ? scheduleHero : statsBlock}
           {layout === 'calendar_forward' ? statsBlock : (
             <div className="ky-pack-hero space-y-4">
-              <PackDashboardWidgets organizationId={session.organizationId} />
               <OperationalInsightCard organizationId={session.organizationId} />
             </div>
           )}
@@ -155,10 +165,6 @@ export default async function DashboardPage() {
           {statsBlock}
         </>
       )}
-
-      {layout !== 'order_board' ? (
-        <PackDashboardWidgets organizationId={session.organizationId} />
-      ) : null}
 
       {layout !== 'order_board' ? (
         <OperationalInsightCard organizationId={session.organizationId} />

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Calendar, HeartPulse } from 'lucide-react';
+import { getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { JalaliDate } from '@/components/shared/jalali-date';
@@ -14,6 +15,7 @@ import { requirePackPage } from '@/server/packs/require-pack-page';
 
 export default async function ClinicHomePage() {
   const { session } = await requirePackPage('CLINIC');
+  const surface = getPackDashboardSurface('CLINIC', session.industrySpecialty);
   const [signals, todayAppointments] = await Promise.all([
     getClinicDashboardSignals(session.organizationId),
     listTodayAppointments(session.organizationId),
@@ -22,8 +24,8 @@ export default async function ClinicHomePage() {
   return (
     <div className="ky-pack-panel space-y-6">
       <PageHeader
-        title="کلینیک"
-        description="نوبت‌دهی و پیگیری بیماران"
+        title={surface.titleFa}
+        description={surface.descriptionFa}
         actions={
           <div className="flex gap-2">
             <Button asChild variant="outline" size="sm">
@@ -33,9 +35,9 @@ export default async function ClinicHomePage() {
               </Link>
             </Button>
             <Button asChild size="sm">
-              <Link href="/clinic/appointments">
+              <Link href={surface.primaryCta?.href ?? '/clinic/appointments'}>
                 <Calendar className="ms-2 h-4 w-4" />
-                نوبت‌ها
+                {surface.primaryCta?.labelFa ?? 'نوبت‌ها'}
               </Link>
             </Button>
           </div>

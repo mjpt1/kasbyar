@@ -1,13 +1,15 @@
 import type { CSSProperties } from 'react';
 import {
   formatCurrencyWithOptionalToman,
+  getPackDashboardSurface,
+  getPackDefinition,
   getPackTheme,
   LEAD_STATUS_LABELS,
   packThemeToCssVars,
   TASK_PRIORITY_LABELS,
   TASK_STATUS_LABELS,
 } from '@kesbyar/shared';
-import { ClipboardList, Flag, Receipt, UserRound } from 'lucide-react';
+import { ClipboardList, Flag, Receipt, Sparkles, UserRound } from 'lucide-react';
 import Link from 'next/link';
 
 import { PortalLogoutButton } from '@/components/features/portal/portal-logout-button';
@@ -31,6 +33,11 @@ export function CustomerPortalView({
 }) {
   const showToman = portal.organization.showTomanAlongside;
   const customer = portal.customer;
+  const packId = portal.organization.industryPack;
+  const specialtyId = portal.organization.industrySpecialty;
+  const packDef = getPackDefinition(packId);
+  const surface = getPackDashboardSurface(packId, specialtyId);
+  const customerLabel = packDef.labels.customer;
   const contactBits = [
     customer.company,
     customer.phone,
@@ -39,18 +46,15 @@ export function CustomerPortalView({
     customer.address,
   ].filter(Boolean);
 
-  const theme = getPackTheme(
-    portal.organization.industryPack,
-    portal.organization.industrySpecialty,
-  );
+  const theme = getPackTheme(packId, specialtyId);
   const themeVars = packThemeToCssVars(theme) as CSSProperties;
 
   return (
     <div
       className="ky-portal-shell min-h-screen px-4 py-10"
       dir="rtl"
-      data-pack={portal.organization.industryPack}
-      data-specialty={portal.organization.industrySpecialty ?? undefined}
+      data-pack={packId}
+      data-specialty={specialtyId ?? undefined}
       data-pack-theme={theme.id}
       style={themeVars}
     >
@@ -59,7 +63,9 @@ export function CustomerPortalView({
           <span className="ky-metric-icon" aria-hidden>
             <Receipt className="size-4" />
           </span>
-          <span>پورتال مشتری — {portal.organization.name}</span>
+          <span>
+            پورتال {customerLabel} — {portal.organization.name}
+          </span>
           {showLogout ? (
             <span className="w-full sm:ms-auto sm:w-auto">
               <PortalLogoutButton />
@@ -76,7 +82,7 @@ export function CustomerPortalView({
               <div className="space-y-1">
                 <CardTitle>{customer.name}</CardTitle>
                 <CardDescription>
-                  وضعیت حساب و پیگیری‌ها — اعتبار نشست تا{' '}
+                  وضعیت حساب {customerLabel} و پیگیری‌ها — اعتبار نشست تا{' '}
                   <JalaliDate date={portal.expiresAt} showTime />
                 </CardDescription>
               </div>
@@ -98,11 +104,27 @@ export function CustomerPortalView({
           ) : null}
         </Card>
 
+        {surface.endUserActions.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-3">
+            {surface.endUserActions.map((action) => (
+              <Card key={action.hrefHint} className="ky-pack-card">
+                <CardHeader className="space-y-1 p-4">
+                  <CardTitle className="flex items-center gap-2 text-sm">
+                    <Sparkles className="size-3.5 text-primary" aria-hidden />
+                    {action.labelFa}
+                  </CardTitle>
+                  <CardDescription className="text-xs">{action.descriptionFa}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        ) : null}
+
         <Card className="ky-pack-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Receipt className="size-4" aria-hidden />
-              فاکتورها
+              فاکتورهای {customerLabel}
             </CardTitle>
             <CardDescription>وضعیت پرداخت و لینک پرداخت آنلاین (در صورت فعال بودن)</CardDescription>
           </CardHeader>
@@ -163,17 +185,20 @@ export function CustomerPortalView({
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Flag className="size-4" aria-hidden />
-              درخواست‌ها و فرصت‌ها
+              درخواست‌های {customerLabel}
             </CardTitle>
-            <CardDescription>وضعیت سرنخ‌های مرتبط با حساب شما</CardDescription>
+            <CardDescription>وضعیت فرصت‌ها و پیگیری‌های مرتبط با حساب شما</CardDescription>
           </CardHeader>
           <CardContent>
             {portal.leads.length === 0 ? (
-              <p className="text-sm text-muted-foreground">سرنخ فعالی ثبت نشده است.</p>
+              <p className="text-sm text-muted-foreground">درخواست فعالی ثبت نشده است.</p>
             ) : (
               <ul className="space-y-3" role="list">
                 {portal.leads.map((lead) => (
-                  <li key={lead.id} className="rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4">
+                  <li
+                    key={lead.id}
+                    className="rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4"
+                  >
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium">{lead.title}</span>
                       <LeadStatusBadge status={lead.status} />
@@ -199,7 +224,7 @@ export function CustomerPortalView({
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <ClipboardList className="size-4" aria-hidden />
-              کارهای باز
+              کارهای باز {customerLabel}
             </CardTitle>
             <CardDescription>وظایف پیگیری که تیم برای شما ثبت کرده است</CardDescription>
           </CardHeader>
@@ -209,7 +234,10 @@ export function CustomerPortalView({
             ) : (
               <ul className="space-y-3" role="list">
                 {portal.tasks.map((task) => (
-                  <li key={task.id} className="rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4">
+                  <li
+                    key={task.id}
+                    className="rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4"
+                  >
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium">{task.title}</span>
                       <TaskStatusBadge status={task.status} />

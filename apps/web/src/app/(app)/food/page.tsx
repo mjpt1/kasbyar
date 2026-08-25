@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { ClipboardList, UtensilsCrossed } from 'lucide-react';
+import { formatCurrency, getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@kesbyar/shared';
 import {
   getFoodDashboardSignals,
   listRecentFoodOrders,
@@ -23,6 +23,7 @@ const FOOD_ORDER_LABELS: Record<string, string> = {
 
 export default async function FoodHomePage() {
   const { session } = await requirePackPage('FOOD_SERVICE');
+  const surface = getPackDashboardSurface('FOOD_SERVICE', session.industrySpecialty);
   const [signals, recentOrders] = await Promise.all([
     getFoodDashboardSignals(session.organizationId),
     listRecentFoodOrders(session.organizationId),
@@ -31,8 +32,8 @@ export default async function FoodHomePage() {
   return (
     <div className="ky-pack-panel space-y-6">
       <PageHeader
-        title="غذا و نوشیدنی"
-        description="منو، سفارش سالن و آماده‌سازی"
+        title={surface.titleFa}
+        description={surface.descriptionFa}
         actions={
           <div className="flex gap-2">
             <Button asChild variant="outline" size="sm">
@@ -42,9 +43,9 @@ export default async function FoodHomePage() {
               </Link>
             </Button>
             <Button asChild size="sm">
-              <Link href="/food/orders">
+              <Link href={surface.primaryCta?.href ?? '/food/orders'}>
                 <ClipboardList className="ms-2 h-4 w-4" />
-                سفارش‌ها
+                {surface.primaryCta?.labelFa ?? 'سفارش‌ها'}
               </Link>
             </Button>
           </div>
