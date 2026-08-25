@@ -2,11 +2,13 @@ import { apiSuccess, errorResponse, jsonResponse } from '@/lib/api-response';
 import { handleApiError, isApiError, requireApiSession } from '@/lib/api-auth';
 import { setActiveOrganizationCookie } from '@/lib/auth/session';
 import { APP_LOG_EVENTS, logger } from '@/lib/logger';
+import { getDefaultHomePath } from '@/lib/permissions';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { workspaceSelectSchema } from '@/lib/validators';
 import { parseBody } from '@/lib/validators/parse';
 import { ForbiddenError } from '@/lib/errors';
 import { resolveMembership } from '@/server/workspace/workspace.service';
+import type { MembershipRole } from '@prisma/client';
 
 export async function POST(request: Request) {
   try {
@@ -41,10 +43,19 @@ export async function POST(request: Request) {
       organizationId: parsed.data.organizationId,
     });
 
+    const homePath = getDefaultHomePath(
+      membership.role as MembershipRole,
+      membership.organization.industryPack,
+      membership.organization.industrySpecialty,
+    );
+
     return jsonResponse(
       apiSuccess({
         organizationId: membership.organizationId,
         organizationName: membership.organization.name,
+        industryPack: membership.organization.industryPack,
+        industrySpecialty: membership.organization.industrySpecialty,
+        homePath,
       }),
     );
   } catch (error) {

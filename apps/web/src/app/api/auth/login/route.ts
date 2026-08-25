@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
 
+import type { MembershipRole } from '@prisma/client';
+
 import { apiSuccess, apiError } from '@/lib/api-response';
 import { applyAuthCookies } from '@/lib/auth/cookie-options';
-import { MOBILE_CLIENT_HEADER, MOBILE_CLIENT_VALUE } from '@/lib/auth/constants';
+import {
+  MOBILE_CLIENT_HEADER,
+  MOBILE_CLIENT_VALUE,
+  ORG_COOKIE,
+} from '@/lib/auth/constants';
+import { getDefaultHomePath } from '@/lib/permissions';
 import { loginSchema } from '@/lib/validators';
 import { loginUser } from '@/server/auth/auth.service';
 import { needsOnboarding } from '@/server/onboarding/onboarding.service';
@@ -12,6 +19,20 @@ export const dynamic = 'force-dynamic';
 
 function isMobileClient(request: Request): boolean {
   return request.headers.get(MOBILE_CLIENT_HEADER) === MOBILE_CLIENT_VALUE;
+}
+
+function readRequestCookie(request: Request, name: string): string | null {
+  const raw = request.headers.get('cookie');
+  if (!raw) return null;
+  for (const part of raw.split(';')) {
+    const trimmed = part.trim();
+    const eq = trimmed.indexOf('=');
+    if (eq <= 0) continue;
+    if (trimmed.slice(0, eq) === name) {
+      return decodeURIComponent(trimmed.slice(eq + 1));
+    }
+  }
+  return null;
 }
 
 export async function POST(request: Request) {
@@ -46,10 +67,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const active = workspaces[0] ?? null;
+    const preferredOrgId = readRequestCookie(request, ORG_COOKIE);
+    const active =
+      workspaces.find((w) => w.organizationId === preferredOrgId) ??
+      workspaces[0] ??
+      null;
     const activeOrgId = active?.organizationId ?? null;
     let redirectTo =
-      workspaces.length === 0 && isSuperAdmin ? '/admin' : '/dashboard';
+      workspaces.length === 0 && isSuperAdmin
+        ? '/admin'
+        : active
+          ? getDefaultHomePath(
+              active.role as MembershipRole,
+              active.industryPack,
+              active.industrySpecialty,
+            )
+          : '/dashboard';
     if (
       active &&
       needsOnboarding(active.role, active.industryPack, active.industrySpecialty)

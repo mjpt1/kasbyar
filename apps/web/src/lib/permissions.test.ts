@@ -5,6 +5,7 @@ import {
   canManageMembers,
   canManageSettings,
   canAccessPath,
+  getDefaultHomePath,
   getMinRoleForPath,
   hasMinRole,
 } from './permissions';
@@ -80,5 +81,27 @@ describe('route access', () => {
   it('VIEWER can access dashboard only at viewer level', () => {
     expect(canAccessPath('VIEWER', '/dashboard')).toBe(true);
     expect(canAccessPath('VIEWER', '/customers')).toBe(false);
+  });
+});
+
+describe('getDefaultHomePath', () => {
+  it('prefers specialty home for owners/managers', () => {
+    expect(getDefaultHomePath('OWNER', 'MARKETING_AGENCY', 'seo-agency')).toBe(
+      '/v/seo-agency',
+    );
+    expect(getDefaultHomePath('MANAGER', 'CLINIC', 'dental-clinic')).toBe(
+      '/v/dental-clinic',
+    );
+  });
+
+  it('uses pack home when specialty is unset', () => {
+    expect(getDefaultHomePath('OWNER', 'CLINIC')).toBe('/clinic');
+    expect(getDefaultHomePath('OWNER', 'BEAUTY_SALON')).toBe('/beauty');
+    expect(getDefaultHomePath('OWNER', 'GENERAL')).toBe('/dashboard');
+  });
+
+  it('keeps staff on tasks and viewers on dashboard', () => {
+    expect(getDefaultHomePath('STAFF', 'CLINIC', 'dental-clinic')).toBe('/tasks');
+    expect(getDefaultHomePath('VIEWER', 'CLINIC', 'dental-clinic')).toBe('/dashboard');
   });
 });

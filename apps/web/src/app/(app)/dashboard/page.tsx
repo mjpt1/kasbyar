@@ -1,7 +1,6 @@
 import {
   formatCurrency,
   getPackDashboardSurface,
-  getPackDefinition,
   getPackLayoutModel,
   getPackNavItemLabel,
   isPackNavKeyEnabled,
@@ -31,14 +30,21 @@ import { JalaliDate } from '@/components/shared/jalali-date';
 import { InvoiceStatusBadge } from '@/components/shared/status-badges';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { requireSession } from '@/lib/auth/session';
+import { getDefaultHomePath } from '@/lib/permissions';
 import { getDashboardDetails, getSalesTrend } from '@/server/dashboard/dashboard.service';
+import type { MembershipRole } from '@prisma/client';
 
 export default async function DashboardPage() {
   const session = await requireSession();
   const pack = session.industryPack;
-  const homeRoute = getPackDefinition(pack).homeRoute;
-  if (homeRoute) {
-    redirect(homeRoute);
+  const homePath = getDefaultHomePath(
+    session.role as MembershipRole,
+    pack,
+    session.industrySpecialty,
+  );
+  // Vertical / specialty orgs should never land on the generic CRM dashboard.
+  if (homePath !== '/dashboard') {
+    redirect(homePath);
   }
 
   const surface = getPackDashboardSurface(pack, session.industrySpecialty);

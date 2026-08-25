@@ -1,4 +1,4 @@
-import { getSpecialty } from '@kesbyar/shared';
+import { getPackHomeHref, getSpecialty } from '@kesbyar/shared';
 import type { MembershipRole } from '@prisma/client';
 
 const ROLE_HIERARCHY: Record<MembershipRole, number> = {
@@ -110,7 +110,7 @@ export function filterNavHrefs(role: MembershipRole, hrefs: string[]): string[] 
   return hrefs.filter((href) => canAccessPath(role, href));
 }
 
-/** Home redirect after login — staff lands on tasks, others on dashboard */
+/** Home redirect after login — staff lands on tasks, others on pack/specialty home */
 export function getDefaultHomePath(
   role: MembershipRole,
   industryPack: string,
@@ -124,32 +124,5 @@ export function getDefaultHomePath(
   if (role === 'VIEWER') return '/dashboard';
   if (role === 'STAFF') return '/tasks';
 
-  const packHome: Record<string, string> = {
-    CLINIC: '/clinic',
-    TRAVEL_AGENCY: '/travel',
-    RETAIL: '/retail',
-    BEAUTY_SALON: '/beauty',
-    FOOD_SERVICE: '/food',
-    EDUCATION: '/education',
-    FITNESS: '/fitness',
-    REAL_ESTATE: '/real-estate',
-    WORKSHOP: '/workshop',
-    LAW_FIRM: '/law',
-    ACCOUNTING_FIRM: '/accounting',
-    INSURANCE_AGENCY: '/insurance',
-    MARKETING_AGENCY: '/agency',
-    CONTRACTING: '/contracting',
-    PHOTOGRAPHY: '/photography',
-    CLEANING: '/cleaning',
-    PRINTING: '/printing',
-    LOGISTICS: '/logistics',
-    AUTOMOTIVE: '/automotive',
-    HOSPITALITY: '/hospitality',
-    WHOLESALE: '/wholesale',
-    EVENTS: '/events',
-    AGRICULTURE: '/agriculture',
-    HOME_SERVICES: '/home-services',
-    DISTRIBUTION: '/distribution',
-  };
-  return packHome[industryPack] ?? '/dashboard';
+  return getPackHomeHref(industryPack);
 }

@@ -2,8 +2,10 @@ import { redirect } from 'next/navigation';
 import type { IndustryPack } from '@prisma/client';
 
 import { requireSession } from '@/lib/auth/session';
-import { ForbiddenError, PlanUpgradeRequiredError } from '@/lib/errors';
+import { PlanUpgradeRequiredError } from '@/lib/errors';
+import { getDefaultHomePath } from '@/lib/permissions';
 import { requirePackWithEntitlement } from '@/server/packs/pack-context';
+import type { MembershipRole } from '@prisma/client';
 
 export async function requirePackPage(expected: IndustryPack) {
   const session = await requireSession();
@@ -17,9 +19,12 @@ export async function requirePackPage(expected: IndustryPack) {
         `/settings/billing?upgrade=pack&suggested=${error.suggestedPlan ?? 'STARTER'}`,
       );
     }
-    if (error instanceof ForbiddenError) {
-      redirect('/dashboard');
-    }
-    redirect('/dashboard');
+    redirect(
+      getDefaultHomePath(
+        session.role as MembershipRole,
+        session.industryPack,
+        session.industrySpecialty,
+      ),
+    );
   }
 }

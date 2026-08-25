@@ -45,7 +45,9 @@ export function WorkspaceSelectClient({
         return;
       }
       toast.success(`فضای کاری «${data.data.organizationName}» فعال شد`);
-      router.push('/dashboard');
+      const homePath =
+        typeof data.data?.homePath === 'string' ? data.data.homePath : '/dashboard';
+      router.push(homePath);
       router.refresh();
     } catch {
       toast.error('خطا در ارتباط با سرور');

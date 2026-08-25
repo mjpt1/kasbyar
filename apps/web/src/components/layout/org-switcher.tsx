@@ -1,5 +1,6 @@
 'use client';
 
+import { getSpecialty, INDUSTRY_PACK_LABELS } from '@kesbyar/shared';
 import { Building2, ChevronsUpDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -12,7 +13,16 @@ type WorkspaceRow = {
   organizationId: string;
   organizationName: string;
   role: string;
+  industryPack?: string;
+  industrySpecialty?: string | null;
 };
+
+function workspaceSubtitle(row: WorkspaceRow): string | null {
+  if (!row.industryPack) return null;
+  const specialty = getSpecialty(row.industrySpecialty);
+  const packLabel = INDUSTRY_PACK_LABELS[row.industryPack] ?? row.industryPack;
+  return specialty ? `${specialty.label} · ${packLabel}` : packLabel;
+}
 
 export function OrgSwitcher({
   currentOrganizationId,
@@ -41,10 +51,14 @@ export function OrgSwitcher({
                 organizationId: string;
                 organizationName: string;
                 role: string;
+                industryPack?: string;
+                industrySpecialty?: string | null;
               }) => ({
                 organizationId: w.organizationId,
                 organizationName: w.organizationName,
                 role: w.role,
+                industryPack: w.industryPack,
+                industrySpecialty: w.industrySpecialty,
               }),
             ),
           );
@@ -74,7 +88,9 @@ export function OrgSwitcher({
       }
       toast.success(`فضای کاری «${data.data.organizationName}» فعال شد`);
       setOpen(false);
-      router.push('/dashboard');
+      const homePath =
+        typeof data.data?.homePath === 'string' ? data.data.homePath : '/dashboard';
+      router.push(homePath);
       router.refresh();
     } catch {
       toast.error('خطا در ارتباط با سرور');
@@ -109,22 +125,30 @@ export function OrgSwitcher({
           {items.length === 0 ? (
             <p className="px-2 py-1.5 text-xs text-muted-foreground">در حال بارگذاری…</p>
           ) : (
-            items.map((item) => (
-              <button
-                key={item.organizationId}
-                type="button"
-                role="option"
-                aria-selected={item.organizationId === currentOrganizationId}
-                disabled={loading}
-                className={cn(
-                  'flex w-full rounded-sm px-2 py-1.5 text-start text-xs hover:bg-accent',
-                  item.organizationId === currentOrganizationId && 'bg-accent font-medium',
-                )}
-                onClick={() => void select(item.organizationId)}
-              >
-                <span className="truncate">{item.organizationName}</span>
-              </button>
-            ))
+            items.map((item) => {
+              const subtitle = workspaceSubtitle(item);
+              return (
+                <button
+                  key={item.organizationId}
+                  type="button"
+                  role="option"
+                  aria-selected={item.organizationId === currentOrganizationId}
+                  disabled={loading}
+                  className={cn(
+                    'flex w-full flex-col rounded-sm px-2 py-1.5 text-start text-xs hover:bg-accent',
+                    item.organizationId === currentOrganizationId && 'bg-accent font-medium',
+                  )}
+                  onClick={() => void select(item.organizationId)}
+                >
+                  <span className="truncate">{item.organizationName}</span>
+                  {subtitle ? (
+                    <span className="truncate text-[10px] font-normal text-muted-foreground">
+                      {subtitle}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })
           )}
           <button
             type="button"
