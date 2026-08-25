@@ -20,14 +20,14 @@ export function StatCard({
 }) {
   const content = (
     <Card className={cn('ky-pack-card ky-metric h-full')}>
-      <div className="flex items-start gap-3 p-4 sm:p-5">
+      <div className="flex items-start gap-3 p-4 pb-5 sm:p-5 sm:pb-6">
         {Icon ? (
           <span className="ky-metric-icon" aria-hidden>
-            <Icon className="size-[1.05rem]" />
+            <Icon className="size-[1.05rem] text-current" strokeWidth={2.25} />
           </span>
         ) : null}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-medium text-muted-foreground">{title}</p>
+          <p className="truncate text-xs font-semibold text-foreground/80">{title}</p>
           <p className="ky-metric-value mt-1.5">{value}</p>
           {subtitle ? (
             <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground/90">

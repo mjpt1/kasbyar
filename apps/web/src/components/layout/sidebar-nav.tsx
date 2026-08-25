@@ -41,7 +41,7 @@ export function SidebarNav({
     <div className={cn('flex h-full flex-col', className)}>
       <div className="border-b border-border/70 p-4">
         <div className="flex items-center gap-2.5">
-          <span className="ky-brand-mark grid size-9 shrink-0 place-items-center rounded-[10px]">
+          <span className="ky-brand-mark grid size-10 shrink-0 place-items-center rounded-[14px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/logo.svg" alt="" width={22} height={22} className="size-[22px]" />
           </span>

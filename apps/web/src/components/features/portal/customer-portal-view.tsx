@@ -1,6 +1,9 @@
+import type { CSSProperties } from 'react';
 import {
   formatCurrencyWithOptionalToman,
+  getPackTheme,
   LEAD_STATUS_LABELS,
+  packThemeToCssVars,
   TASK_PRIORITY_LABELS,
   TASK_STATUS_LABELS,
 } from '@kesbyar/shared';
@@ -36,17 +39,24 @@ export function CustomerPortalView({
     customer.address,
   ].filter(Boolean);
 
+  const theme = getPackTheme(
+    portal.organization.industryPack,
+    portal.organization.industrySpecialty,
+  );
+  const themeVars = packThemeToCssVars(theme) as CSSProperties;
+
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-emerald-50/40 px-4 py-10 dark:from-slate-950 dark:via-background dark:to-emerald-950/20"
+      className="ky-portal-shell min-h-screen px-4 py-10"
       dir="rtl"
+      data-pack={portal.organization.industryPack}
+      data-specialty={portal.organization.industrySpecialty ?? undefined}
+      data-pack-theme={theme.id}
+      style={themeVars}
     >
       <div className="mx-auto max-w-2xl space-y-4">
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
-          <span
-            className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-sky-200/90 to-emerald-100 text-foreground shadow-sm dark:from-sky-900 dark:to-emerald-950"
-            aria-hidden
-          >
+          <span className="ky-metric-icon" aria-hidden>
             <Receipt className="size-4" />
           </span>
           <span>پورتال مشتری — {portal.organization.name}</span>
@@ -57,13 +67,10 @@ export function CustomerPortalView({
           ) : null}
         </div>
 
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader>
             <div className="flex items-start gap-3">
-              <span
-                className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-muted"
-                aria-hidden
-              >
+              <span className="ky-avatar-chip mt-0.5" aria-hidden>
                 <UserRound className="size-4" />
               </span>
               <div className="space-y-1">
@@ -91,7 +98,7 @@ export function CustomerPortalView({
           ) : null}
         </Card>
 
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Receipt className="size-4" aria-hidden />
@@ -115,7 +122,7 @@ export function CustomerPortalView({
                   return (
                     <li
                       key={invoice.id}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4"
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4"
                     >
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
@@ -152,7 +159,7 @@ export function CustomerPortalView({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Flag className="size-4" aria-hidden />
@@ -166,7 +173,7 @@ export function CustomerPortalView({
             ) : (
               <ul className="space-y-3" role="list">
                 {portal.leads.map((lead) => (
-                  <li key={lead.id} className="rounded-lg border p-4">
+                  <li key={lead.id} className="rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium">{lead.title}</span>
                       <LeadStatusBadge status={lead.status} />
@@ -188,7 +195,7 @@ export function CustomerPortalView({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <ClipboardList className="size-4" aria-hidden />
@@ -202,7 +209,7 @@ export function CustomerPortalView({
             ) : (
               <ul className="space-y-3" role="list">
                 {portal.tasks.map((task) => (
-                  <li key={task.id} className="rounded-lg border p-4">
+                  <li key={task.id} className="rounded-[calc(var(--radius)-4px)] border border-border/70 bg-background/50 p-4">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium">{task.title}</span>
                       <TaskStatusBadge status={task.status} />

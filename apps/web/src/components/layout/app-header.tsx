@@ -23,7 +23,7 @@ export function AppHeader({
       <div className="min-w-0">
         {title ? (
           <>
-            <p className="truncate text-[0.6875rem] font-medium text-muted-foreground">
+            <p className="truncate text-[0.6875rem] font-semibold tracking-wide text-primary/80">
               {organizationName}
             </p>
             <h1 className="mt-0.5 truncate text-lg font-bold tracking-tight sm:text-xl">
@@ -42,7 +42,12 @@ export function AppHeader({
       <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
         {showNotifications ? <NotificationBell /> : null}
         <ConversationNavLink />
-        <Button variant="outline" size="sm" className="shrink-0" asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="shrink-0 rounded-[calc(var(--radius)-4px)] bg-background/70 backdrop-blur-sm"
+          asChild
+        >
           <Link href={AUTH_NAV.workspaceSelect.href}>تغییر فضا</Link>
         </Button>
       </div>

@@ -92,7 +92,7 @@ const THEMES: Record<PackThemeId, PackThemeDefinition> = {
     vibeFa: 'آسمان ملایم / نعنایی / هلویی (هویت پیش‌فرض کسب‌یار)',
     layout: 'balanced',
     density: 'comfortable',
-    radius: '0.9rem',
+    radius: '1.15rem',
     hsl: {
       primary: '200 38% 58%',
       primaryForeground: '0 0% 100%',

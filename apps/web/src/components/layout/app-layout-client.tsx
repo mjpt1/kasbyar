@@ -48,18 +48,20 @@ export function AppLayoutClient({
       data-density={theme.density}
       style={themeVars}
     >
-      <aside className="ky-pack-sidebar hidden h-full w-64 shrink-0 flex-col overflow-hidden border-e md:flex">
-        <SidebarNav
-          organizationName={organizationName}
-          organizationId={organizationId}
-          userName={userName}
-          industryPack={industryPack}
-          industrySpecialty={industrySpecialty}
-          role={role}
-          isSuperAdmin={isSuperAdmin}
-          moduleToggles={moduleToggles}
-        />
-      </aside>
+      <div className="hidden h-full shrink-0 p-3 md:flex">
+        <aside className="ky-pack-sidebar ky-pack-sidebar--float flex h-full w-64 flex-col overflow-hidden border">
+          <SidebarNav
+            organizationName={organizationName}
+            organizationId={organizationId}
+            userName={userName}
+            industryPack={industryPack}
+            industrySpecialty={industrySpecialty}
+            role={role}
+            isSuperAdmin={isSuperAdmin}
+            moduleToggles={moduleToggles}
+          />
+        </aside>
+      </div>
 
       {mobileOpen ? (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">

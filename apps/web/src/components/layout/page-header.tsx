@@ -12,7 +12,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2.5">
           <span
-            className="h-6 w-1 shrink-0 rounded-full bg-primary/70 sm:h-7"
+            className="h-6 w-1 shrink-0 rounded-full bg-gradient-to-b from-primary to-primary/50 shadow-[0_0_0_3px_hsl(var(--primary)/0.12)] sm:h-7"
             aria-hidden
           />
           <h1 className="truncate text-xl font-bold tracking-tight sm:text-2xl">{title}</h1>

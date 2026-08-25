@@ -24,7 +24,7 @@
     --border: 210 25% 88%;
     --input: 210 25% 88%;
     --ring: 200 38% 58%;
-    --radius: 0.9rem;
+    --radius: 1.15rem;
     --sidebar: 0 0% 100%;
     --sidebar-foreground: 225 16% 29%;
     --panel-soft: 200 40% 96%;
@@ -32,14 +32,19 @@
     --pack-glow-b: rgba(168, 201, 184, 0.22);
     --pack-glow-c: rgba(185, 212, 240, 0.18);
 
-    /* Layered elevation — softer and deeper than a single flat shadow */
-    --elevation-1: 0 1px 2px hsl(var(--foreground) / 0.04), 0 1px 3px hsl(var(--foreground) / 0.05);
+    /* Layered elevation — soft + primary-tinted outer glow (unified preview) */
+    --elevation-1:
+      0 1px 2px hsl(var(--foreground) / 0.045),
+      0 8px 20px hsl(var(--foreground) / 0.04),
+      0 2px 8px hsl(var(--primary) / 0.04);
     --elevation-2:
-      0 1px 2px hsl(var(--foreground) / 0.04), 0 4px 12px hsl(var(--foreground) / 0.06),
-      0 12px 28px hsl(var(--primary) / 0.06);
+      0 1px 2px hsl(var(--foreground) / 0.05),
+      0 12px 28px hsl(var(--foreground) / 0.07),
+      0 24px 52px hsl(var(--primary) / 0.08);
     --elevation-3:
-      0 2px 4px hsl(var(--foreground) / 0.05), 0 10px 24px hsl(var(--foreground) / 0.08),
-      0 24px 48px hsl(var(--primary) / 0.1);
+      0 2px 4px hsl(var(--foreground) / 0.05),
+      0 18px 44px hsl(var(--foreground) / 0.09),
+      0 32px 64px hsl(var(--primary) / 0.12);
   }
 
   * {
@@ -226,22 +231,42 @@
   /* ── Pack visual themes (tokens set via data-pack-theme + inline CSS vars) ── */
 
   .ky-pack-sidebar {
-    background-color: hsl(var(--sidebar));
     color: hsl(var(--sidebar-foreground));
-    background-image: linear-gradient(
-      195deg,
-      hsl(var(--primary) / 0.07),
-      transparent 34%,
-      hsl(var(--panel-soft) / 0.55)
-    );
-    border-color: hsl(var(--border) / 0.85);
+    background:
+      linear-gradient(
+        180deg,
+        hsl(0 0% 100% / 0.72),
+        hsl(var(--panel-soft) / 0.55) 48%,
+        hsl(var(--sidebar) / 0.88)
+      ),
+      linear-gradient(195deg, hsl(var(--primary) / 0.1), transparent 42%);
+    border-color: hsl(var(--border) / 0.55);
+    backdrop-filter: blur(18px) saturate(1.45);
+    -webkit-backdrop-filter: blur(18px) saturate(1.45);
+    box-shadow: var(--elevation-2);
+  }
+
+  /* Desktop floating glass card (margins come from layout wrapper) */
+  @media (min-width: 768px) {
+    .ky-pack-sidebar.ky-pack-sidebar--float {
+      border-radius: calc(var(--radius) + 0.35rem);
+      border-inline-end-width: 1px;
+    }
   }
 
   .ky-pack-header {
-    background-color: hsl(var(--background) / 0.82);
-    backdrop-filter: blur(14px) saturate(1.4);
-    border-color: hsl(var(--border) / 0.7);
-    box-shadow: 0 1px 0 hsl(var(--foreground) / 0.03);
+    background: linear-gradient(
+      180deg,
+      hsl(0 0% 100% / 0.78),
+      hsl(var(--background) / 0.72)
+    );
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border-color: hsl(var(--border) / 0.55);
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.55),
+      0 10px 28px hsl(var(--foreground) / 0.045),
+      0 4px 14px hsl(var(--primary) / 0.04);
   }
 
   /* ── Panel chrome polish ── */
@@ -254,13 +279,13 @@
 
   .ky-brand-mark {
     background: linear-gradient(
-      140deg,
-      hsl(var(--primary) / 0.9),
-      hsl(var(--primary) / 0.55)
+      145deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.72)
     );
     box-shadow:
-      0 0 0 1px hsl(var(--primary) / 0.2),
-      0 6px 16px hsl(var(--primary) / 0.22);
+      0 0 0 1px hsl(var(--primary) / 0.18),
+      0 12px 22px hsl(var(--primary) / 0.26);
   }
 
   .ky-nav-eyebrow {
@@ -275,25 +300,27 @@
   }
 
   .ky-nav-item {
-    @apply relative flex items-center gap-2.5 px-3 py-2 text-sm;
+    @apply relative flex items-center gap-2.5 px-3 py-2.5 text-sm;
     border-radius: calc(var(--radius) - 2px);
     color: hsl(var(--muted-foreground));
     transition:
-      background-color 150ms ease,
-      color 150ms ease,
-      box-shadow 150ms ease;
+      background-color 180ms ease,
+      color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
   }
 
   .ky-nav-item:hover {
-    background-color: hsl(var(--primary) / 0.07);
+    background-color: hsl(var(--primary) / 0.08);
     color: hsl(var(--foreground));
   }
 
   .ky-nav-item[data-active='true'] {
     background: linear-gradient(
-      90deg,
-      hsl(var(--primary) / 0.14),
-      hsl(var(--primary) / 0.05)
+      135deg,
+      hsl(var(--primary) / 0.16),
+      hsl(0 0% 100% / 0.55) 55%,
+      hsl(var(--panel-soft) / 0.7)
     );
     color: hsl(var(--primary));
     font-weight: 600;
@@ -303,36 +330,47 @@
   /* Active marker on the inline start edge (RTL-aware) */
   .ky-nav-item[data-active='true']::before {
     content: '';
-    @apply absolute inset-y-1.5 w-[3px] rounded-full;
+    @apply absolute inset-y-1.5 w-1 rounded-full;
     inset-inline-start: 0;
-    background: hsl(var(--primary));
+    background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary) / 0.55));
   }
 
   .ky-nav-icon {
-    @apply grid size-7 shrink-0 place-items-center;
-    border-radius: calc(var(--radius) - 5px);
-    background-color: hsl(var(--muted) / 0.7);
-    color: hsl(var(--muted-foreground));
+    @apply grid size-8 shrink-0 place-items-center;
+    border-radius: calc(var(--radius) - 6px);
+    background: linear-gradient(
+      145deg,
+      hsl(var(--primary) / 0.14),
+      hsl(var(--secondary) / 0.85)
+    );
+    color: hsl(var(--primary));
     transition:
-      background-color 150ms ease,
-      color 150ms ease;
+      background 180ms ease,
+      color 180ms ease,
+      box-shadow 180ms ease;
   }
 
   .ky-nav-item:hover .ky-nav-icon,
   .ky-nav-item[data-active='true'] .ky-nav-icon {
-    background-color: hsl(var(--primary) / 0.16);
-    color: hsl(var(--primary));
+    background: linear-gradient(
+      145deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.72)
+    );
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 8px 16px hsl(var(--primary) / 0.22);
   }
 
   .ky-avatar-chip {
     @apply grid size-8 shrink-0 place-items-center text-xs font-semibold;
     border-radius: calc(var(--radius) - 4px);
     background: linear-gradient(
-      140deg,
-      hsl(var(--primary) / 0.22),
-      hsl(var(--secondary))
+      145deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.7)
     );
-    color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 8px 16px hsl(var(--primary) / 0.2);
   }
 
   /* ── Metric card ── */
@@ -340,28 +378,45 @@
   .ky-metric {
     @apply relative overflow-hidden;
     box-shadow: var(--elevation-1);
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
     transition:
-      box-shadow 200ms ease,
-      transform 200ms ease,
+      box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
       border-color 200ms ease;
   }
 
-  /* Hairline accent along the top edge */
-  .ky-metric::after {
+  /* Top hairline + bottom accent bar */
+  .ky-metric::before {
     content: '';
     @apply absolute inset-x-0 top-0 h-px;
     background: linear-gradient(
       90deg,
       transparent,
-      hsl(var(--primary) / 0.45),
+      hsl(var(--primary) / 0.4),
       transparent
     );
   }
 
+  .ky-metric::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0.75rem;
+    bottom: 0.5rem;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.45)
+    );
+    opacity: 0.85;
+  }
+
   .ky-metric-link:hover .ky-metric {
-    box-shadow: var(--elevation-2);
+    box-shadow: var(--elevation-3);
     border-color: hsl(var(--primary) / 0.35);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 
   .ky-metric-link:focus-visible .ky-metric {
@@ -370,35 +425,45 @@
   }
 
   .ky-metric-icon {
-    @apply grid size-9 shrink-0 place-items-center;
+    @apply grid size-10 shrink-0 place-items-center;
     border-radius: calc(var(--radius) - 4px);
     background: linear-gradient(
-      140deg,
-      hsl(var(--primary) / 0.16),
-      hsl(var(--primary) / 0.06)
+      145deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.68)
     );
-    color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 10px 18px hsl(var(--primary) / 0.24);
   }
 
   .ky-metric-value {
     @apply text-[1.6rem] font-bold leading-tight tracking-tight;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ky-metric,
-    .ky-metric-link:hover .ky-metric {
+    .ky-metric-link:hover .ky-metric,
+    .ky-nav-item,
+    .ky-pack-card {
       transform: none;
       transition: none;
     }
   }
 
   .ky-pack-main {
-    background-color: hsl(var(--muted) / 0.35);
+    background-color: hsl(var(--muted) / 0.28);
     background-image:
-      radial-gradient(ellipse 70% 45% at 100% 0%, var(--pack-glow-a), transparent 55%),
-      radial-gradient(ellipse 50% 40% at 0% 100%, var(--pack-glow-b), transparent 50%),
-      radial-gradient(ellipse 35% 30% at 50% 45%, var(--pack-glow-c), transparent 60%);
+      radial-gradient(circle at 14% 8%, var(--pack-glow-a), transparent 32%),
+      radial-gradient(circle at 88% 4%, var(--pack-glow-b), transparent 28%),
+      radial-gradient(ellipse 55% 40% at 50% 55%, var(--pack-glow-c), transparent 58%),
+      linear-gradient(
+        180deg,
+        hsl(var(--panel-soft) / 0.45),
+        hsl(var(--muted) / 0.2) 40%,
+        transparent
+      );
   }
 
   .ky-pack-panel {
@@ -407,10 +472,34 @@
 
   .ky-pack-card {
     background:
-      linear-gradient(180deg, hsl(0 0% 100% / 0.4), transparent 45%),
-      linear-gradient(145deg, hsl(var(--panel-soft)), hsl(var(--card)));
+      linear-gradient(180deg, hsl(0 0% 100% / 0.55), transparent 42%),
+      linear-gradient(145deg, hsl(var(--panel-soft) / 0.92), hsl(var(--card) / 0.96));
     border-radius: var(--radius);
-    border-color: hsl(var(--border) / 0.85);
+    border-color: hsl(var(--border) / 0.7);
+    box-shadow: var(--elevation-1);
+    backdrop-filter: blur(14px) saturate(1.15);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    transition:
+      box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 200ms ease;
+  }
+
+  .ky-pack-card:hover {
+    box-shadow: var(--elevation-2);
+  }
+
+  /* Portal glass shell (uses pack tokens when applied on the root) */
+  .ky-portal-shell {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(circle at 12% 0%, var(--pack-glow-a), transparent 36%),
+      radial-gradient(circle at 90% 8%, var(--pack-glow-b), transparent 32%),
+      linear-gradient(180deg, hsl(var(--panel-soft) / 0.65), hsl(var(--background)));
+  }
+
+  .ky-portal-shell .ky-pack-card {
+    border-radius: calc(var(--radius) + 0.15rem);
   }
 
   /* Density */
@@ -498,6 +587,7 @@
 
   [data-layout='dense_kpi'] .ky-metric-icon {
     @apply size-8;
+    box-shadow: 0 6px 12px hsl(var(--primary) / 0.2);
   }
 
   [data-layout='order_board'] .ky-dash-shell,

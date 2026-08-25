@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.19.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.20.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -244,13 +244,22 @@ npm run dev
 ## English (short)
 
 **Demo login:** [https://kasbyar.vercel.app](https://kasbyar.vercel.app) — `demo@kesbyar.ir` / `demo1234`
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.19.0** (polished panel chrome: layered elevation, refined sidebar/metric cards, occupation-aligned specialty colors + pack themes).
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.20.0** (unified glass preview language: floating glass sidebar, gradient metric tiles, pack/specialty themes via existing maps).
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.19.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.20.0**.
+
+### v0.20.0 — زبان بصری یکپارچه (glass preview)
+
+- **شیشه و گرادیان**: سایدبار شناور با blur/saturate، هدر sticky شیشه‌ای، پس‌زمینهٔ اصلی با glowهای شعاعی از توکن‌های پک
+- **متریک‌ها**: آیکن‌تایل پر از گرادیان primary (آیکن سفید)، خط لهجه پایین کارت + hairline بالا، سایهٔ لایه‌ای نرم‌تر (`--elevation-1/2/3`)
+- **ناوبری**: آیتم فعال با گرادیان + نوار لبهٔ شروع (RTL-aware)؛ آیکن فعال به تایل گرادیانی تبدیل می‌شود
+- **شعاع پیش‌فرض** نزدیک ۱.۱۵rem؛ تم‌های پک/تخصص همچنان `--radius` و رنگ را از `getPackTheme` می‌گیرند
+- **پورتال مشتری**: اعمال CSS vars تم سازمان + کارت‌های شیشه‌ای هم‌سبک پنل
+- نسخه root / web: **0.20.0**
 
 ### v0.19.0 — صیقل بصری پنل (chrome حرفه‌ای)
 

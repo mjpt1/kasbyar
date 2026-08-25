@@ -65,7 +65,14 @@ async function buildPortalView(row: {
     province: string | null;
     address: string | null;
   };
-  organization: { id: string; name: string; showTomanAlongside: boolean; slug: string };
+  organization: {
+    id: string;
+    name: string;
+    showTomanAlongside: boolean;
+    slug: string;
+    industryPack: string;
+    industrySpecialty: string | null;
+  };
 }) {
   const [invoices, leads, tasks] = await Promise.all([
     prisma.invoice.findMany({
@@ -165,7 +172,16 @@ async function loadPortalTokenRow(token: string) {
           address: true,
         },
       },
-      organization: { select: { id: true, name: true, showTomanAlongside: true, slug: true } },
+      organization: {
+        select: {
+          id: true,
+          name: true,
+          showTomanAlongside: true,
+          slug: true,
+          industryPack: true,
+          industrySpecialty: true,
+        },
+      },
     },
   });
   if (!row || row.expiresAt < new Date()) return null;
