@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BadgeCheck, Calendar, Dumbbell } from 'lucide-react';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,6 +62,12 @@ export default async function FitnessHomePage() {
           <CardContent className="text-2xl font-bold">{signals.upcomingClassCount}</CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="FITNESS"
+        specialtyId={session.industrySpecialty}
+      />
 
       <Card>
         <CardHeader>

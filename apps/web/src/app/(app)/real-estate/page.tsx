@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Building2, Calendar, Home } from 'lucide-react';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -63,6 +64,12 @@ export default async function RealEstateHomePage() {
           <CardContent className="text-2xl font-bold">{signals.upcomingShowingCount}</CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="REAL_ESTATE"
+        specialtyId={session.industrySpecialty}
+      />
 
       <Card className="ky-pack-card">
         <CardHeader>

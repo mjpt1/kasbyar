@@ -957,6 +957,20 @@ export const SPECIALTY_THEME_MAP: Record<string, PackThemeId> = {
   gym: 'schedule',
   'yoga-studio': 'spa',
   'pilates-studio': 'spa',
+  'gaming-cafe': 'cafe',
+  'coworking-space': 'agency',
+
+  // New occupations
+  'dry-cleaning': 'field',
+  'phone-repair': 'field',
+  locksmith: 'field',
+  'translation-bureau': 'agency',
+  'medical-aesthetics': 'beauty',
+  'nutrition-clinic': 'clinic',
+  'home-appliances': 'retail',
+  'massage-center': 'spa',
+  'bridal-atelier': 'beauty',
+  'driving-school': 'schedule',
 };
 
 export function getPackThemeId(

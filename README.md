@@ -2,7 +2,7 @@
 
 **سیستم‌عامل کسب‌وکار برای بنگاه‌های کوچک و متوسط ایران**
 
-نسخه فعلی: **v0.21.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
+نسخه فعلی: **v0.22.0** · وب‌اپ: [@kesbyar/web](apps/web) · موبایل: [@kesbyar/mobile](apps/mobile) · مشترک: [@kesbyar/shared](packages/shared)
 
 | لینک | آدرس |
 |------|------|
@@ -244,13 +244,20 @@ npm run dev
 ## English (short)
 
 **Demo login:** [https://kasbyar.vercel.app](https://kasbyar.vercel.app) — `demo@kesbyar.ir` / `demo1234`
-**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.21.0** (pack home = vertical پیشخوان; portal/nav labels per occupation).
+**KasbYar** is a Persian-first Business OS for Iranian SMBs: multi-tenant workspaces, specialty dashboards (100+), CRM (**sales leads** with `@dnd-kit` Kanban), invoicing, Iran-market P0 (payments / SMS / Moadian hooks), per-org encrypted credentials, omnichannel inbox (WhatsApp, SMS, email, VoIP, Telegram, Instagram), team KPIs, internal team chat, support tickets, org module toggles, AI command center, onboarding, notifications, installable PWA, and a native **Android Expo app** with inbox reply synced to the same web APIs. App on Vercel · DB on Neon · current release **v0.22.0** (pack home charts + new occupations).
 
 ---
 
 ## تاریخچه نسخه‌ها (Changelog کامل)
 
-تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.21.0**.
+تغییرات بر اساس `git log`، نسخه‌های `package.json`، و کارهای منتشرشده تا **v0.22.0**.
+
+### v0.22.0 — نمودار پیشخوان همه بسته‌ها + مشاغل جدید
+
+- نمودارهای Recharts (بار/پای) روی پیشخوان **همه** بسته‌های عمودی (مسافرتی، آموزش، باشگاه، املاک، کارگاه، حقوقی، حسابداری، بیمه، پیمانکاری، عکاسی، نظافت، چاپ و wave4)
+- تعریف نمودار در `@kesbyar/shared` + داده زنده با fallback دمو؛ تخصص‌هایی مثل خشکشویی، تعمیر موبایل، دفتر ترجمه، زیبایی پزشکی
+- مشاغل جدید: خشکشویی، تعمیر موبایل، کلیدسازی، دفتر ترجمه، فضای کار اشتراکی، کلینیک زیبایی پزشکی، کلینیک تغذیه، لوازم خانگی، مرکز ماساژ، مزون لباس عروس
+- نسخه root / web / shared: **0.22.0**
 
 ### v0.21.0 — پیشخوان عمودی هر شغل
 

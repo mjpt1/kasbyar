@@ -10,6 +10,7 @@ import {
 } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -74,6 +75,12 @@ export async function Wave4PackHomePage({ pack }: { pack: Wave4PackId }) {
           <CardContent className="text-2xl font-bold">{signals.dueSoonCount}</CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId={pack}
+        specialtyId={session.industrySpecialty}
+      />
 
       <Card>
         <CardHeader>

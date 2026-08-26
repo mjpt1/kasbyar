@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Luggage, Plane } from 'lucide-react';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { BookingStatusBadge } from '@/components/shared/status-badges';
 import { Button } from '@/components/ui/button';
@@ -54,6 +55,12 @@ export default async function TravelHomePage() {
           <CardContent className="text-2xl font-bold text-amber-600">{signals.unpaidCount}</CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="TRAVEL_AGENCY"
+        specialtyId={session.industrySpecialty}
+      />
 
       <Card>
         <CardHeader>

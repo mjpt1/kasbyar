@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ClipboardList, Printer } from 'lucide-react';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -63,6 +64,12 @@ export default async function PrintingHomePage() {
           <CardContent className="text-2xl font-bold text-emerald-600">{signals.dueSoonCount}</CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="PRINTING"
+        specialtyId={session.industrySpecialty}
+      />
 
       <Card>
         <CardHeader>
