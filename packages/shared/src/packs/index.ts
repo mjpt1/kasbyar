@@ -7,3 +7,4 @@ export * from './wave4';
 export * from './nav-profiles';
 export * from './themes';
 export * from './dashboard-surfaces';
+export * from './dashboard-charts';

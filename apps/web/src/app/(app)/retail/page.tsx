@@ -3,6 +3,7 @@ import { Boxes, Package, Receipt, Users, Wallet } from 'lucide-react';
 import { getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getRetailDashboardSignals } from '@/server/packs/retail/retail.service';
@@ -106,6 +107,12 @@ export default async function RetailHomePage() {
           </CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="RETAIL"
+        specialtyId={session.industrySpecialty}
+      />
     </div>
   );
 }

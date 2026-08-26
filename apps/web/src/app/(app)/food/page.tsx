@@ -3,6 +3,7 @@ import { ClipboardList, UtensilsCrossed } from 'lucide-react';
 import { formatCurrency, getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -108,6 +109,12 @@ export default async function FoodHomePage() {
           </CardContent>
         </Card>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="FOOD_SERVICE"
+        specialtyId={session.industrySpecialty}
+      />
     </div>
   );
 }

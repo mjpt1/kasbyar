@@ -20,6 +20,7 @@ import {
 } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { requireSession } from '@/lib/auth/session';
@@ -120,6 +121,12 @@ export default async function SpecialtyDashboardPage({
           </Card>
         ))}
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId={packId}
+        specialtyId={specialtyId}
+      />
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <Card className="ky-pack-card">

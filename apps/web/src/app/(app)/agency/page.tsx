@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ClipboardList, Megaphone } from 'lucide-react';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +29,7 @@ export default async function AgencyHomePage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="ky-pack-panel space-y-6">
       <PageHeader
         title="آژانس بازاریابی"
         description="کمپین، بودجه و تحویل پروژه"
@@ -42,20 +43,20 @@ export default async function AgencyHomePage() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+      <div className="ky-pack-stats">
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">فعال</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold">{signals.activeCount}</CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">برنامه‌ریزی</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold text-amber-600">{signals.plannedCount}</CardContent>
         </Card>
-        <Card>
+        <Card className="ky-pack-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">متوقف</CardTitle>
           </CardHeader>
@@ -63,7 +64,13 @@ export default async function AgencyHomePage() {
         </Card>
       </div>
 
-      <Card>
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="MARKETING_AGENCY"
+        specialtyId={session.industrySpecialty}
+      />
+
+      <Card className="ky-pack-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Megaphone className="h-4 w-4" />

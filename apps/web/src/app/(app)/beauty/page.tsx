@@ -3,6 +3,7 @@ import { Calendar, Sparkles } from 'lucide-react';
 import { getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { AppointmentStatusBadge } from '@/components/shared/status-badges';
 import { Button } from '@/components/ui/button';
@@ -92,6 +93,12 @@ export default async function BeautyHomePage() {
           )}
         </CardContent>
       </Card>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="BEAUTY_SALON"
+        specialtyId={session.industrySpecialty}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Calendar, HeartPulse } from 'lucide-react';
 import { getPackDashboardSurface } from '@kesbyar/shared';
 
 import { PageHeader } from '@/components/layout/page-header';
+import { PackDashboardCharts } from '@/components/dashboard/pack-dashboard-charts';
 import { JalaliDate } from '@/components/shared/jalali-date';
 import { AppointmentStatusBadge } from '@/components/shared/status-badges';
 import { Button } from '@/components/ui/button';
@@ -103,6 +104,12 @@ export default async function ClinicHomePage() {
           </Card>
         </div>
       </div>
+
+      <PackDashboardCharts
+        organizationId={session.organizationId}
+        packId="CLINIC"
+        specialtyId={session.industrySpecialty}
+      />
     </div>
   );
 }
